@@ -1,0 +1,8 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Miglayout
+Bundle-SymbolicName: miglayout
+Bundle-Version: 1.0.0
+Export-Package: net.miginfocom.layout,
+ net.miginfocom.swt
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
