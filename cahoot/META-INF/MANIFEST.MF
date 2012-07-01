@@ -1,11 +1,12 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Cahoot
-Bundle-SymbolicName: cahoot
+Bundle-SymbolicName: cahoot;singleton:=true
 Bundle-Version: 1.0.0.qualifier
-Bundle-Activator: cahoot.Activator
+Bundle-Activator: com.cahoot.eclipse.Activator
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.scala-ide.scala.library
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
-Import-Package: org.osgi.framework;version="1.3.0"
-Require-Bundle: org.scala-ide.scala.library,
- miglayout;bundle-version="1.0.0"
+Import-Package: org.eclipse.help
