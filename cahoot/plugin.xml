@@ -33,5 +33,28 @@
             file="contexts.xml">
       </contexts>
    </extension>
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            id="cahoot.popup.share"
+            objectClass="org.eclipse.core.resources.IFile">
+         <menu
+               id="cahoot.menu"
+               label="Cahoot"
+               path="additions">
+            <separator
+                  name="main">
+            </separator>
+         </menu>
+         <action
+               class="com.cahoot.eclipse.popup.actions.CollaboratorShareAction"
+               id="cahoot.shareAction"
+               label="Share"
+               menubarPath="cahoot.menu/main"
+               style="push"
+               tooltip="Share file">
+         </action>
+      </objectContribution>
+   </extension>
 
 </plugin>
