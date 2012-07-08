@@ -7,12 +7,14 @@ Bundle-Activator: com.cahoot.eclipse.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.scala-ide.scala.library,
- miglayout;bundle-version="1.0.0",
- org.eclipse.core.resources,
- guice;bundle-version="3.0.0"
+ org.eclipse.core.resources
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Import-Package: org.eclipse.help,
  org.eclipse.jface.text,
  org.eclipse.ui.editors.text,
  org.eclipse.ui.texteditor
+Bundle-ClassPath: .,
+ miglayout-core-4.1.jar,
+ miglayout-swt-4.1.jar,
+ guice-1.0.jar

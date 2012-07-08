@@ -3,6 +3,7 @@ package com.cahoot.eclipse;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
+
 import com.cahoot.eclipse.editor.EditorHook;
 import com.cahoot.eclipse.editor.IEditorHook;
 
