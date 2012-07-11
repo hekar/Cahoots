@@ -124,6 +124,7 @@
 				<configuration>
 					<downloadSources>true</downloadSources>
 					<downloadJavadocs>true</downloadJavadocs>
+					<pde>true</pde>
 					<projectnatures>
 						<projectnature>org.scala-ide.sdt.core.scalanature</projectnature>
 						<projectnature>org.eclipse.jdt.core.javanature</projectnature>
