@@ -11,8 +11,6 @@
 
 package org.eclipse.ecf.docshare;
 
-import org.eclipse.core.filesystem.IFileStore;
-import org.eclipse.ui.ide.FileStoreEditorInput;
 
 /**
  * @since 2.1

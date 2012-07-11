@@ -32,7 +32,7 @@ public class CollaboratorShareAction implements IObjectActionDelegate {
 	 * @see IActionDelegate#run(IAction)
 	 */
 	public void run(IAction action) {
-		ApplicationWindow dialog = new CollaboratorSelectionDialog(null);
+		ApplicationWindow dialog = new CollaboratorSelectionDialog();
 		dialog.open();
 	}
 
