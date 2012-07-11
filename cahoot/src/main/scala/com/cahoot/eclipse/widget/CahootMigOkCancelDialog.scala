@@ -3,8 +3,6 @@ package com.cahoot.eclipse.widget
 import org.eclipse.swt.widgets.Composite
 import org.eclipse.swt.widgets.Control
 
-import com.cahoot.eclipse.widget.CahootOkCancel
-
 abstract class CahootMigOkCancelDialog extends CahootDialog
   with CahootOkCancel {
 
