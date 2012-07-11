@@ -1,5 +1,8 @@
 *.class
 
+# Backup Files #
+*~
+
 # Package Files #
 *.jar
 *.war
