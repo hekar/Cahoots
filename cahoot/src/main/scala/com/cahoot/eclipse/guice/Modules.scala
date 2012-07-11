@@ -17,7 +17,7 @@ class GuiModule extends AbstractModule {
 		  bind(classOf[CollaboratorSelectionLabelProvider])
 		  
 		  bind(classOf[ConnectionStore]).toInstance(new ConnectionStore)
-		  bind(classOf[Connection]).toProvider()
+		  //bind(classOf[Connection]).toProvider()
 		  
   }
 }
