@@ -4,3 +4,10 @@
 *.jar
 *.war
 *.ear
+
+/cahoot/.settings
+/cahoot/target
+/cahoot/.classpath
+/cahoot/.project
+/cahoot/.cache
+/cahoot/META-INF

@@ -3,8 +3,6 @@ import org.eclipse.ui.texteditor.ITextEditor
 import org.eclipse.ui.IEditorReference
 import org.eclipse.ui.PlatformUI
 
-import com.cahoot.eclipse.editor.IEditorHook
-
 /**
  * Static functions for the EditorHook
  */
