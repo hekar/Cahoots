@@ -168,6 +168,32 @@
 					</sourceIncludes>
 				</configuration>
 			</plugin>
+			<plugin>
+        <groupId>org.eclipse.m2e</groupId>
+        <artifactId>lifecycle-mapping</artifactId>
+        <version>1.0.0</version>
+        <configuration>
+            <lifecycleMappingMetadata>
+                <pluginExecutions>
+                    <pluginExecution>
+                        <pluginExecutionFilter>
+                            <groupId>org.scala-tools</groupId>
+                            <artifactId>maven-scala-plugin</artifactId>
+                            <versionRange>[1.0.0,)</versionRange>
+                            <goals>
+                              <goal>add-source</goal>
+                              <goal>compile</goal>
+                              <goal>testCompile</goal>
+                            </goals>
+                        </pluginExecutionFilter>
+                        <action>
+                            <ignore />
+                        </action>
+                    </pluginExecution>
+                </pluginExecutions>
+            </lifecycleMappingMetadata>
+        </configuration>
+     </plugin>
     </plugins>
   </build>
 	<dependencies>

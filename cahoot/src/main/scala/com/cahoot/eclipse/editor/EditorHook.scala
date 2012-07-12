@@ -43,7 +43,7 @@ object EditorHook {
 /**
  * Entry point to bootstrap and hook editors into event listeners
  */
-class EditorHook extends IEditorHook {
+class EditorHook{
 
   def isEditorHooked(editor: IEditorReference): Boolean = {
     false
