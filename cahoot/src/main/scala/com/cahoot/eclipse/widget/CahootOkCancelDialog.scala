@@ -1,5 +1,4 @@
 package com.cahoot.eclipse.widget
-import com.cahoot.eclipse.widget.CahootOkCancel
 
 /**
  * <p>
