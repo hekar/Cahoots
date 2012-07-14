@@ -8,6 +8,11 @@
 *.war
 *.ear
 
-/cahoot/target
-/cahoot/.cache
-/cahoot/.settings
+/cahootsEclipse/target
+/cahootsEclipse/.cache
+/cahootsEclipse/.settings
+
+/.project
+/.settings
+/cahootsVisualStudio/cahootsVisualStudio/bin
+/cahootsVisualStudio/cahootsVisualStudio/obj
