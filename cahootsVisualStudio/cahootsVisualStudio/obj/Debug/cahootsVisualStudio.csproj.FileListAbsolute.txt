@@ -1,0 +1,7 @@
+C:\Users\Samuel\workspace\codeora\cahootsVisualStudio\cahootsVisualStudio\bin\Debug\cahootsVisualStudio.dll
+C:\Users\Samuel\workspace\codeora\cahootsVisualStudio\cahootsVisualStudio\bin\Debug\cahootsVisualStudio.pdb
+C:\Users\Samuel\workspace\codeora\cahootsVisualStudio\cahootsVisualStudio\bin\Debug\cahootsVisualStudio.xml
+C:\Users\Samuel\workspace\codeora\cahootsVisualStudio\cahootsVisualStudio\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\Samuel\workspace\codeora\cahootsVisualStudio\cahootsVisualStudio\obj\Debug\cahootsVisualStudio.csproj.ResolveComReference.cache
+C:\Users\Samuel\workspace\codeora\cahootsVisualStudio\cahootsVisualStudio\obj\Debug\cahootsVisualStudio.dll
+C:\Users\Samuel\workspace\codeora\cahootsVisualStudio\cahootsVisualStudio\obj\Debug\cahootsVisualStudio.pdb
