@@ -7,9 +7,11 @@ version := "1.0"
 
 scalaVersion := "2.9.1"
 
+retrieveManaged := true
+
 libraryDependencies += "com.miglayout" % "miglayout-swt" % "4.2"
 
-libraryDependencies += "com.google.inject" % "guice-parent" % "3.0"
+libraryDependencies += "com.google.inject" % "guice" % "3.0"
 
 unmanagedJars in Compile <++= baseDirectory map { base =>
   val baseDirectories = (base / "lib") +++
