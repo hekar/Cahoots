@@ -6,11 +6,12 @@ import org.eclipse.swt.widgets.Shell
 object SwtTestTools {
   def blockTillQuit(dialog: ApplicationWindow): Unit = {
 
-    val shell = dialog.getShell();
+    var shell = dialog.getShell();
     if (shell == null || !shell.isVisible()) {
       dialog.open();
     }
 
+    shell = dialog.getShell();
     if (shell != null) {
       val display = shell.getDisplay();
       while (!shell.isDisposed()) {

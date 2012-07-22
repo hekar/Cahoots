@@ -18,9 +18,13 @@ libraryDependencies += "com.google.inject" % "guice" % "3.0"
 
 libraryDependencies += "org.scalatest" %% "scalatest" % "1.8" % "test"
 
-libraryDependencies += "org.specs2" %% "specs2" % "1.11" % "test"
+libraryDependencies += "junit" % "junit" % "4.10"
 
 libraryDependencies += "org.scalamock" %% "scalamock-scalatest-support" % "latest.integration"
+
+libraryDependencies += "com.ning" % "async-http-client" % "1.7.5"
+
+libraryDependencies += "com.chuusai" % "shapeless_2.9.1" % "1.2.2"
 
 unmanagedJars in Compile <++= baseDirectory map { base =>
   val baseDirectories = (base / "lib") +++

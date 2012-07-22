@@ -6,17 +6,18 @@ import com.cahoot.eclipse.editor.EditorHook
 import com.google.inject.AbstractModule
 import com.cahoot.client.connection.ConnectionStore
 import com.cahoot.client.connection.Connection
+import com.google.inject.Provider
 
 class GuiModule extends AbstractModule {
   def configure(): Unit = {
-		  bind(classOf[EditorHook])
-		  bind(classOf[CollaborationShareStarter])
-		  bind(classOf[EditorHook])
-		  bind(classOf[CollaboratorSelectionContentProvider])
-		  bind(classOf[CollaboratorSelectionLabelProvider])
-		  
-		  bind(classOf[ConnectionStore]).toInstance(new ConnectionStore)
-		  //bind(classOf[Connection]).toProvider()
-		  
+    bind(classOf[EditorHook])
+    bind(classOf[CollaborationShareStarter])
+    bind(classOf[EditorHook])
+    bind(classOf[CollaboratorSelectionContentProvider])
+    bind(classOf[CollaboratorSelectionLabelProvider])
+
+    bind(classOf[Connection]).toProvider(classOf[ConnectionProvider])
+
+    bind(classOf[ConnectionStore]).toInstance(new ConnectionStore)
   }
 }

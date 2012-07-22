@@ -14,8 +14,8 @@ object ConnectionProvider {
 
 class ConnectionProvider extends Provider[Connection] {
   
-  def get(): Connection = {
-    null
-  }
+  def get(): Connection = 
+    new Connection("127.0.0.1", 9001)
+  
 
 }

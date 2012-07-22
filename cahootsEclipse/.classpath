@@ -2,6 +2,9 @@
 <classpath>
 	<classpathentry including="**/*.scala|**/*.java" kind="src" output="target/test-classes" path="src/test/scala"/>
 	<classpathentry including="**/*.scala|**/*.java" kind="src" path="src/main/scala"/>
+	<classpathentry exported="true" kind="lib" path="lib_managed/jars/com.chuusai/shapeless_2.9.1/shapeless_2.9.1-1.2.2.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib_managed/jars/org.slf4j/slf4j-api/slf4j-api-1.6.2.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib_managed/jars/com.ning/async-http-client/async-http-client-1.7.5.jar"/>
 	<classpathentry exported="true" kind="lib" path="target/classes/"/>
 	<classpathentry exported="true" kind="lib" path="lib_managed/jars/javax.inject/javax.inject/javax.inject-1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib_managed/jars/aopalliance/aopalliance/aopalliance-1.0.jar"/>
