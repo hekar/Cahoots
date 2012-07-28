@@ -5,12 +5,12 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30424</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{55935C31-5FC4-4939-9B0F-F22F50CF7E21}</ProjectGuid>
+    <ProjectGuid>{58A34937-2E34-4F5B-A3ED-0AC65CE4B509}</ProjectGuid>
     <OutputType>Library</OutputType>
     <StartupObject>
     </StartupObject>
     <NoStandardLibraries>false</NoStandardLibraries>
-    <AssemblyName>cahootsVisualStudio</AssemblyName>
+    <AssemblyName>Cahoot</AssemblyName>
     <DeploymentDirectory>.\bin\</DeploymentDirectory>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -21,7 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <WarningLevel>4</WarningLevel>
     <IncrementalBuild>false</IncrementalBuild>
-    <DocumentationFile>cahootsVisualStudio.xml</DocumentationFile>
+    <DocumentationFile>Cahoot.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugSymbols>false</DebugSymbols>
@@ -31,10 +31,10 @@
     <DefineConstants>TRACE</DefineConstants>
     <WarningLevel>4</WarningLevel>
     <IncrementalBuild>false</IncrementalBuild>
-    <DocumentationFile>cahootsVisualStudio.xml</DocumentationFile>
+    <DocumentationFile>Cahoot.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup>
-    <RootNamespace>cahootsVisualStudio</RootNamespace>
+    <RootNamespace>Cahoot</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Extensibility, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
@@ -111,14 +111,17 @@
     </COMReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="cahootsVisualStudio - For Testing.AddIn" />
-    <Content Include="cahootsVisualStudio.AddIn" />
+    <Content Include="$(UserProfile)\Documents\Visual Studio 2010\Addins\Cahoot - For Testing.AddIn">
+      <Link>Cahoot - For Testing.AddIn</Link>
+    </Content>
+    <Content Include="Cahoot.AddIn" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSHARP.Targets" />
   <PropertyGroup>
     <PreBuildEvent>
     </PreBuildEvent>
-    <PostBuildEvent>copy "$(SolutionDir)\cahootsVisualStudio\cahootsVisualStudio - For Testing.AddIn" "$(USERPROFILE)\Documents\Visual Studio 2010\Addins\cahootsVisualStudio - For Testing.AddIn"</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
   <ProjectExtensions />
   <Target Name="AfterBuild">
