@@ -111,17 +111,13 @@
     </COMReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="$(USERPROFILE)\Documents\Visual Studio 2010\Addins\cahootsVisualStudio - For Testing.AddIn">
-      <Link>cahootsVisualStudio - For Testing.AddIn</Link>
-    </Content>
     <Content Include="cahootsVisualStudio.AddIn" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSHARP.Targets" />
   <PropertyGroup>
     <PreBuildEvent>
     </PreBuildEvent>
-    <PostBuildEvent>
-    </PostBuildEvent>
+    <PostBuildEvent>copy "$(SolutionDir)\cahootsVisualStudio - For Testing.AddIn" "$(USERPROFILE)\Documents\Visual Studio 2010\Addins\cahootsVisualStudio - For Testing.AddIn"</PostBuildEvent>
   </PropertyGroup>
   <ProjectExtensions />
   <Target Name="AfterBuild">
