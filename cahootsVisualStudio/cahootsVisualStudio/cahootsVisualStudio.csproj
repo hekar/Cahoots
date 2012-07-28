@@ -118,7 +118,7 @@
   <PropertyGroup>
     <PreBuildEvent>
     </PreBuildEvent>
-    <PostBuildEvent>copy "$(SolutionDir)\cahootsVisualStudio - For Testing.AddIn" "$(USERPROFILE)\Documents\Visual Studio 2010\Addins\cahootsVisualStudio - For Testing.AddIn"</PostBuildEvent>
+    <PostBuildEvent>copy "$(SolutionDir)\cahootsVisualStudio\cahootsVisualStudio - For Testing.AddIn" "$(USERPROFILE)\Documents\Visual Studio 2010\Addins\cahootsVisualStudio - For Testing.AddIn"</PostBuildEvent>
   </PropertyGroup>
   <ProjectExtensions />
   <Target Name="AfterBuild">
