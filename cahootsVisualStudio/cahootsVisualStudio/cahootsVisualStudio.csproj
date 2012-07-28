@@ -111,6 +111,7 @@
     </COMReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="cahootsVisualStudio - For Testing.AddIn" />
     <Content Include="cahootsVisualStudio.AddIn" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSHARP.Targets" />
