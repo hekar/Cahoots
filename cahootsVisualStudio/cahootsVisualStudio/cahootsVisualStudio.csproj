@@ -111,7 +111,7 @@
     </COMReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="..\..\..\..\Documents\Visual Studio 2010\Addins\cahootsVisualStudio - For Testing.AddIn">
+    <Content Include="$(USERPROFILE)\Documents\Visual Studio 2010\Addins\cahootsVisualStudio - For Testing.AddIn">
       <Link>cahootsVisualStudio - For Testing.AddIn</Link>
     </Content>
     <Content Include="cahootsVisualStudio.AddIn" />
