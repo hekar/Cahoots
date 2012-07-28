@@ -18,6 +18,7 @@ import com.cahoot.eclipse.widget.CahootOkCancelDialog
 import com.cahoot.eclipse.widget.CahootMigOkCancelDialog
 import com.cahoot.eclipse.collab.CollaboratorSelectionContentProvider
 import com.cahoot.eclipse.collab.CollaboratorSelectionLabelProvider
+import com.cahoot.eclipse.swt.SwtTools
 
 class ConnectionSelectionDialog extends CahootMigOkCancelDialog {
 
@@ -61,6 +62,17 @@ class ConnectionSelectionDialog extends CahootMigOkCancelDialog {
       }
     });
 
+    val x = SwtTools.async(
+        getShell(),
+        { (i: Int) =>
+          println(i)
+        }
+        ,
+        { (t: Throwable) =>
+          println(t)
+        }
+    )
+    x(10)
   }
 
   override def setupDefaults(panel: Composite): Unit = {

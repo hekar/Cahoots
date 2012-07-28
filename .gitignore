@@ -1,13 +1,17 @@
+# Java #
 *.class
-
-# Backup Files #
 *~
-
-# Package Files #
 *.jar
 *.war
 *.ear
 
+# C++ #
+*.o
+*.suo
+*.log
+*.tlog
+
+# Project #
 /cahootsEclipse/target
 /cahootsEclipse/.cache
 /cahootsEclipse/.settings
@@ -16,3 +20,14 @@
 /.settings
 /cahootsVisualStudio/cahootsVisualStudio/bin
 /cahootsVisualStudio/cahootsVisualStudio/obj
+
+/cahootServer/target/
+/cahootServer/lib_managed/
+/cahootServer/src_managed/
+/cahootServer/project/boot/
+
+/cahootsEclipse/target/
+/cahootsEclipse/lib_managed/
+/cahootsEclipse/src_managed/
+/cahootsEclipse/project/boot/
+
