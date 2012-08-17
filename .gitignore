@@ -1,9 +1,28 @@
 # Java #
 *.class
 *~
+*.old
+*.bak
 *.jar
 *.war
 *.ear
+
+# Eclipse #
+/cahootsEclipse/target
+/cahootsEclipse/.cache
+/cahootsEclipse/.settings
+/cahootsEclipse/lib_managed/
+/cahootsEclipse/src_managed/
+/cahootsEclipse/project/boot/
+
+# Server #
+/cahootServer/.cache
+/cahootServer/.settings
+/cahootServer/target/
+/cahootServer/lib_managed/
+/cahootServer/src_managed/
+/cahootServer/project/boot/
+
 
 # C++ #
 *.o
@@ -11,23 +30,10 @@
 *.log
 *.tlog
 
-# Project #
-/cahootsEclipse/target
-/cahootsEclipse/.cache
-/cahootsEclipse/.settings
-
+# Visual Studio #
 /.project
 /.settings
 /cahootsVisualStudio/cahootsVisualStudio/bin
 /cahootsVisualStudio/cahootsVisualStudio/obj
 
-/cahootServer/target/
-/cahootServer/lib_managed/
-/cahootServer/src_managed/
-/cahootServer/project/boot/
-
-/cahootsEclipse/target/
-/cahootsEclipse/lib_managed/
-/cahootsEclipse/src_managed/
-/cahootsEclipse/project/boot/
 

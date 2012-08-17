@@ -17,7 +17,7 @@ Import-Package: org.eclipse.help,
  org.eclipse.jface.text,
  org.eclipse.ui.editors.text,
  org.eclipse.ui.texteditor
-Bundle-ClassPath: target/classes/,
+Bundle-ClassPath: target/scala-2.9.1/classes/,
  lib_managed/jars/com.miglayout/miglayout-core/miglayout-core-4.2.jar,
  lib_managed/jars/com.miglayout/miglayout-swt/miglayout-swt-4.2.jar,
  lib_managed/jars/aopalliance/aopalliance/aopalliance-1.0.jar,

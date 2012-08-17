@@ -19,7 +19,7 @@ class GuiConnectionsSpec extends FeatureSpec {
     scenario("bob ") {
       val injector = InjectorFactory.injector()
       val es = injector.getInstance(classOf[EtherpadServices])
-
+      
       val createSuccess = { (dm: DocumentModel) =>
       	println(dm.docId)
       }
