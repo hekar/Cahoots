@@ -1,9 +1,14 @@
+# Misc #
+*.swp
+
+
 # Java #
 *.class
 *~
 *.old
 *.bak
 *.jar
+*.jar.1
 *.war
 *.ear
 
@@ -16,12 +21,13 @@
 /cahootsEclipse/project/boot/
 
 # Server #
-/cahootServer/.cache
-/cahootServer/.settings
-/cahootServer/target/
-/cahootServer/lib_managed/
-/cahootServer/src_managed/
-/cahootServer/project/boot/
+/cahoots-server/.cache
+/cahoots-server/.settings
+/cahoots-server/target/
+/cahoots-server/.target/
+/cahoots-server/lib_managed/
+/cahoots-server/src_managed/
+/cahoots-server/project/boot/
 
 
 # C++ #
