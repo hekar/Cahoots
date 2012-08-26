@@ -13,21 +13,21 @@
 *.ear
 
 # Eclipse #
-/cahootsEclipse/target
-/cahootsEclipse/.cache
-/cahootsEclipse/.settings
-/cahootsEclipse/lib_managed/
-/cahootsEclipse/src_managed/
-/cahootsEclipse/project/boot/
+/projects/cahoots-eclipse/target
+/projects/cahoots-eclipse/.cache
+/projects/cahoots-eclipse/.settings
+/projects/cahoots-eclipse/lib_managed/
+/projects/cahoots-eclipse/src_managed/
+/projects/cahoots-eclipse/project/boot/
 
 # Server #
-/cahoots-server/.cache
-/cahoots-server/.settings
-/cahoots-server/target/
-/cahoots-server/.target/
-/cahoots-server/lib_managed/
-/cahoots-server/src_managed/
-/cahoots-server/project/boot/
+/projects/cahoots-server/.cache
+/projects/cahoots-server/.settings
+/projects/cahoots-server/target/
+/projects/cahoots-server/.target/
+/projects/cahoots-server/lib_managed/
+/projects/cahoots-server/src_managed/
+/projects/cahoots-server/project/boot/
 
 
 # C++ #
@@ -36,10 +36,68 @@
 *.log
 *.tlog
 
+
 # Visual Studio #
-/.project
-/.settings
-/cahootsVisualStudio/cahootsVisualStudio/bin
-/cahootsVisualStudio/cahootsVisualStudio/obj
+#OS junk files
+[Tt]humbs.db
+*.DS_Store
 
+#Visual Studio files
+*.[Oo]bj
+*.user
+*.aps
+*.pch
+*.vspscc
+*.vssscc
+*_i.c
+*_p.c
+*.ncb
+*.suo
+*.tlb
+*.tlh
+*.bak
+*.[Cc]ache
+*.ilk
+*.log
+*.lib
+*.sbr
+*.sdf
+*.opensdf
+*.unsuccessfulbuild
+ipch/
+obj/
+[Bb]in
+[Dd]ebug*/
+[Rr]elease*/
+Ankh.NoLoad
 
+#MonoDevelop
+*.pidb
+*.userprefs
+
+#Tooling
+_ReSharper*/
+*.resharper
+[Tt]est[Rr]esult*
+
+#Project files
+[Bb]uild/
+
+#Subversion files
+.svn
+
+# Office Temp Files
+~$*
+
+#NuGet
+packages/
+
+#ncrunch
+*ncrunch*
+*crunch*.local.xml
+
+# visual studio database projects
+*.dbmdl
+
+#Test files
+*.testsettings
