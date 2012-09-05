@@ -4,15 +4,13 @@ import com.cahoot.models.PersonModel
 import com.cahoot.models.ShareModel
 import com.google.inject.Inject
 import com.cahoot.client.connection.Connection
+import com.cahoot.client.connection.ConnectionComponent
 
 
 /**
  * Service to 
  */
-class CollabService {
-  
-  @Inject
-  private var connection: Connection = _
+class CollabService extends ConnectionComponent {
  
   def share(doc: DocumentModel, 
       collaborators: List[PersonModel]): ShareModel = {

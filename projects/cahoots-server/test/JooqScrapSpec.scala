@@ -8,9 +8,4 @@ import org.specs2.runner.JUnitRunner
 
 @RunWith(classOf[JUnitRunner])
 class JooqScrapSpec extends Specification {
-	"jooq" should {
-	  "work" in {
-	    
-	  }
-	}
 }

@@ -9,15 +9,13 @@ import org.eclipse.swt.SWT
 import java.util.Comparator
 import com.cahoot.client.services.ChatService
 import com.google.inject.Inject
+import com.cahoot.eclipse.chat.service.ChatServiceComponent
 
 private class ChatViewComparator extends Comparator[String] {
   override def compare(x1: String, x2: String): Int = x1.compareTo(x2)
 }
 
-class ChatView extends ViewPart {
-
-  @Inject
-  private var chatService: ChatService = _
+class ChatView extends ViewPart with ChatServiceComponent {
 
   private var viewer: TableViewer = _
 
