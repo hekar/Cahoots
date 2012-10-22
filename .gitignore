@@ -30,6 +30,10 @@
 /projects/cahoots-server/project/boot/
 
 
+# Database #
+/projects/cahoots-sql/__pycache__
+
+
 # C++ #
 *.o
 *.suo
