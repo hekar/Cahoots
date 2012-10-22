@@ -13,7 +13,11 @@ object SwtTools {
   }
   
   /**
-   * TODO: Explain this function
+   * Wrap a closure in a SWT async anonymous class.
+   * 
+   * Uses some crazy stuff from the shapeless library.
+   * 
+   * Do not try to understand.
    */
   def async[F, A <: HList, R](
     shell: Shell,
@@ -40,7 +44,11 @@ object SwtTools {
     }.unhlisted
 
   /**
-   * TODO: Remove duplication
+   * Wrap a closure in a SWT sync anonymous class.
+   * 
+   * Uses some crazy stuff from the shapeless library.
+   * 
+   * Do not try to understand.
    */
   def sync[F, A <: HList, R](
     shell: Shell,
