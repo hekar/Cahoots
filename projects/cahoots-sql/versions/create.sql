@@ -3,6 +3,26 @@
 -- --
 
 -- --
+-- Create database
+-- --
+CREATE DATABASE Cahoots;
+\c cahoots;
+
+
+-- --
+-- Database Version table
+-- --
+CREATE TABLE database_version
+(
+	version int
+);
+
+comment on table database_version is 'Used to track the current version of the database';
+
+INSERT INTO database_version (version) VALUES (1);
+
+
+-- --
 -- A user in the application
 -- --
 create table users
