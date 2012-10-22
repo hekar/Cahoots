@@ -16,3 +16,9 @@ System Variable
 add a system variable called pgbin to point to postgresql's bin directory
 
 
+
+Creating Versions
+====================
+new database versions are created by adding a new directory to the versions directory.
+these folders must be sequentially named as integers.
+all sql scripts in a version folder will be run, but there is no guaranteed execution order
