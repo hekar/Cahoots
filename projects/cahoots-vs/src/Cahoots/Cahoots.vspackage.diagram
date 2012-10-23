@@ -1,0 +1,47 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<vSPackageDesignerDiagram dslVersion="1.0.0.0" Id="3183225f-4d85-44e6-a9d0-34961cf0766b" absoluteBounds="0, 0, 14.375, 8.5" name="Cahoots">
+  <rootMoniker Id="de677c38-48e7-4cff-bb96-1c88dc58f367" />
+  <nestedChildShapes>
+    <commandTableSwimlane Id="75d49b3b-196a-41f5-b50c-abf5bd43d705" absoluteBounds="0, 0, 10.625, 8.5">
+      <commandTableMoniker Id="f373bf1b-8541-45fe-9aea-2c3b5e56f195" />
+      <nestedChildShapes>
+        <groupShape Id="59a2c170-f5b5-41f0-ac45-3ea3567d83bd" absoluteBounds="4.875, 1.375, 1.5, 0.625">
+          <groupMoniker Id="2b9bfb93-5168-4b74-80e2-02f90fe27851" />
+        </groupShape>
+        <buttonShape Id="4652b626-f2ca-4f1d-a4e8-ee9a6116434a" absoluteBounds="7.125, 1.375, 1.5, 0.625">
+          <buttonMoniker Id="ca47b751-6a39-4668-b172-8b08b504aa2a" />
+        </buttonShape>
+        <menuShape Id="459cd6ad-b4be-4e27-97c4-3c2eb40046eb" absoluteBounds="4.875, 0.5, 1.5, 0.625">
+          <menuMoniker Id="891692d9-6337-4466-9376-7835646cff64" />
+        </menuShape>
+        <containsConnector Id="16a4e78e-6fc5-44c7-9d8a-a3c10fe8228b" edgePoints="[(6.375 : 1.6875); (7.125 : 1.6875)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+          <groupBaseReferencesButtonsMoniker Id="ffb94219-121c-4be7-be1c-28e2e693fb1d" />
+          <nodes>
+            <groupShapeMoniker Id="59a2c170-f5b5-41f0-ac45-3ea3567d83bd" />
+            <buttonShapeMoniker Id="4652b626-f2ca-4f1d-a4e8-ee9a6116434a" />
+          </nodes>
+        </containsConnector>
+        <containsConnector Id="74fb856a-4db0-45b6-bd86-c1e1f7006d43" edgePoints="[(5.625 : 1.125); (5.625 : 1.375)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+          <menuBaseReferencesGroupBasesMoniker Id="3bcd6369-29fd-4bb3-9e58-b68b4cbfced1" />
+          <nodes>
+            <menuShapeMoniker Id="459cd6ad-b4be-4e27-97c4-3c2eb40046eb" />
+            <groupShapeMoniker Id="59a2c170-f5b5-41f0-ac45-3ea3567d83bd" />
+          </nodes>
+        </containsConnector>
+        <buttonShape Id="5e97b3a7-08b7-4bd6-899a-abc1973e268b" absoluteBounds="4.875, 2.375, 1.5, 0.625">
+          <buttonMoniker Id="fe7a5839-6de9-4213-9e43-b7e1bdf2e859" />
+        </buttonShape>
+        <containsConnector Id="b280fa3b-3139-43b3-87ad-8aa07b4af347" edgePoints="[(5.625 : 2); (5.625 : 2.375)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+          <groupBaseReferencesButtonsMoniker Id="325c1533-778b-44da-a096-9f241f9c0f2c" />
+          <nodes>
+            <groupShapeMoniker Id="59a2c170-f5b5-41f0-ac45-3ea3567d83bd" />
+            <buttonShapeMoniker Id="5e97b3a7-08b7-4bd6-899a-abc1973e268b" />
+          </nodes>
+        </containsConnector>
+      </nestedChildShapes>
+    </commandTableSwimlane>
+    <toolwindowSwimlane Id="4f8ea066-fca6-41f8-8a77-c4ab4550634b" absoluteBounds="10.625, 0, 3.75, 8.5">
+      <userInterfaceMoniker Id="9dc1a5e9-3609-46a2-99e0-2ff9a7dfd768" />
+    </toolwindowSwimlane>
+  </nestedChildShapes>
+</vSPackageDesignerDiagram>

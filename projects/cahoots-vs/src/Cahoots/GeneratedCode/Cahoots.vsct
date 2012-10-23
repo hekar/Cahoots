@@ -1,0 +1,102 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CommandTable xmlns="http://schemas.microsoft.com/VisualStudio/2005-10-18/CommandTable" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  <!--  This is the file that defines the actual layout and type of the commands.
+        It is divided in different sections (e.g. command definition, command
+        placement, ...), with each defining a specific set of properties.
+        See the comment before each section for more details about how to
+        use it. -->
+
+  <!--  The VSCT compiler (the tool that translates this file into the binary 
+        format that VisualStudio will consume) has the ability to run a preprocessor 
+        on the vsct file; this preprocessor is (usually) the C++ preprocessor, so 
+        it is possible to define includes and macros with the same syntax used 
+        in C++ files. Using this ability of the compiler here, we include some files 
+        defining some of the constants that we will use inside the file. -->
+
+  <!--This is the file that defines the IDs for all the commands exposed by VisualStudio. -->
+  <Extern href="stdidcmd.h"/>
+
+  <!--This header contains the command ids for the menus provided by the shell. -->
+  <Extern href="vsshlids.h"/>
+
+  <!--Definition of some VSCT specific constants. In this sample we use it for the IDs inside the guidOfficeIcon group. -->
+  <Extern href="msobtnid.h"/>
+
+  <Extern href="VSDbgCmd.h" />
+  <Extern href="VsDebugGuids.h"/>
+
+  
+  <!--The Commands section is where we the commands, menus and menu groups are defined.
+      This section uses a Guid to identify the package that provides the command defined inside it. -->
+  <Commands package="guidPackage">
+  
+  <Groups>
+    <Group guid="guidCahootsCommandSet" id="Group" priority="0x0100"/>
+	</Groups>
+
+  <Buttons>
+    <Button guid="guidCahootsCommandSet" id="ConnectToolbarButton" priority="0x0100">
+				<Icon guid="guidOfficeIcon" id="msotcidNewTask" />
+				<Strings>
+            <CommandName>cmdidConnectToolbarButton</CommandName>
+            <ButtonText>Connect</ButtonText>
+            <MenuText>Connect</MenuText>
+            <ToolTipText>Connect to Cahoots</ToolTipText>
+		    </Strings>
+	  </Button>
+	  <Button guid="guidCahootsCommandSet" id="DisconnectToolbarButton" priority="0x0100">
+				<Icon guid="guidOfficeIcon" id="msotcidDeclineInvitation" />
+				<Strings>
+            <CommandName>cmdidDisconnectToolbarButton</CommandName>
+            <ButtonText>DisconnectToolbarButton</ButtonText>
+            <MenuText>Disconnect</MenuText>
+            <ToolTipText>Disconnect from Cahoots</ToolTipText>
+		    </Strings>
+	  </Button>
+	</Buttons>
+
+  <Menus>
+    <Menu guid="guidCahootsCommandSet" id="Cahoots" type="Toolbar" priority="0x0100">
+			   <Strings>
+	       <CommandName>Cahoots</CommandName>
+         <ButtonText>Cahoots</ButtonText>
+         <MenuText>Cahoots</MenuText>
+         <ToolTipText>Cahoots</ToolTipText>
+		   		</Strings>
+		</Menu> 
+
+    	  </Menus>
+
+
+
+  </Commands>
+
+  <CommandPlacements>
+     <CommandPlacement guid="guidCahootsCommandSet" id="ConnectToolbarButton" priority="0x0100"> 
+	         <Parent guid="guidCahootsCommandSet" id="Group" />
+		   </CommandPlacement> 
+	     <CommandPlacement guid="guidCahootsCommandSet" id="DisconnectToolbarButton" priority="0x0100"> 
+	         <Parent guid="guidCahootsCommandSet" id="Group" />
+		   </CommandPlacement> 
+	     <CommandPlacement guid="guidCahootsCommandSet" id="Group" priority="0x0100">
+	         <Parent guid="guidCahootsCommandSet" id="Cahoots" />
+		   </CommandPlacement> 
+		</CommandPlacements>
+  
+
+  <Symbols>
+    <!-- This is the package guid. -->
+    <GuidSymbol name="guidPackage" value="{de677c38-48e7-4cff-bb96-1c88dc58f367}" />
+    
+    <!-- This is the guid used to group the menu commands together -->
+    <GuidSymbol name="guidCahootsCommandSet" value="{e6ae0a49-a43a-4b9a-9519-c841bf09e800}">
+	     <IDSymbol name="Group" value="0x0001" />
+     <IDSymbol name="ConnectToolbarButton" value="0x0002" />
+	     <IDSymbol name="DisconnectToolbarButton" value="0x000B" />
+	     <IDSymbol name="Cahoots" value="0x0004" />
+	  </GuidSymbol>
+	</Symbols>
+
+</CommandTable>
+

@@ -2,7 +2,9 @@
 # This file defines all application routes (Higher priority routes first)
 # ~~~~
 
-GET     /                          			controllers.Application.index
+GET     /                          			controllers.Portal.index
+
+GET     /app/login                          controllers.Application.login
 
 POST     /collaborator/createGroup  			controllers.collaborator.Group.createGroup
 
