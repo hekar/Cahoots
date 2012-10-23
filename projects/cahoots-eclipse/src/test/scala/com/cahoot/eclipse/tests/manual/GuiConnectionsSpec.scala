@@ -7,13 +7,13 @@ import com.cahoot.eclipse.connection.ManageConnectionsDialog
 import org.scalatest.FeatureSpec
 import com.cahoot.eclipse.swt.SwtTools
 import com.cahoot.models.DocumentModel
-import com.cahoot.eclipse.guice.InjectorFactory
+//import com.cahoot.eclipse.guice.InjectorFactory
 import com.cahoot.client.services.EtherpadServices
 import com.cahoot.client.etherpad.EtherpadClient
 
 @RunWith(classOf[JUnitRunner])
 class GuiConnectionsSpec extends FeatureSpec {
-
+/*
   feature("Manual Layout Connection GUI Dialogs") {
 
     scenario("bob ") {
@@ -31,5 +31,5 @@ class GuiConnectionsSpec extends FeatureSpec {
       pending
     }
   }
-
+*/
 }
