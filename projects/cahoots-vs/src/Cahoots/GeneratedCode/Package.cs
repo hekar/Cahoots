@@ -72,6 +72,10 @@ namespace Cahoots
                 commandId = new CommandID(GuidList.guidCahootsCmdSet, (int)PkgCmdIDList.DisconnectToolbarButton);
                 menuItem = new OleMenuCommand(DisconnectToolbarButtonExecuteHandler, DisconnectToolbarButtonChangeHandler, DisconnectToolbarButtonQueryStatusHandler, commandId);
                 mcs.AddCommand(menuItem);
+				// Create the command for button HostToolbarButton
+                commandId = new CommandID(GuidList.guidCahootsCmdSet, (int)PkgCmdIDList.HostToolbarButton);
+                menuItem = new OleMenuCommand(HostToolbarButtonExecuteHandler, HostToolbarButtonChangeHandler, HostToolbarButtonQueryStatusHandler, commandId);
+                mcs.AddCommand(menuItem);
 
 			}
 		}
@@ -107,6 +111,23 @@ namespace Cahoots
 		}
 		
 		protected virtual void DisconnectToolbarButtonQueryStatusHandler(object sender, EventArgs e)
+		{
+		}
+
+		#endregion
+
+		#region Handlers for Button: HostToolbarButton
+
+		protected virtual void HostToolbarButtonExecuteHandler(object sender, EventArgs e)
+		{
+			ShowMessage("HostToolbarButton clicked!");
+		}
+		
+		protected virtual void HostToolbarButtonChangeHandler(object sender, EventArgs e)
+		{
+		}
+		
+		protected virtual void HostToolbarButtonQueryStatusHandler(object sender, EventArgs e)
 		{
 		}
 

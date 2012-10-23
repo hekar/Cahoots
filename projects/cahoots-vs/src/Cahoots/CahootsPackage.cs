@@ -7,6 +7,8 @@ namespace Cahoots
     using System;
     using System.Runtime.InteropServices;
     using System.Windows.Forms;
+    using System.ComponentModel.Design;
+    using Microsoft.VisualStudio.Shell;
 
     [Guid(GuidList.guidCahootsPkgString)]
     public class CahootsPackage : CahootsPackageBase
@@ -17,6 +19,28 @@ namespace Cahoots
         /// </summary>
         public CahootsPackage() : base()
         {
+            this.MenuService =
+                    GetService(typeof(IMenuCommandService))
+                        as OleMenuCommandService;
+        }
+
+        /// <summary>
+        /// Gets or sets the menu service.
+        /// </summary>
+        /// <value>
+        /// The menu service.
+        /// </value>
+        private OleMenuCommandService MenuService { get; set; }
+
+        /// <summary>
+        /// Gets the menu command.
+        /// </summary>
+        /// <param name="commandId">The command id.</param>
+        /// <returns>The menu command.</returns>
+        private MenuCommand GetMenuCommand(uint commandId)
+        {
+            var id = new CommandID(GuidList.guidCahootsCmdSet, (int)commandId);
+            return this.MenuService.FindCommand(id);
         }
 
         /// <summary>
@@ -34,6 +58,10 @@ namespace Cahoots
             if (window.ShowDialog() == true)
             {
                 // connect to the server here...
+                this.GetMenuCommand(
+                        PkgCmdIDList.ConnectToolbarButton).Enabled = false;
+                this.GetMenuCommand(
+                        PkgCmdIDList.DisconnectToolbarButton).Enabled = true;
             }
         }
 
@@ -48,12 +76,20 @@ namespace Cahoots
                 object sender,
                 EventArgs e)
         {
-            MessageBox.Show(
+            var result = MessageBox.Show(
                     "Are you sure you would like to disconnect from Cahoots?",
                     "Disconnect from Cahoots",
                     MessageBoxButtons.YesNo,
                     MessageBoxIcon.Asterisk,
                     MessageBoxDefaultButton.Button1);
+
+            if (result == DialogResult.Yes)
+            {
+                this.GetMenuCommand(
+                    PkgCmdIDList.ConnectToolbarButton).Enabled = true;
+                this.GetMenuCommand(
+                    PkgCmdIDList.DisconnectToolbarButton).Enabled = false;
+            }
         }
     }
 }

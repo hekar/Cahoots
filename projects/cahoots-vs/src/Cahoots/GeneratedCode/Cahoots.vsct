@@ -41,17 +41,28 @@
 				<Strings>
             <CommandName>cmdidConnectToolbarButton</CommandName>
             <ButtonText>Connect</ButtonText>
-            <MenuText>Connect</MenuText>
+            <MenuText>Connect to Cahoots...</MenuText>
             <ToolTipText>Connect to Cahoots</ToolTipText>
 		    </Strings>
 	  </Button>
 	  <Button guid="guidCahootsCommandSet" id="DisconnectToolbarButton" priority="0x0100">
 				<Icon guid="guidOfficeIcon" id="msotcidDeclineInvitation" />
-				<Strings>
+				<CommandFlag>DefaultDisabled</CommandFlag>
+<Strings>
             <CommandName>cmdidDisconnectToolbarButton</CommandName>
-            <ButtonText>DisconnectToolbarButton</ButtonText>
-            <MenuText>Disconnect</MenuText>
+            <ButtonText>Disconnect</ButtonText>
+            <MenuText>Disconnect from Cahoots</MenuText>
             <ToolTipText>Disconnect from Cahoots</ToolTipText>
+		    </Strings>
+	  </Button>
+	  <Button guid="guidCahootsCommandSet" id="HostToolbarButton" priority="0x0100">
+				<Icon guid="guidOfficeIcon" id="msotcidCopy" />
+				<CommandFlag>DefaultDisabled</CommandFlag>
+<Strings>
+            <CommandName>cmdidHostToolbarButton</CommandName>
+            <ButtonText>Start a Collaboration</ButtonText>
+            <MenuText>Start a Collaboration...</MenuText>
+            <ToolTipText>Start a Collaboration</ToolTipText>
 		    </Strings>
 	  </Button>
 	</Buttons>
@@ -76,8 +87,20 @@
      <CommandPlacement guid="guidCahootsCommandSet" id="ConnectToolbarButton" priority="0x0100"> 
 	         <Parent guid="guidCahootsCommandSet" id="Group" />
 		   </CommandPlacement> 
+	     <CommandPlacement guid="guidCahootsCommandSet" id="ConnectToolbarButton" priority="0x0100"> 
+	         <Parent guid="guidSHLMainMenu" id="IDG_VS_TOOLS_CMDLINE" />
+		   </CommandPlacement> 
 	     <CommandPlacement guid="guidCahootsCommandSet" id="DisconnectToolbarButton" priority="0x0100"> 
 	         <Parent guid="guidCahootsCommandSet" id="Group" />
+		   </CommandPlacement> 
+	     <CommandPlacement guid="guidCahootsCommandSet" id="DisconnectToolbarButton" priority="0x0100"> 
+	         <Parent guid="guidSHLMainMenu" id="IDG_VS_TOOLS_CMDLINE" />
+		   </CommandPlacement> 
+	     <CommandPlacement guid="guidCahootsCommandSet" id="HostToolbarButton" priority="0x0100"> 
+	         <Parent guid="guidCahootsCommandSet" id="Group" />
+		   </CommandPlacement> 
+	     <CommandPlacement guid="guidCahootsCommandSet" id="HostToolbarButton" priority="0x0100"> 
+	         <Parent guid="guidSHLMainMenu" id="IDG_VS_TOOLS_CMDLINE" />
 		   </CommandPlacement> 
 	     <CommandPlacement guid="guidCahootsCommandSet" id="Group" priority="0x0100">
 	         <Parent guid="guidCahootsCommandSet" id="Cahoots" />
@@ -94,6 +117,7 @@
 	     <IDSymbol name="Group" value="0x0001" />
      <IDSymbol name="ConnectToolbarButton" value="0x0002" />
 	     <IDSymbol name="DisconnectToolbarButton" value="0x000B" />
+	     <IDSymbol name="HostToolbarButton" value="0x000E" />
 	     <IDSymbol name="Cahoots" value="0x0004" />
 	  </GuidSymbol>
 	</Symbols>

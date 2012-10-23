@@ -6,6 +6,7 @@ namespace Cahoots
 {
     using System.Security;
     using System.Windows;
+    using System.Windows.Controls;
 
     /// <summary>
     /// Interaction logic for ConnectWindow.xaml
@@ -57,7 +58,8 @@ namespace Cahoots
         {
             this.UserName = txtUsername.Text;
             this.Password = pwPassword.SecurePassword;
-            this.Server = (string)cbServer.SelectedItem;
+            this.Server =
+                    (string)((ComboBoxItem)cbServer.SelectedItem).Content;
             this.DialogResult = true;
             this.Close();
         }

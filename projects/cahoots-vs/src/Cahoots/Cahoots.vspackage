@@ -12,15 +12,34 @@
               <groupBaseReferencesButtons Id="325c1533-778b-44da-a096-9f241f9c0f2c">
                 <buttonMoniker Id="fe7a5839-6de9-4213-9e43-b7e1bdf2e859" />
               </groupBaseReferencesButtons>
+              <groupBaseReferencesButtons Id="83325b73-c645-48b8-b2bc-d38a205ef0ec">
+                <buttonMoniker Id="dc483f4e-4475-4704-8656-bcace9798621" />
+              </groupBaseReferencesButtons>
             </buttons>
           </group>
+          <externalGroup Id="36e540d8-c01e-4850-9bf0-3674356a600b" name="Tools Menu [Command Line]" idNumeric="13" parentData="guidSHLMainMenu,IDG_VS_TOOLS_CMDLINE,Group">
+            <buttons>
+              <groupBaseReferencesButtons Id="966238d1-fe9e-4498-896e-36b201665453">
+                <buttonMoniker Id="ca47b751-6a39-4668-b172-8b08b504aa2a" />
+              </groupBaseReferencesButtons>
+              <groupBaseReferencesButtons Id="859709ea-72eb-4c9a-a46b-7a4aa51d7d60">
+                <buttonMoniker Id="fe7a5839-6de9-4213-9e43-b7e1bdf2e859" />
+              </groupBaseReferencesButtons>
+              <groupBaseReferencesButtons Id="7573b7d1-642a-444c-9e23-8a3772392caa">
+                <buttonMoniker Id="dc483f4e-4475-4704-8656-bcace9798621" />
+              </groupBaseReferencesButtons>
+            </buttons>
+          </externalGroup>
         </groups>
         <buttons>
           <commandTableHasButtons Id="0ddab5d6-4ae4-4665-b5fd-f10825c3c134">
-            <button Id="ca47b751-6a39-4668-b172-8b08b504aa2a" name="ConnectToolbarButton" idNumeric="2" buttonText="Connect" menuText="Connect" commandName="cmdidConnectToolbarButton" toolTipText="Connect to Cahoots" mod1="0" mod2="0" visibilityConstraints="0" icon="msotcidNewTask" commandFlags="0" />
+            <button Id="ca47b751-6a39-4668-b172-8b08b504aa2a" name="ConnectToolbarButton" idNumeric="2" buttonText="Connect" menuText="Connect to Cahoots..." commandName="cmdidConnectToolbarButton" toolTipText="Connect to Cahoots" mod1="0" mod2="0" visibilityConstraints="0" icon="msotcidNewTask" commandFlags="0" />
           </commandTableHasButtons>
           <commandTableHasButtons Id="2a1ea2ab-f985-4091-8c28-c7d06a2e4bb3">
-            <button Id="fe7a5839-6de9-4213-9e43-b7e1bdf2e859" name="DisconnectToolbarButton" idNumeric="11" buttonText="DisconnectToolbarButton" menuText="Disconnect" commandName="cmdidDisconnectToolbarButton" toolTipText="Disconnect from Cahoots" mod1="0" mod2="0" visibilityConstraints="0" icon="msotcidDeclineInvitation" commandFlags="0" />
+            <button Id="fe7a5839-6de9-4213-9e43-b7e1bdf2e859" name="DisconnectToolbarButton" idNumeric="11" buttonText="Disconnect" menuText="Disconnect from Cahoots" commandName="cmdidDisconnectToolbarButton" toolTipText="Disconnect from Cahoots" mod1="0" mod2="0" visibilityConstraints="0" icon="msotcidDeclineInvitation" commandFlags="DefaultDisabled" />
+          </commandTableHasButtons>
+          <commandTableHasButtons Id="fa9dc101-a677-4a88-bb7f-336e8a1b789e">
+            <button Id="dc483f4e-4475-4704-8656-bcace9798621" name="HostToolbarButton" idNumeric="14" buttonText="Start a Collaboration" menuText="Start a Collaboration..." commandName="cmdidHostToolbarButton" toolTipText="Start a Collaboration" mod1="0" mod2="0" visibilityConstraints="0" icon="msotcidCopy" commandFlags="DefaultDisabled" />
           </commandTableHasButtons>
         </buttons>
         <menuBases>
