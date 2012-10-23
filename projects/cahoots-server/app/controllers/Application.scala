@@ -9,7 +9,7 @@ object Application extends Controller {
     Ok("roffles")
   }
   
-  def login(username: String, password: String) = Action {
+  def login = Action {
     Ok("")
   }
 }
