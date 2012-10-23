@@ -58,8 +58,13 @@ namespace Cahoots
         {
             this.UserName = txtUsername.Text;
             this.Password = pwPassword.SecurePassword;
-            this.Server =
-                    (string)((ComboBoxItem)cbServer.SelectedItem).Content;
+
+            var server = ((ComboBoxItem)cbServer.SelectedItem);
+            if (server != null)
+            {
+                this.Server = (string)server.Content;
+            }
+
             this.DialogResult = true;
             this.Close();
         }
