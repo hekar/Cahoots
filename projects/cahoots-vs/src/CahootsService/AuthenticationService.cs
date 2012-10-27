@@ -39,9 +39,9 @@ namespace Cahoots.Services
                 throw new ArgumentException("username is null or empty.");
             }
 
-            if (password == null)
+            if (password.IsNullOrEmpty())
             {
-                throw new ArgumentNullException("password");
+                throw new ArgumentException("password is null or empty.");
             }
 
             this.ServerUrl = serverUrl;
@@ -107,6 +107,7 @@ namespace Cahoots.Services
         /// </returns>
         public bool Authenticate()
         {
+            // build parameters dictionary
             var dict = new Dictionary<string, string>()
             {
                 { "username", this.UserName },
@@ -117,11 +118,13 @@ namespace Cahoots.Services
 
             try
             {
+                // send the request
                 response = PostRequest.Send(
                     new Uri(this.ServerUrl, "/app/login"), dict);
             }
             catch (WebException ex)
             {
+                // handle a web exception nicely...
                 this.Token = null;
                 this.IsAuthenticated = false;
                 this.ErrorMessage = ex.Message;
@@ -130,18 +133,21 @@ namespace Cahoots.Services
 
             if (response.Status == 200)
             {
+                // authenticated
                 this.Token = response.Content;
                 this.IsAuthenticated = true;
                 this.ErrorMessage = null;
             }
             else if (response.Status == 403)
             {
+                // failed to authenticate
                 this.Token = null;
                 this.IsAuthenticated = false;
                 this.ErrorMessage = response.Content;
             }
             else
             {
+                // unrecognized error code...
                 this.Token = null;
                 this.IsAuthenticated = false;
                 this.ErrorMessage =
@@ -162,6 +168,7 @@ namespace Cahoots.Services
         /// </returns>
         public bool Deauthenticate()
         {
+            // TODO: make this deauthenticate
             return true;
         }
     }

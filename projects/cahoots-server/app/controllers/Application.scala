@@ -11,7 +11,22 @@ object Application extends Controller {
     
     // TODO: do actual authenticaty stuff here...
     var token = "$AuthTokenGoesHere"
-    //Ok(token)
-    Forbidden("Invalid username/password")
+      
+    if (token == null)
+    {
+      Forbidden("Invalid username/password")
+    }
+    else
+    {
+      Ok(token)
+    }
+  }
+  
+  def deauthenticate = Action { request =>
+    val token = request.body.asFormUrlEncoded.get.get("token").get.apply(0)
+    
+    // TODO: do actual deauthentication
+    Ok("")
+    Forbidden("Unrecognized requst token")
   }
 }

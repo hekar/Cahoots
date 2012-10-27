@@ -37,37 +37,41 @@ namespace Cahoots.Ext.Net
                 throw new ArgumentNullException("parameters");
             }
 
+            // create and configure base request
             var req = HttpWebRequest.Create(uri) as HttpWebRequest;
             req.Method = "POST";
             req.ContentType = "application/x-www-form-urlencoded";
 
+            // build parameter string
             var sb = new StringBuilder();
-
             foreach (var kvp in parameters)
             {
                 sb.Append(
-                        string.Format(
-                                "{0}={1}&",
-                                HttpUtility.UrlEncode(kvp.Key),
-                                HttpUtility.UrlEncode(kvp.Value)));
+                    string.Format(
+                        "{0}={1}&",
+                        HttpUtility.UrlEncode(kvp.Key),
+                        HttpUtility.UrlEncode(kvp.Value)));
             }
-
-            byte[] data = Encoding.ASCII.GetBytes(sb.ToString());
-            req.ContentLength = data.LongLength;
 
             try
             {
+                // write parameter string
+                byte[] data = Encoding.ASCII.GetBytes(sb.ToString());
+                req.ContentLength = data.LongLength;
                 using (var stream = req.GetRequestStream())
                 {
                     stream.Write(data, 0, data.Length);
                 }
 
+                // return a post response
                 return new PostResponse(req.GetResponse() as HttpWebResponse);
             }
             catch (WebException ex)
             {
                 if (ex.Response != null)
                 {
+                    // if the exception has a valid resonse object,
+                    // make it into a post response
                     return new PostResponse(ex.Response as HttpWebResponse);
                 }
 
