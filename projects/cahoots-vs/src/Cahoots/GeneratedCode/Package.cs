@@ -68,13 +68,17 @@ namespace Cahoots
                 commandId = new CommandID(GuidList.guidCahootsCmdSet, (int)PkgCmdIDList.ConnectToolbarButton);
                 menuItem = new OleMenuCommand(ConnectToolbarButtonExecuteHandler, ConnectToolbarButtonChangeHandler, ConnectToolbarButtonQueryStatusHandler, commandId);
                 mcs.AddCommand(menuItem);
+				// Create the command for button HostToolbarButton
+                commandId = new CommandID(GuidList.guidCahootsCmdSet, (int)PkgCmdIDList.HostToolbarButton);
+                menuItem = new OleMenuCommand(HostToolbarButtonExecuteHandler, HostToolbarButtonChangeHandler, HostToolbarButtonQueryStatusHandler, commandId);
+                mcs.AddCommand(menuItem);
 				// Create the command for button DisconnectToolbarButton
                 commandId = new CommandID(GuidList.guidCahootsCmdSet, (int)PkgCmdIDList.DisconnectToolbarButton);
                 menuItem = new OleMenuCommand(DisconnectToolbarButtonExecuteHandler, DisconnectToolbarButtonChangeHandler, DisconnectToolbarButtonQueryStatusHandler, commandId);
                 mcs.AddCommand(menuItem);
-				// Create the command for button HostToolbarButton
-                commandId = new CommandID(GuidList.guidCahootsCmdSet, (int)PkgCmdIDList.HostToolbarButton);
-                menuItem = new OleMenuCommand(HostToolbarButtonExecuteHandler, HostToolbarButtonChangeHandler, HostToolbarButtonQueryStatusHandler, commandId);
+				// Create the command for button StopToolbarButton
+                commandId = new CommandID(GuidList.guidCahootsCmdSet, (int)PkgCmdIDList.StopToolbarButton);
+                menuItem = new OleMenuCommand(StopToolbarButtonExecuteHandler, StopToolbarButtonChangeHandler, StopToolbarButtonQueryStatusHandler, commandId);
                 mcs.AddCommand(menuItem);
 
 			}
@@ -99,6 +103,23 @@ namespace Cahoots
 
 		#endregion
 
+		#region Handlers for Button: HostToolbarButton
+
+		protected virtual void HostToolbarButtonExecuteHandler(object sender, EventArgs e)
+		{
+			ShowMessage("HostToolbarButton clicked!");
+		}
+		
+		protected virtual void HostToolbarButtonChangeHandler(object sender, EventArgs e)
+		{
+		}
+		
+		protected virtual void HostToolbarButtonQueryStatusHandler(object sender, EventArgs e)
+		{
+		}
+
+		#endregion
+
 		#region Handlers for Button: DisconnectToolbarButton
 
 		protected virtual void DisconnectToolbarButtonExecuteHandler(object sender, EventArgs e)
@@ -116,18 +137,18 @@ namespace Cahoots
 
 		#endregion
 
-		#region Handlers for Button: HostToolbarButton
+		#region Handlers for Button: StopToolbarButton
 
-		protected virtual void HostToolbarButtonExecuteHandler(object sender, EventArgs e)
+		protected virtual void StopToolbarButtonExecuteHandler(object sender, EventArgs e)
 		{
-			ShowMessage("HostToolbarButton clicked!");
+			ShowMessage("StopToolbarButton clicked!");
 		}
 		
-		protected virtual void HostToolbarButtonChangeHandler(object sender, EventArgs e)
+		protected virtual void StopToolbarButtonChangeHandler(object sender, EventArgs e)
 		{
 		}
 		
-		protected virtual void HostToolbarButtonQueryStatusHandler(object sender, EventArgs e)
+		protected virtual void StopToolbarButtonQueryStatusHandler(object sender, EventArgs e)
 		{
 		}
 

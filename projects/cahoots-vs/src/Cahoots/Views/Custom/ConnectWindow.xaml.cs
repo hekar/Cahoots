@@ -7,6 +7,7 @@ namespace Cahoots
     using System.Security;
     using System.Windows;
     using System.Windows.Controls;
+    using System;
 
     /// <summary>
     /// Interaction logic for ConnectWindow.xaml
@@ -81,6 +82,18 @@ namespace Cahoots
         {
             this.DialogResult = false;
             this.Close();
+        }
+
+        private void Handle_Input(
+                object sender,
+                EventArgs e)
+        {
+            if (btnConnect != null)
+            {
+                btnConnect.IsEnabled = (!string.IsNullOrEmpty(txtUsername.Text)
+                    && !string.IsNullOrEmpty(pwPassword.Password)
+                    && cbServer.SelectedIndex != -1);
+            }
         }
     }
 }

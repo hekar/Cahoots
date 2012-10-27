@@ -25,12 +25,50 @@ namespace Cahoots
         }
 
         /// <summary>
+        /// Initialization of the package;
+        /// this method is called right after the package is sited,
+        /// so this is the place where you can put all the initilaization
+        /// code that rely on services provided by VisualStudio.
+        /// </summary>
+        protected override void Initialize()
+        {
+            base.Initialize();
+
+            // find references to the toolbar buttons
+            FindToolbarButtons();
+        }
+
+        /// <summary>
+        /// Finds the toolbar buttons.
+        /// </summary>
+        private void FindToolbarButtons()
+        {
+            this.Connect =
+                    this.GetMenuCommand(PkgCmdIDList.ConnectToolbarButton);
+            this.Disconnect =
+                    this.GetMenuCommand(PkgCmdIDList.DisconnectToolbarButton);
+            this.Host = this.GetMenuCommand(PkgCmdIDList.HostToolbarButton);
+            this.Stop = this.GetMenuCommand(PkgCmdIDList.StopToolbarButton);
+
+            // we have to set this stuff again, 
+            // otherwise it all gets reset to true.
+            this.Stop.Enabled = false;
+            this.Disconnect.Enabled = false;
+            this.Host.Enabled = false;
+        }
+
+        /// <summary>
         /// Gets or sets the menu service.
         /// </summary>
         /// <value>
         /// The menu service.
         /// </value>
         private OleMenuCommandService MenuService { get; set; }
+
+        private MenuCommand Connect { get; set; }
+        private MenuCommand Disconnect { get; set; }
+        private MenuCommand Host { get; set; }
+        private MenuCommand Stop { get; set; }
 
         /// <summary>
         /// Gets the menu command.
@@ -58,10 +96,9 @@ namespace Cahoots
             if (window.ShowDialog() == true)
             {
                 // connect to the server here...
-                this.GetMenuCommand(
-                        PkgCmdIDList.ConnectToolbarButton).Enabled = false;
-                this.GetMenuCommand(
-                        PkgCmdIDList.DisconnectToolbarButton).Enabled = true;
+                this.Connect.Enabled = false;
+                this.Disconnect.Enabled = true;
+                this.Host.Enabled = true;
             }
         }
 
@@ -85,10 +122,10 @@ namespace Cahoots
 
             if (result == DialogResult.Yes)
             {
-                this.GetMenuCommand(
-                    PkgCmdIDList.ConnectToolbarButton).Enabled = true;
-                this.GetMenuCommand(
-                    PkgCmdIDList.DisconnectToolbarButton).Enabled = false;
+                this.Connect.Enabled = true;
+                this.Disconnect.Enabled = false;
+                this.Host.Enabled = false;
+                this.Stop.Enabled = false;
             }
         }
     }
