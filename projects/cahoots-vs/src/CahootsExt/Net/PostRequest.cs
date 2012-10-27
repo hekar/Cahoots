@@ -55,18 +55,23 @@ namespace Cahoots.Ext.Net
             byte[] data = Encoding.ASCII.GetBytes(sb.ToString());
             req.ContentLength = data.LongLength;
 
-            using (var stream = req.GetRequestStream())
-            {
-                stream.Write(data, 0, data.Length);
-            }
-
             try
             {
+                using (var stream = req.GetRequestStream())
+                {
+                    stream.Write(data, 0, data.Length);
+                }
+
                 return new PostResponse(req.GetResponse() as HttpWebResponse);
             }
             catch (WebException ex)
             {
-                return new PostResponse(ex.Response as HttpWebResponse);
+                if (ex.Response != null)
+                {
+                    return new PostResponse(ex.Response as HttpWebResponse);
+                }
+
+                throw ex;
             }
         }
     }

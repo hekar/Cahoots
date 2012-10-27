@@ -156,7 +156,7 @@ namespace Cahoots
                 {
                     // display error message.
                     var  retry = MessageBox.Show(
-                            "An error occured authenticing with Cahoots:\r\n"
+                            "An error occured authenticating with Cahoots:\r\n"
                             + this.AuthenticationService.ErrorMessage,
                             "Failed to authenticate with Cahoots.",
                             MessageBoxButtons.RetryCancel);

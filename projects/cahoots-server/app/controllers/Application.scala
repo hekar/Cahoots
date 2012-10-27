@@ -11,7 +11,7 @@ object Application extends Controller {
     
     // TODO: do actual authenticaty stuff here...
     var token = "$AuthTokenGoesHere"
-    Ok(token)
-    //Forbidden("Invalid username/password")
+    //Ok(token)
+    Forbidden("Invalid username/password")
   }
 }

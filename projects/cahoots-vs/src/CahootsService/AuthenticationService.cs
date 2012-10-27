@@ -113,8 +113,20 @@ namespace Cahoots.Services
                 { "password", this.Password }
             };
 
-            var response = PostRequest.Send(
-                new Uri(this.ServerUrl, "/app/login"), dict);
+            PostResponse response = null;
+
+            try
+            {
+                response = PostRequest.Send(
+                    new Uri(this.ServerUrl, "/app/login"), dict);
+            }
+            catch (WebException ex)
+            {
+                this.Token = null;
+                this.IsAuthenticated = false;
+                this.ErrorMessage = ex.Message;
+                return false;
+            }
 
             if (response.Status == 200)
             {
