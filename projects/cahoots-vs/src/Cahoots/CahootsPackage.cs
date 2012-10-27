@@ -13,6 +13,9 @@ namespace Cahoots
     using Cahoots.Services;
     using Microsoft.VisualStudio.Shell;
 
+    /// <summary>
+    /// Cahoots VSPackage Extension class.
+    /// </summary>
     [Guid(GuidList.guidCahootsPkgString)]
     public class CahootsPackage : CahootsPackageBase
     {
@@ -115,6 +118,8 @@ namespace Cahoots
 
         #endregion
 
+        #region Authentication
+
         /// <summary>
         /// Gets or sets the authentication service.
         /// </summary>
@@ -134,6 +139,7 @@ namespace Cahoots
                 object sender,
                 EventArgs e)
         {
+            // TODO: make this async
             var window = new ConnectWindow();
             if (window.ShowDialog() == true)
             {
@@ -184,7 +190,7 @@ namespace Cahoots
                     "Are you sure you would like to disconnect from Cahoots?",
                     "Disconnect from Cahoots",
                     MessageBoxButtons.YesNo,
-                    MessageBoxIcon.Asterisk,
+                    MessageBoxIcon.Question,
                     MessageBoxDefaultButton.Button1);
 
             if (result == DialogResult.Yes)
@@ -195,5 +201,7 @@ namespace Cahoots
                 this.Stop.Enabled = false;
             }
         }
+
+        #endregion
     }
 }

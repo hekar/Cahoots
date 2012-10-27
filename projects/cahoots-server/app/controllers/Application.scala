@@ -12,13 +12,13 @@ object Application extends Controller {
     // TODO: do actual authenticaty stuff here...
     var token = "$AuthTokenGoesHere"
       
-    if (token == null)
+    if (token != null)
     {
-      Forbidden("Invalid username/password")
+      Ok(token)
     }
     else
     {
-      Ok(token)
+      Unauthorized("Invalid username/password")
     }
   }
   
@@ -27,6 +27,6 @@ object Application extends Controller {
     
     // TODO: do actual deauthentication
     Ok("")
-    Forbidden("Unrecognized requst token")
+    //Unauthorized("Unrecognized request token")
   }
 }

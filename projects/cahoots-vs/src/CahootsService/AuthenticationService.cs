@@ -138,7 +138,7 @@ namespace Cahoots.Services
                 this.IsAuthenticated = true;
                 this.ErrorMessage = null;
             }
-            else if (response.Status == 403)
+            else if (response.Status == 401)
             {
                 // failed to authenticate
                 this.Token = null;
