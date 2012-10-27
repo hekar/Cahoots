@@ -4,7 +4,7 @@
 
 GET     /                          			controllers.Portal.index
 
-GET     /app/login                          controllers.Application.login
+POST     /app/login                          controllers.Application.authenticate
 
 POST     /collaborator/createGroup  			controllers.collaborator.Group.createGroup
 

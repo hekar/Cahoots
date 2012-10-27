@@ -1,13 +1,14 @@
-﻿///
+﻿/// Cahoots Package.cs
+/// 23 October 2012
 ///
+/// The class for the Connect window.
 ///
 
 namespace Cahoots
 {
-    using System.Security;
+    using System;
     using System.Windows;
     using System.Windows.Controls;
-    using System;
 
     /// <summary>
     /// Interaction logic for ConnectWindow.xaml
@@ -37,7 +38,7 @@ namespace Cahoots
         /// <value>
         /// The password.
         /// </value>
-        public SecureString Password { get; private set; }
+        public string Password { get; private set; }
 
         /// <summary>
         /// Gets the server.
@@ -58,7 +59,7 @@ namespace Cahoots
         private void Connect_Click(object sender, RoutedEventArgs e)
         {
             this.UserName = txtUsername.Text;
-            this.Password = pwPassword.SecurePassword;
+            this.Password = pwPassword.Password;
 
             var server = ((ComboBoxItem)cbServer.SelectedItem);
             if (server != null)
@@ -84,6 +85,13 @@ namespace Cahoots
             this.Close();
         }
 
+        /// <summary>
+        /// Handles the Input event of the Handle control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">
+        ///   The <see cref="EventArgs" /> instance containing the event data.
+        /// </param>
         private void Handle_Input(
                 object sender,
                 EventArgs e)

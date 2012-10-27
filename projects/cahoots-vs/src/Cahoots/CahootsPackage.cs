@@ -1,13 +1,16 @@
-﻿///
+﻿/// Cahoots Package.cs
+/// 23 October 2012
 ///
+/// The master class for the Visual Studio extension package.
 ///
 
 namespace Cahoots
 {
     using System;
+    using System.ComponentModel.Design;
     using System.Runtime.InteropServices;
     using System.Windows.Forms;
-    using System.ComponentModel.Design;
+    using Cahoots.Services;
     using Microsoft.VisualStudio.Shell;
 
     [Guid(GuidList.guidCahootsPkgString)]
@@ -38,6 +41,48 @@ namespace Cahoots
             FindToolbarButtons();
         }
 
+        #region Menu Buttons
+
+        /// <summary>
+        /// Gets or sets the menu service.
+        /// </summary>
+        /// <value>
+        /// The menu service.
+        /// </value>
+        private OleMenuCommandService MenuService { get; set; }
+
+        /// <summary>
+        /// Gets or sets the connect menu button.
+        /// </summary>
+        /// <value>
+        /// The connect menu button.
+        /// </value>
+        private MenuCommand Connect { get; set; }
+
+        /// <summary>
+        /// Gets or sets the disconnect menu button.
+        /// </summary>
+        /// <value>
+        /// The disconnect menu button.
+        /// </value>
+        private MenuCommand Disconnect { get; set; }
+
+        /// <summary>
+        /// Gets or sets the host menu button.
+        /// </summary>
+        /// <value>
+        /// The host menu button.
+        /// </value>
+        private MenuCommand Host { get; set; }
+
+        /// <summary>
+        /// Gets or sets the stop menu button.
+        /// </summary>
+        /// <value>
+        /// The stop menu button.
+        /// </value>
+        private MenuCommand Stop { get; set; }
+
         /// <summary>
         /// Finds the toolbar buttons.
         /// </summary>
@@ -58,19 +103,6 @@ namespace Cahoots
         }
 
         /// <summary>
-        /// Gets or sets the menu service.
-        /// </summary>
-        /// <value>
-        /// The menu service.
-        /// </value>
-        private OleMenuCommandService MenuService { get; set; }
-
-        private MenuCommand Connect { get; set; }
-        private MenuCommand Disconnect { get; set; }
-        private MenuCommand Host { get; set; }
-        private MenuCommand Stop { get; set; }
-
-        /// <summary>
         /// Gets the menu command.
         /// </summary>
         /// <param name="commandId">The command id.</param>
@@ -80,6 +112,16 @@ namespace Cahoots
             var id = new CommandID(GuidList.guidCahootsCmdSet, (int)commandId);
             return this.MenuService.FindCommand(id);
         }
+
+        #endregion
+
+        /// <summary>
+        /// Gets or sets the authentication service.
+        /// </summary>
+        /// <value>
+        /// The authentication service.
+        /// </value>
+        private IAuthenticationService AuthenticationService { get; set; }
 
         /// <summary>
         /// Connects the toolbar button execute handler.
@@ -95,10 +137,35 @@ namespace Cahoots
             var window = new ConnectWindow();
             if (window.ShowDialog() == true)
             {
-                // connect to the server here...
-                this.Connect.Enabled = false;
-                this.Disconnect.Enabled = true;
-                this.Host.Enabled = true;
+                // create a new authentication service for this connection.
+                var server = new Uri(window.Server);
+                this.AuthenticationService =
+                        new AuthenticationService(
+                            server,
+                            window.UserName,
+                            window.Password);
+
+                // authenticate
+                if (this.AuthenticationService.Authenticate())
+                {
+                    this.Connect.Enabled = false;
+                    this.Disconnect.Enabled = true;
+                    this.Host.Enabled = true;
+                }
+                else
+                {
+                    // display error message.
+                    var  retry = MessageBox.Show(
+                            "An error occured authenticing with Cahoots:\r\n"
+                            + this.AuthenticationService.ErrorMessage,
+                            "Failed to authenticate with Cahoots.",
+                            MessageBoxButtons.RetryCancel);
+
+                    if (retry == DialogResult.Retry)
+                    {
+                        ConnectToolbarButtonExecuteHandler(sender, e);
+                    }
+                }
             }
         }
 
