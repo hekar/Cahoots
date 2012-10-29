@@ -1,0 +1,17 @@
+The Visual Studio Extension soultion requires the VSPackage Builder extension and the Visual Studio 2010 SDK
+
+VSPackage Builder:
+http://visualstudiogallery.msdn.microsoft.com/e9f40a57-3c9a-4d61-b3ec-1640c59549b3
+
+Visual Studio 2010 SDK
+http://www.microsoft.com/en-us/download/details.aspx?id=2680
+
+
+
+To debug you will need to configure the project launch to an instance of Visual Studio.
+
+Make sure "Cahoots" is the StartUp project
+
+Right Click the Cahoots project, select Properties.  Click the debug tab.
+Select "Start external program" and point it to your Visual Studio 2010 devenv.exe file (Common7\IDE\devenv.exe)
+Add command line arguments: /rootsuffix Exp
