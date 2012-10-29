@@ -7,6 +7,7 @@
 namespace Cahoots
 {
     using System;
+    using System.ComponentModel;
     using System.ComponentModel.Design;
     using System.Runtime.InteropServices;
     using System.Windows.Forms;
@@ -195,6 +196,10 @@ namespace Cahoots
 
             if (result == DialogResult.Yes)
             {
+                var bg = new BackgroundWorker();
+                bg.DoWork +=new DoWorkEventHandler(
+                    (s, ev) => this.AuthenticationService.Deauthenticate());
+                bg.RunWorkerAsync();
                 this.Connect.Enabled = true;
                 this.Disconnect.Enabled = false;
                 this.Host.Enabled = false;

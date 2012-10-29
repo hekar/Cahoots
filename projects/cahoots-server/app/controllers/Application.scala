@@ -39,6 +39,7 @@ object Application extends Controller {
     {
       users.append(new ActiveUser(user, token))
       Cache.set("users", users)
+      Logger.info("User logged in with %s:%s".format(user, token))
       Ok(token)
     }
     else
@@ -51,7 +52,6 @@ object Application extends Controller {
   def deauthenticate = Action { request =>
     val token = request.body.asFormUrlEncoded.get.get("auth_token").get.apply(0)
     
-    // TODO: do actual deauthentication
      var users:ListBuffer[ActiveUser] = Cache.get("users").asInstanceOf[ListBuffer[ActiveUser]]
     
     if(users == null)
@@ -63,11 +63,10 @@ object Application extends Controller {
     
     if(stored_user != -1)
     {
+      Logger.info("User logged out with %s".format(token))
       users.remove(stored_user)
     }
     
-    
     Ok("")
-    //Unauthorized("Unrecognized request token")
   }
 }

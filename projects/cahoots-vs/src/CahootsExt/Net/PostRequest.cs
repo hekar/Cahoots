@@ -70,7 +70,7 @@ namespace Cahoots.Ext.Net
             {
                 if (ex.Response != null)
                 {
-                    // if the exception has a valid resonse object,
+                    // if the exception has a valid response object,
                     // make it into a post response
                     return new PostResponse(ex.Response as HttpWebResponse);
                 }
