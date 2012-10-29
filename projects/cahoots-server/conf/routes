@@ -5,6 +5,8 @@
 GET     /                          			controllers.Portal.index
 
 POST     /app/login                          controllers.Application.authenticate
+POST     /app/logout                         controllers.Application.deauthenticate
+
 
 POST     /collaborator/createGroup  			controllers.collaborator.Group.createGroup
 
