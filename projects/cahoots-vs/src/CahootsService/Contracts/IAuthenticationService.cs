@@ -1,13 +1,16 @@
-﻿/// IAuthenticationService.cs
-/// 26 October 2012
-///
-/// The interface responsible for authenticating against a Cahoots server.
-///
+﻿// ----------------------------------------------------------------------
+// <copyright file="IAuthenticationService.cs" company="My Company">
+//     Copyright statement. All right reserved
+// </copyright>
+// ------------------------------------------------------------------------
 
 namespace Cahoots.Services
 {
     using System;
 
+    /// <summary>
+    /// Interface for authenticating with a server.
+    /// </summary>
     public interface IAuthenticationService
     {
         /// <summary>

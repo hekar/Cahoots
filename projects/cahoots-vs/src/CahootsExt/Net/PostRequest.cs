@@ -1,8 +1,8 @@
-﻿/// PostRequest.cs
-/// 26 October 2012
-///
-/// Static wrapper class used for posting requests to a url.
-///
+﻿// ----------------------------------------------------------------------
+// <copyright file="PostRequest.cs" company="My Company">
+//     Copyright statement. All right reserved
+// </copyright>
+// ------------------------------------------------------------------------
 
 namespace Cahoots.Ext.Net
 {

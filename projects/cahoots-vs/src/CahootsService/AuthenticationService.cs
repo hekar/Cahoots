@@ -1,8 +1,8 @@
-﻿/// AuthenticationService.cs
-/// 26 October 2012
-///
-/// The class responsible for authenticating against a Cahoots server.
-///
+﻿// ----------------------------------------------------------------------
+// <copyright file="AuthenticationService.cs" company="My Company">
+//     Copyright statement. All right reserved
+// </copyright>
+// ------------------------------------------------------------------------
 
 namespace Cahoots.Services
 {
@@ -168,8 +168,48 @@ namespace Cahoots.Services
         /// </returns>
         public bool Deauthenticate()
         {
-            // TODO: make this deauthenticate
-            return true;
+            // build parameters dictionary
+            var dict = new Dictionary<string, string>()
+            {
+                { "auth_token", this.Token }
+            };
+
+            PostResponse response = null;
+
+            try
+            {
+                // send the request
+                response = PostRequest.Send(
+                    new Uri(this.ServerUrl, "/app/logout"), dict);
+            }
+            catch (WebException ex)
+            {
+                // handle a web exception nicely...
+                this.Token = null;
+                this.IsAuthenticated = false;
+                this.ErrorMessage = ex.Message;
+                return false;
+            }
+
+            // these will always be reset...
+            this.Token = null;
+            this.IsAuthenticated = false;
+
+            if (response.Status == 200)
+            {
+                // deauthenticated
+                this.ErrorMessage = null;
+                return true;
+            }
+            else
+            {
+                // unrecognized error code...
+                this.ErrorMessage =
+                    string.Format(
+                        "Unrecognized response code {0}",
+                        response.Status);
+                return false;
+            }
         }
     }
 }

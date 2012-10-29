@@ -1,8 +1,8 @@
-﻿/// PostRequest.cs
-/// 26 October 2012
-///
-/// Represents the response from a PostRequest.
-///
+﻿// ----------------------------------------------------------------------
+// <copyright file="PostResponse.cs" company="My Company">
+//     Copyright statement. All right reserved
+// </copyright>
+// ------------------------------------------------------------------------
 
 namespace Cahoots.Ext.Net
 {

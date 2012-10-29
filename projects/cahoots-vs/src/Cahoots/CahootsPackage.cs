@@ -1,8 +1,8 @@
-﻿/// Cahoots Package.cs
-/// 23 October 2012
-///
-/// The master class for the Visual Studio extension package.
-///
+﻿// ----------------------------------------------------------------------
+// <copyright file="CahootsPackage.cs" company="My Company">
+//     Copyright statement. All right reserved
+// </copyright>
+// ------------------------------------------------------------------------
 
 namespace Cahoots
 {
