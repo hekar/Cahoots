@@ -2,6 +2,7 @@ package controllers
 
 import play.api._
 import play.api.mvc._
+import play.cache._
 
 object Application extends Controller {
   
@@ -10,10 +11,19 @@ object Application extends Controller {
     val pass = request.body.asFormUrlEncoded.get.get("password").get.apply(0)
     
     // TODO: do actual authenticaty stuff here...
-    var token = "$AuthTokenGoesHere"
+    
+    
+    var token:String = Cache.get(user + pass).asInstanceOf[String]
+    
+    if (token == null)
+    {
+      token = java.util.UUID.randomUUID().toString()
+      Cache.set(user + pass, token)
+    }
       
     if (token != null)
     {
+      
       Ok(token)
     }
     else

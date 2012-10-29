@@ -49,6 +49,9 @@ target/
 [Tt]humbs.db
 *.DS_Store
 
+# Python #
+*.pyc
+
 #Visual Studio files
 *.[Oo]bj
 *.user
