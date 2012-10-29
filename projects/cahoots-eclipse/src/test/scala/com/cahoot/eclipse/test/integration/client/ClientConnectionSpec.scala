@@ -12,21 +12,22 @@ class ClientConnectionSpec extends FunSuite {
 
   test("connect") {
     synchronized {
-      val success = (json: String, values: Map[String, String]) => {
-        println(json)
-        this.notify()
-      }
       
-      val failure = { (t: Throwable) =>
-        t.printStackTrace()
+      val client = new EtherpadClient
+      val promise = client.call("127.0.0.1:9000", "", "echo",
+        Map[String, String]())
+
+      promise.onSuccess {
+        case x =>
+        println(x)
         this.notify()
       }
 
-      val client = new EtherpadClient
-      client.call("127.0.0.1:9000", "", "echo",
-        Map[String, String](),
-        success,
-        failure)
+      promise.onFailure {
+        case e: Exception =>
+          e.printStackTrace()
+          this.notify()
+      }
 
       this.wait()
     }

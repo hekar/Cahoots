@@ -8,7 +8,6 @@ import org.eclipse.ui.PlatformUI
 import org.eclipse.swt.SWT
 import java.util.Comparator
 import com.cahoot.client.services.ChatService
-import com.google.inject.Inject
 import com.cahoot.eclipse.chat.service.ChatServiceComponent
 
 private class ChatViewComparator extends Comparator[String] {
