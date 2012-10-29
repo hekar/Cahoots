@@ -1,0 +1,73 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root xmlns:dm0="http://schemas.microsoft.com/VisualStudio/2008/DslTools/Core" dslVersion="1.0.0.0" Id="de677c38-48e7-4cff-bb96-1c88dc58f367" xmlns="http://schemas.microsoft.com/dsltools/VSPackageDesigner">
+  <commandTable>
+    <rootHasCommandTable Id="e6ae0a49-a43a-4b9a-9519-c841bf09e800">
+      <commandTable Id="f373bf1b-8541-45fe-9aea-2c3b5e56f195" packageGuid="de677c38-48e7-4cff-bb96-1c88dc58f367" commandSetGuid="e6ae0a49-a43a-4b9a-9519-c841bf09e800" safeProjectName="Cahoots" counter="1" imagesGuid="f373bf1b-8541-45fe-9aea-2c3b5e56f195">
+        <groups>
+          <group Id="2b9bfb93-5168-4b74-80e2-02f90fe27851" name="Group" idNumeric="1">
+            <buttons>
+              <groupBaseReferencesButtons Id="ffb94219-121c-4be7-be1c-28e2e693fb1d">
+                <buttonMoniker Id="ca47b751-6a39-4668-b172-8b08b504aa2a" />
+              </groupBaseReferencesButtons>
+              <groupBaseReferencesButtons Id="83325b73-c645-48b8-b2bc-d38a205ef0ec">
+                <buttonMoniker Id="dc483f4e-4475-4704-8656-bcace9798621" />
+              </groupBaseReferencesButtons>
+              <groupBaseReferencesButtons Id="325c1533-778b-44da-a096-9f241f9c0f2c">
+                <buttonMoniker Id="fe7a5839-6de9-4213-9e43-b7e1bdf2e859" />
+              </groupBaseReferencesButtons>
+              <groupBaseReferencesButtons Id="517bd9fc-e69d-41f0-8659-a12c86d4f840">
+                <buttonMoniker Id="d90264ab-3bae-4741-8845-8d36b95db153" />
+              </groupBaseReferencesButtons>
+            </buttons>
+          </group>
+          <externalGroup Id="36e540d8-c01e-4850-9bf0-3674356a600b" name="Tools Menu [Command Line]" idNumeric="13" parentData="guidSHLMainMenu,IDG_VS_TOOLS_CMDLINE,Group">
+            <buttons>
+              <groupBaseReferencesButtons Id="966238d1-fe9e-4498-896e-36b201665453">
+                <buttonMoniker Id="ca47b751-6a39-4668-b172-8b08b504aa2a" />
+              </groupBaseReferencesButtons>
+              <groupBaseReferencesButtons Id="7573b7d1-642a-444c-9e23-8a3772392caa">
+                <buttonMoniker Id="dc483f4e-4475-4704-8656-bcace9798621" />
+              </groupBaseReferencesButtons>
+              <groupBaseReferencesButtons Id="859709ea-72eb-4c9a-a46b-7a4aa51d7d60">
+                <buttonMoniker Id="fe7a5839-6de9-4213-9e43-b7e1bdf2e859" />
+              </groupBaseReferencesButtons>
+              <groupBaseReferencesButtons Id="d9e098e3-7a74-413a-8dff-e1936df6e003">
+                <buttonMoniker Id="d90264ab-3bae-4741-8845-8d36b95db153" />
+              </groupBaseReferencesButtons>
+            </buttons>
+          </externalGroup>
+        </groups>
+        <buttons>
+          <commandTableHasButtons Id="0ddab5d6-4ae4-4665-b5fd-f10825c3c134">
+            <button Id="ca47b751-6a39-4668-b172-8b08b504aa2a" name="ConnectToolbarButton" idNumeric="2" buttonText="Connect" menuText="Connect to Cahoots..." commandName="cmdidConnectToolbarButton" toolTipText="Connect to Cahoots" mod1="0" mod2="0" visibilityConstraints="0" icon="msotcidNewTask" commandFlags="0" />
+          </commandTableHasButtons>
+          <commandTableHasButtons Id="fa9dc101-a677-4a88-bb7f-336e8a1b789e">
+            <button Id="dc483f4e-4475-4704-8656-bcace9798621" name="HostToolbarButton" idNumeric="14" buttonText="Start a Collaboration" menuText="Start a Collaboration..." commandName="cmdidHostToolbarButton" toolTipText="Start a Collaboration" mod1="0" mod2="0" visibilityConstraints="0" icon="msotcidCopy" commandFlags="DefaultDisabled" />
+          </commandTableHasButtons>
+          <commandTableHasButtons Id="2a1ea2ab-f985-4091-8c28-c7d06a2e4bb3">
+            <button Id="fe7a5839-6de9-4213-9e43-b7e1bdf2e859" name="DisconnectToolbarButton" idNumeric="11" buttonText="Disconnect" menuText="Disconnect from Cahoots" commandName="cmdidDisconnectToolbarButton" toolTipText="Disconnect from Cahoots" mod1="0" mod2="0" visibilityConstraints="0" icon="msotcidDeclineInvitation" commandFlags="DefaultDisabled" />
+          </commandTableHasButtons>
+          <commandTableHasButtons Id="8ecc81b1-c10a-41b1-8a87-8f9225eb0f65">
+            <button Id="d90264ab-3bae-4741-8845-8d36b95db153" name="StopToolbarButton" idNumeric="15" buttonText="Stop Collaborating" menuText="Stop Collaborating" commandName="cmdidStopToolbarButton" toolTipText="Stop Collaborating" mod1="0" mod2="0" visibilityConstraints="0" icon="msotcidStop" commandFlags="DefaultDisabled" />
+          </commandTableHasButtons>
+        </buttons>
+        <menuBases>
+          <commandTableHasMenuBases Id="7f209905-97dd-412c-9968-032989c78445">
+            <menu Id="891692d9-6337-4466-9376-7835646cff64" name="Cahoots" idNumeric="4" type="Toolbar" buttonText="Cahoots" menuText="Cahoots" toolTipText="Cahoots" commandName="Cahoots" visibilityConstraints="0" commandFlags="0">
+              <groupBases>
+                <menuBaseReferencesGroupBases Id="3bcd6369-29fd-4bb3-9e58-b68b4cbfced1">
+                  <groupMoniker Id="2b9bfb93-5168-4b74-80e2-02f90fe27851" />
+                </menuBaseReferencesGroupBases>
+              </groupBases>
+            </menu>
+          </commandTableHasMenuBases>
+        </menuBases>
+      </commandTable>
+    </rootHasCommandTable>
+  </commandTable>
+  <userInterface>
+    <rootHasUserInterface Id="2830826a-4fc8-447b-8a2a-18dffe733be1">
+      <userInterface Id="9dc1a5e9-3609-46a2-99e0-2ff9a7dfd768" />
+    </rootHasUserInterface>
+  </userInterface>
+</root>

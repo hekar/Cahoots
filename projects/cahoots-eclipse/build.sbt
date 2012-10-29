@@ -31,7 +31,7 @@ libraryDependencies += "com.chuusai" % "shapeless_2.9.1" % "1.2.2"
 
 unmanagedJars in Compile <++= baseDirectory map { base =>
   val baseDirectories = (base / "lib") +++
-    (base / "../../../../bin/eclipse-jee-indigo/plugins")
+    (file(System.getenv("ECLIPSE_HOME") + "/plugins"))
     val customJars = (baseDirectories ** "*.jar") filter { !_.getAbsolutePath().contains("source") }
       customJars.classpath
 }

@@ -12,21 +12,14 @@ import com.cahoot.client.etherpad.EtherpadClient
 
 @RunWith(classOf[JUnitRunner])
 class GuiConnectionsSpec extends FeatureSpec {
-
+/*
   feature("Manual Layout Connection GUI Dialogs") {
 
     scenario("bob ") {
-/*      
-      val createSuccess = { (dm: DocumentModel) =>
-      	println(dm.docId)
-      }
-
-      es.createPad(23, createSuccess, EtherpadClient.DefaultFailure)
-  */    
       while(true) {}
       
       pending
     }
   }
-
+*/
 }

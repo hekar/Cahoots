@@ -12,6 +12,9 @@
 *.war
 *.ear
 
+target/
+.metadata/
+.cache
 # Eclipse #
 /projects/cahoots-eclipse/target
 /projects/cahoots-eclipse/.cache
@@ -45,6 +48,9 @@
 #OS junk files
 [Tt]humbs.db
 *.DS_Store
+
+# Python #
+*.pyc
 
 #Visual Studio files
 *.[Oo]bj
