@@ -19,8 +19,8 @@ class ClientConnectionSpec extends FunSuite {
 
       promise.onSuccess {
         case x =>
-        println(x)
-        this.notify()
+	        println(x)
+	        this.notify()
       }
 
       promise.onFailure {

@@ -2,6 +2,7 @@
 <classpath>
 	<classpathentry including="**/*.scala|**/*.java" kind="src" output="target/test-classes" path="src/test/scala"/>
 	<classpathentry including="**/*.scala|**/*.java" kind="src" path="src/main/scala"/>
+	<classpathentry kind="src" path="src/integration"/>
 	<classpathentry exported="true" kind="lib" path="lib_managed/jars/commons-codec/commons-codec/commons-codec-1.2.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib_managed/jars/commons-httpclient/commons-httpclient/commons-httpclient-3.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib_managed/jars/commons-logging/commons-logging/commons-logging-1.0.4.jar"/>
