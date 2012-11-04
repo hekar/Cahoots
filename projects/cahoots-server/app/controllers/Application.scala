@@ -2,6 +2,8 @@ package controllers
 
 import play.api._
 import play.api.mvc._
+import play.api.libs.json._
+import play.api.libs.iteratee._
 import play.cache._
 import scala.collection.mutable._
 import models._
@@ -68,5 +70,12 @@ object Application extends Controller {
     }
     
     Ok("")
+  }
+  
+  /**
+   * Handles the websocket connection.
+   */
+  def message(auth_token: String) = WebSocket.async[JsValue] { request  =>
+    MessageRelay.join(auth_token)
   }
 }
