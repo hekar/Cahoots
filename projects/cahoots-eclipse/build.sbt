@@ -29,6 +29,8 @@ libraryDependencies += "com.chuusai" % "shapeless_2.9.1" % "1.2.2"
 
 libraryDependencies += "uk.co.binarytemple" % "sws" % "0.0.3.13"
 
+libraryDependencies += "org.slf4j" % "slf4j-api" % "1.6.2"
+
 unmanagedJars in Compile <++= baseDirectory map { base =>
   val baseDirectories = (base / "lib") +++
     (file(System.getenv("ECLIPSE_HOME") + "/plugins"))
