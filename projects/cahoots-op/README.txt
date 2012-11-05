@@ -1,1 +1,0 @@
-This is the operational transformations library for Cahoots
