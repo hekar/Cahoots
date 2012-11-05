@@ -3,9 +3,12 @@ package controllers
 import play.api._
 import play.api.mvc._
 
-object Portal extends Controller {
+import views._
 
-  def index = Action {
-    Ok(views.html.index("Your new application is ready."))
+object Portal extends Controller with Secured {
+
+  def index = IsAuthenticated { username => implicit request =>
+    Ok(html.portal.index())
   }
+
 }

@@ -2,13 +2,28 @@
 # This file defines all application routes (Higher priority routes first)
 # ~~~~
 
-GET     /                          			controllers.Portal.index
+# ~~~~~~~~~~~
+#
+# ~~~~~~~~~~~
+GET     /                                       controllers.Application.index
 
-POST     /app/login                          controllers.Application.authenticate
-POST     /app/logout                         controllers.Application.deauthenticate
+# ~~~~~~~~~~~
+#
+# ~~~~~~~~~~~
+POST     /app/login                             controllers.Application.authenticate
+POST     /app/logout                            controllers.Application.deauthenticate
+
+# ~~~~~~~~~~~
+# Administrative Portal
+# ~~~~~~~~~~~
+GET     /auth/login                             controllers.Auth.login
+POST    /auth/login                             controllers.Auth.checkCredentials
+GET     /auth/logout                            controllers.Auth.logout
+GET     /portal/index                           controllers.Portal.index
 
 
-POST     /collaborator/createGroup  			controllers.collaborator.Group.createGroup
-
-# Map static resources from the /public folder to the /assets URL path
-GET     /assets/*file               		controllers.Assets.at(path="/public", file)
+# ~~~~~~~~~~~
+# Map static resources
+# /public folder to /assets
+# ~~~~~~~~~~~
+GET     /assets/*file                           controllers.Assets.at(path="/public", file)

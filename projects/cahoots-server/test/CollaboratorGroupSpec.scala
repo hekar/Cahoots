@@ -5,7 +5,6 @@ import play.api.test.Helpers._
 import play.api.libs.json.Json.toJson
 import org.junit.runner.RunWith
 import org.specs2.runner.JUnitRunner
-import services.collaborator.GroupServiceComponent
 import com.cahoots.tools.JsonTools.clean
 
 @RunWith(classOf[JUnitRunner])

@@ -6,10 +6,16 @@ import play.api.libs.json._
 import play.api.libs.iteratee._
 import play.cache._
 import scala.collection.mutable._
+
+import views._
 import models._
 
 object Application extends Controller {
-  
+
+  def index = Action {
+    Ok(html.application.index())
+  }
+
   def authenticate = Action { request =>
     val user = request.body.asFormUrlEncoded.get.get("username").get.apply(0)
     val pass = request.body.asFormUrlEncoded.get.get("password").get.apply(0)
