@@ -5,6 +5,6 @@ package com.cahoot.models
  * referentially for avatars, etc.
  */
 class PersonModel(
-  val guid: String,
+  var guid: String,
   val username: String,
   val email: String)

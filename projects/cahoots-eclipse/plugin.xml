@@ -1,106 +1,131 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
-   <extension
+	<extension
          point="org.eclipse.ui.views">
-      <category
+		<category
             id="cahoot"
             name="Cahoot">
-      </category>
-      <view
+		</category>
+		<view
             category="cahoot"
             class="com.cahoot.eclipse.indigo.views.CahootConnectionView"
             icon="icons/sample.gif"
             id="com.cahoot.eclipse.views.CahootConnectionView"
             name="Cahoot Connections">
-      </view>
-      <view
+		</view>
+		<view
             category="cahoot"
             class="com.cahoot.eclipse.indigo.views.ChatView"
             icon="icons/sample.gif"
             id="com.cahoot.eclipse.views.ChatView"
             name="Chat View">
-      </view>
-   </extension>
-   <extension
+		</view>
+	</extension>
+	<extension
          point="org.eclipse.ui.perspectiveExtensions">
-      <perspectiveExtension
+		<perspectiveExtension
             targetID="org.eclipse.jdt.ui.JavaPerspective">
-         <view
+			<view
                id="com.cahoot.eclipse.views.CahootConnectionView"
                ratio="0.5"
                relationship="right"
                relative="org.eclipse.ui.views.TaskList">
-         </view>
-      </perspectiveExtension>
-   </extension>
-   <extension
+			</view>
+		</perspectiveExtension>
+	</extension>
+	<extension
          point="org.eclipse.help.contexts">
-      <contexts
+		<contexts
             file="contexts.xml">
-      </contexts>
-   </extension>
-   <extension
+		</contexts>
+	</extension>
+	<extension
          point="org.eclipse.ui.popupMenus">
-      <objectContribution
+		<objectContribution
             id="cahoot.java.popup.share"
             objectClass="org.eclipse.jdt.core.ICompilationUnit">
-         <menu
+			<menu
                id="cahoot.java.menu"
                label="Cahoot"
                path="additions">
-            <separator
+				<separator
                   name="main">
-            </separator>
-         </menu>
-         <action
+				</separator>
+			</menu>
+			<action
                class="com.cahoot.eclipse.indigo.popup.CollaboratorShareAction"
                id="cahoot.java.shareAction"
                label="Share"
                menubarPath="cahoot.java.menu/main"
                style="push"
                tooltip="Share file">
-         </action>
-      </objectContribution>
-      <objectContribution
+			</action>
+		</objectContribution>
+		<objectContribution
             id="cahoot.package.popup.share"
             objectClass="org.eclipse.jdt.internal.ui.packageview.PackageExplorerPart">
-         <menu
+			<menu
                id="cahoot.package.menu"
                label="Cahoot"
                path="additions">
-            <separator
+				<separator
                   name="main">
-            </separator>
-         </menu>
-         <action
+				</separator>
+			</menu>
+			<action
                class="com.cahoot.eclipse.indigo.popup.CollaboratorShareAction"
                id="cahoot.package.shareAction"
                label="Share"
                menubarPath="cahoot.package.menu/main"
                style="push"
                tooltip="Share file">
-         </action>
-      </objectContribution>
-      <viewerContribution
+			</action>
+		</objectContribution>
+		<viewerContribution
             id="cahoot.editor.popup"
             targetID="#AbstractTextEditorContext">
-         <menu
+			<menu
                id="cahoot.editor.menu"
                label="&amp;Cahoot">
-            <separator
+				<separator
                   name="main">
-            </separator>
-         </menu>
-         <action
+				</separator>
+			</menu>
+			<action
                class="com.cahoot.eclipse.indigo.popup.CollaboratorShareAction"
                id="cahoot.editor.shareAction"
                label="&amp;Share"
                menubarPath="cahoot.editor.menu/main"
                style="push"
                tooltip="Share file">
-         </action>
-      </viewerContribution>
-   </extension>
-
+			</action>
+		</viewerContribution>
+	</extension>
+	<extension
+	point="org.eclipse.ui.actionSets">
+		<actionSet
+		label="Cahoots"
+		visible="true"
+		id="com.cahoot.eclipse.indigo.popup.actionSet">
+			<menu id="cahoots_actionset"
+		   label="Cahoots"
+		   path="window/Cahoots"> 
+				<separator name="slot1"/>
+				<separator name="slot2"/>
+			</menu>
+			<action
+			label="Connect to Cahoots.."
+			class="com.cahoot.eclipse.indigo.popup.Connect"
+			menubarPath="window/cahoots_actionset/slot1"
+			id="com.cahoot.eclipse.indigo.popup.Connect" 
+			style="push"/>
+			<action
+			label="Disconnect from Cahoots..."
+			class="com.cahoot.eclipse.indigo.popup.Disconnect"
+			menubarPath="window/cahoots_actionset/slot2"
+			id="com.cahoot.eclipse.indigo.popup.Disconnect"
+      style="push"/>
+		</actionSet>
+	</extension>
 </plugin>
