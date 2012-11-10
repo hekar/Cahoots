@@ -7,7 +7,7 @@ public class Activator extends AbstractUIPlugin {
 
 	@SuppressWarnings("unused")
 	private static Activator plugin;
-	private String authToken;
+	private static String  authToken;
 
 	@Override
 	public void start(BundleContext context) throws Exception {
@@ -21,12 +21,12 @@ public class Activator extends AbstractUIPlugin {
 		plugin = null;
 	}
 
-	public String getAuthToken() {
+	public static String getAuthToken() {
 		return authToken;
 	}
 
-	public void setAuthToken(String authToken) {
-		this.authToken = authToken;
+	public static void setAuthToken(String authToken) {
+		Activator.authToken = authToken;
 	}
 
 }

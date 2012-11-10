@@ -60,7 +60,7 @@
 						<Embed-Dependency>*;scope=compile|runtime</Embed-Dependency>
 						<Import-Package>!com.google.inject.cglib.asm.util,!net.miginfocom.layout,!sun.misc,*</Import-Package>
 						<Require-Bundle>org.eclipse.ui, org.eclipse.core.runtime, org.scala-ide.scala.library, org.eclipse.core.resources</Require-Bundle>
-						<Bundle-Activator>com.cahoot.eclipse.Activator</Bundle-Activator>
+						<Bundle-Activator>com.cahoots.eclipse.Activator</Bundle-Activator>
 						<Bundle-SymbolicName>cahoot;singleton:=true</Bundle-SymbolicName>
 						<Bundle-ActivationPolicy>lazy</Bundle-ActivationPolicy>
 					</instructions>
