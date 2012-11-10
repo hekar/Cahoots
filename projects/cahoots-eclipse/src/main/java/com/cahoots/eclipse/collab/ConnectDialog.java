@@ -125,6 +125,7 @@ public class ConnectDialog extends Dialog {
 					{
 						String authToken = new String(method.getResponseBody());
 						Activator.setAuthToken(authToken);
+						Activator.setServer(server);
 						shlConnectToCahoots.close();
 					}
 					else

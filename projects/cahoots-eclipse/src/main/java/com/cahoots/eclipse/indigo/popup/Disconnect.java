@@ -7,7 +7,8 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 
-import com.cahoots.eclipse.collab.ConnectDialog;
+import com.cahoots.eclipse.Activator;
+import com.cahoots.eclipse.collab.DisconnectDialog;
 
 public class Disconnect implements IWorkbenchWindowActionDelegate {
 	
@@ -15,9 +16,12 @@ public class Disconnect implements IWorkbenchWindowActionDelegate {
 	
 	@Override
 	public void run(IAction arg0) {
-		ConnectDialog dia = new ConnectDialog(shell, SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL);
+		if(Activator.getAuthToken() == null)
+		{
+			return;
+		}
+		DisconnectDialog dia = new DisconnectDialog(shell, SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL);
 		dia.open();
-		
 	}
 
 	@Override
