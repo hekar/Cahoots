@@ -30,6 +30,11 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="MessageRelay.cs" />
+    <Compile Include="Views\Panes\UsersWindowControl.xaml.cs">
+      <DependentUpon>UsersWindowControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Panes\UsersWindowToolWindow.cs" />
     <Compile Include="Views\Custom\ConnectWindow.xaml.cs">
       <DependentUpon>ConnectWindow.xaml</DependentUpon>
     </Compile>
@@ -134,6 +139,9 @@
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml" />
+    <Reference Include="websocket-sharp">
+      <HintPath>.\websocket-sharp.dll</HintPath>
+    </Reference>
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
@@ -194,12 +202,15 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Button Bitmaps\" />
-    <Folder Include="Views\Panes\" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Views\Panes\UsersWindowControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Views\Custom\ConnectWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

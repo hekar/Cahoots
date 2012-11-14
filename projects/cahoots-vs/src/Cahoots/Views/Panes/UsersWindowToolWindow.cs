@@ -1,4 +1,5 @@
-﻿using System;
+
+using System;
 using System.Collections;
 using System.ComponentModel;
 using System.Drawing;
@@ -7,12 +8,11 @@ using System.Windows;
 using System.Runtime.InteropServices;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.Shell;
-using System.ComponentModel.Design;
 
 namespace Cahoots
 {
 	/// <summary>
-    /// This class implements the tool window UsersWindowToolWindowBase exposed by this package and hosts a user control.
+    /// This class implements the tool window UsersWindowToolWindow exposed by this package and hosts a user control.
     ///
     /// In Visual Studio tool windows are composed of a frame (implemented by the shell) and a pane, 
     /// usually implemented by the package implementer.
@@ -21,15 +21,16 @@ namespace Cahoots
     /// implementation of the IVsUIElementPane interface.
     /// </summary>
     [Guid("c5d2c22e-28af-4fe9-87ed-aee833b7f3d4")]
-    public class UsersWindowToolWindowBase : ToolWindowPane
+    public class UsersWindowToolWindow : UsersWindowToolWindowBase
     {
+
         /// <summary>
         /// Standard constructor for the tool window.
         /// </summary>
-        public UsersWindowToolWindowBase()
-            : base(null)
+        public UsersWindowToolWindow()
         {
-			this.Caption = "Collaborators";
+            base.Content = new UsersWindowControl();
         }
-    }
+
+	}
 }

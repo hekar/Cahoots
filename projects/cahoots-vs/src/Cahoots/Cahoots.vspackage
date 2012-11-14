@@ -9,14 +9,11 @@
               <groupBaseReferencesButtons Id="ffb94219-121c-4be7-be1c-28e2e693fb1d">
                 <buttonMoniker Id="ca47b751-6a39-4668-b172-8b08b504aa2a" />
               </groupBaseReferencesButtons>
-              <groupBaseReferencesButtons Id="83325b73-c645-48b8-b2bc-d38a205ef0ec">
-                <buttonMoniker Id="dc483f4e-4475-4704-8656-bcace9798621" />
-              </groupBaseReferencesButtons>
               <groupBaseReferencesButtons Id="325c1533-778b-44da-a096-9f241f9c0f2c">
                 <buttonMoniker Id="fe7a5839-6de9-4213-9e43-b7e1bdf2e859" />
               </groupBaseReferencesButtons>
-              <groupBaseReferencesButtons Id="517bd9fc-e69d-41f0-8659-a12c86d4f840">
-                <buttonMoniker Id="d90264ab-3bae-4741-8845-8d36b95db153" />
+              <groupBaseReferencesButtons Id="25d59971-a6c7-460b-8183-82ae01e7baf0">
+                <buttonMoniker Id="0de0fc79-649c-4424-aec7-6a47b36fcb26" />
               </groupBaseReferencesButtons>
             </buttons>
           </group>
@@ -25,14 +22,11 @@
               <groupBaseReferencesButtons Id="966238d1-fe9e-4498-896e-36b201665453">
                 <buttonMoniker Id="ca47b751-6a39-4668-b172-8b08b504aa2a" />
               </groupBaseReferencesButtons>
-              <groupBaseReferencesButtons Id="7573b7d1-642a-444c-9e23-8a3772392caa">
-                <buttonMoniker Id="dc483f4e-4475-4704-8656-bcace9798621" />
-              </groupBaseReferencesButtons>
               <groupBaseReferencesButtons Id="859709ea-72eb-4c9a-a46b-7a4aa51d7d60">
                 <buttonMoniker Id="fe7a5839-6de9-4213-9e43-b7e1bdf2e859" />
               </groupBaseReferencesButtons>
-              <groupBaseReferencesButtons Id="d9e098e3-7a74-413a-8dff-e1936df6e003">
-                <buttonMoniker Id="d90264ab-3bae-4741-8845-8d36b95db153" />
+              <groupBaseReferencesButtons Id="4846d26a-94ae-46d1-ac4a-6d37e8aa056a">
+                <buttonMoniker Id="0de0fc79-649c-4424-aec7-6a47b36fcb26" />
               </groupBaseReferencesButtons>
             </buttons>
           </externalGroup>
@@ -41,14 +35,17 @@
           <commandTableHasButtons Id="0ddab5d6-4ae4-4665-b5fd-f10825c3c134">
             <button Id="ca47b751-6a39-4668-b172-8b08b504aa2a" name="ConnectToolbarButton" idNumeric="2" buttonText="Connect" menuText="Connect to Cahoots..." commandName="cmdidConnectToolbarButton" toolTipText="Connect to Cahoots" mod1="0" mod2="0" visibilityConstraints="0" icon="msotcidNewTask" commandFlags="0" />
           </commandTableHasButtons>
-          <commandTableHasButtons Id="fa9dc101-a677-4a88-bb7f-336e8a1b789e">
-            <button Id="dc483f4e-4475-4704-8656-bcace9798621" name="HostToolbarButton" idNumeric="14" buttonText="Start a Collaboration" menuText="Start a Collaboration..." commandName="cmdidHostToolbarButton" toolTipText="Start a Collaboration" mod1="0" mod2="0" visibilityConstraints="0" icon="msotcidCopy" commandFlags="DefaultDisabled" />
-          </commandTableHasButtons>
           <commandTableHasButtons Id="2a1ea2ab-f985-4091-8c28-c7d06a2e4bb3">
             <button Id="fe7a5839-6de9-4213-9e43-b7e1bdf2e859" name="DisconnectToolbarButton" idNumeric="11" buttonText="Disconnect" menuText="Disconnect from Cahoots" commandName="cmdidDisconnectToolbarButton" toolTipText="Disconnect from Cahoots" mod1="0" mod2="0" visibilityConstraints="0" icon="msotcidDeclineInvitation" commandFlags="DefaultDisabled" />
           </commandTableHasButtons>
-          <commandTableHasButtons Id="8ecc81b1-c10a-41b1-8a87-8f9225eb0f65">
-            <button Id="d90264ab-3bae-4741-8845-8d36b95db153" name="StopToolbarButton" idNumeric="15" buttonText="Stop Collaborating" menuText="Stop Collaborating" commandName="cmdidStopToolbarButton" toolTipText="Stop Collaborating" mod1="0" mod2="0" visibilityConstraints="0" icon="msotcidStop" commandFlags="DefaultDisabled" />
+          <commandTableHasButtons Id="d143ec78-ba93-46e5-afad-ff45a53a1675">
+            <button Id="0de0fc79-649c-4424-aec7-6a47b36fcb26" name="UsersToolbarButton" idNumeric="14" buttonText="View Collaborators" menuText="View Collaborators" commandName="cmdidUsersToolbarButton" toolTipText="View Collaborators" mod1="0" mod2="0" visibilityConstraints="0" icon="msotcidHappyFace" commandFlags="0">
+              <toolWindows>
+                <buttonReferencesToolWindows Id="4b69d999-1f74-4ee0-9378-6db12e4526e3">
+                  <toolWindowMoniker Id="3519dca9-6f4a-4f39-896b-b16667665260" />
+                </buttonReferencesToolWindows>
+              </toolWindows>
+            </button>
           </commandTableHasButtons>
         </buttons>
         <menuBases>
@@ -67,7 +64,13 @@
   </commandTable>
   <userInterface>
     <rootHasUserInterface Id="2830826a-4fc8-447b-8a2a-18dffe733be1">
-      <userInterface Id="9dc1a5e9-3609-46a2-99e0-2ff9a7dfd768" />
+      <userInterface Id="9dc1a5e9-3609-46a2-99e0-2ff9a7dfd768">
+        <toolWindows>
+          <userInterfaceHasToolWindows Id="88d1de2b-f3f9-44c2-b3de-60f952d07f94">
+            <toolWindow Id="3519dca9-6f4a-4f39-896b-b16667665260" name="UsersWindow" idNumeric="15" caption="Collaborators" userCodeGenerated="true" style="Tabbed" transient="false" multiInstance="false" height="400" width="250" visibilityConstraints="0" guid="c5d2c22e-28af-4fe9-87ed-aee833b7f3d4" />
+          </userInterfaceHasToolWindows>
+        </toolWindows>
+      </userInterface>
     </rootHasUserInterface>
   </userInterface>
 </root>

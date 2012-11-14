@@ -35,6 +35,8 @@ object MessageRelay {
         }.mapDone { _ =>
           default ! Quit(auth_token)
         }
+        
+        Logger.info(auth_token)
 
         (iteratee,enumerator)
         

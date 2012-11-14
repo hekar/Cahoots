@@ -13,6 +13,7 @@ namespace Cahoots
     using System.Windows.Forms;
     using Cahoots.Services;
     using Microsoft.VisualStudio.Shell;
+using WebSocketSharp;
 
     /// <summary>
     /// Cahoots VSPackage Extension class.
@@ -29,6 +30,8 @@ namespace Cahoots
             this.MenuService =
                     GetService(typeof(IMenuCommandService))
                         as OleMenuCommandService;
+
+            Instance = this;
         }
 
         /// <summary>
@@ -44,6 +47,30 @@ namespace Cahoots
             // find references to the toolbar buttons
             FindToolbarButtons();
         }
+
+        /// <summary>
+        /// Gets the instance.
+        /// </summary>
+        /// <value>
+        /// The instance.
+        /// </value>
+        public static CahootsPackage Instance { get; private set; }
+
+        /// <summary>
+        /// Gets or sets the socket.
+        /// </summary>
+        /// <value>
+        /// The socket.
+        /// </value>
+        private WebSocket Socket { get; set; }
+
+        /// <summary>
+        /// Gets or sets the communication relay.
+        /// </summary>
+        /// <value>
+        /// The communication relay.
+        /// </value>
+        private MessageRelay CommunicationRelay { get; set; }
 
         #region Menu Buttons
 
@@ -61,7 +88,7 @@ namespace Cahoots
         /// <value>
         /// The connect menu button.
         /// </value>
-        private MenuCommand Connect { get; set; }
+        private MenuCommand ConnectButton { get; set; }
 
         /// <summary>
         /// Gets or sets the disconnect menu button.
@@ -69,7 +96,15 @@ namespace Cahoots
         /// <value>
         /// The disconnect menu button.
         /// </value>
-        private MenuCommand Disconnect { get; set; }
+        private MenuCommand DisconnectButton { get; set; }
+
+        /// <summary>
+        /// Gets or sets the users menu button.
+        /// </summary>
+        /// <value>
+        /// The users menu button.
+        /// </value>
+        private MenuCommand UsersButton { get; set; }
 
         /// <summary>
         /// Gets or sets the host menu button.
@@ -77,7 +112,7 @@ namespace Cahoots
         /// <value>
         /// The host menu button.
         /// </value>
-        private MenuCommand Host { get; set; }
+        private MenuCommand HostButton { get; set; }
 
         /// <summary>
         /// Gets or sets the stop menu button.
@@ -85,25 +120,24 @@ namespace Cahoots
         /// <value>
         /// The stop menu button.
         /// </value>
-        private MenuCommand Stop { get; set; }
+        private MenuCommand StopButton { get; set; }
 
         /// <summary>
         /// Finds the toolbar buttons.
         /// </summary>
         private void FindToolbarButtons()
         {
-            this.Connect =
+            this.ConnectButton =
                     this.GetMenuCommand(PkgCmdIDList.ConnectToolbarButton);
-            this.Disconnect =
+            this.DisconnectButton =
                     this.GetMenuCommand(PkgCmdIDList.DisconnectToolbarButton);
-            this.Host = this.GetMenuCommand(PkgCmdIDList.HostToolbarButton);
-            this.Stop = this.GetMenuCommand(PkgCmdIDList.StopToolbarButton);
+            this.UsersButton = this.GetMenuCommand(PkgCmdIDList.UsersToolbarButton);
 
             // we have to set this stuff again, 
             // otherwise it all gets reset to true.
-            this.Stop.Enabled = false;
-            this.Disconnect.Enabled = false;
-            this.Host.Enabled = false;
+            this.DisconnectButton.Enabled = false;
+            //this.Stop.Enabled = false;
+            //this.Host.Enabled = false;
         }
 
         /// <summary>
@@ -133,12 +167,12 @@ namespace Cahoots
         /// Connects the toolbar button execute handler.
         /// </summary>
         /// <param name="sender">The sender.</param>
-        /// <param name="e">
+        /// <param name="evt">
         ///   The <see cref="EventArgs" /> instance containing the event data.
         /// </param>
         protected override void ConnectToolbarButtonExecuteHandler(
                 object sender,
-                EventArgs e)
+                EventArgs evt)
         {
             // TODO: make this async
             var window = new ConnectWindow();
@@ -155,9 +189,17 @@ namespace Cahoots
                 // authenticate
                 if (this.AuthenticationService.Authenticate())
                 {
-                    this.Connect.Enabled = false;
-                    this.Disconnect.Enabled = true;
-                    this.Host.Enabled = true;
+                    this.ConnectButton.Enabled = false;
+                    this.DisconnectButton.Enabled = true;
+                    //this.Host.Enabled = true;
+
+                    this.Socket = new WebSocket("ws://localhost:9000/app/message?auth_token=" + this.AuthenticationService.Token);
+
+                    this.CommunicationRelay = new MessageRelay(
+                            this.Socket,
+                            new UsersService(this.Socket.Send));
+
+                    this.Socket.Connect();
                 }
                 else
                 {
@@ -170,7 +212,7 @@ namespace Cahoots
 
                     if (retry == DialogResult.Retry)
                     {
-                        ConnectToolbarButtonExecuteHandler(sender, e);
+                        ConnectToolbarButtonExecuteHandler(sender, evt);
                     }
                 }
             }
@@ -200,13 +242,34 @@ namespace Cahoots
                 bg.DoWork +=new DoWorkEventHandler(
                     (s, ev) => this.AuthenticationService.Deauthenticate());
                 bg.RunWorkerAsync();
-                this.Connect.Enabled = true;
-                this.Disconnect.Enabled = false;
-                this.Host.Enabled = false;
-                this.Stop.Enabled = false;
+                this.ConnectButton.Enabled = true;
+                this.DisconnectButton.Enabled = false;
+                //this.Host.Enabled = false;
+                //this.Stop.Enabled = false;
+
+                this.Socket.Send(new byte[] { 0x1A });
+                this.Socket.Close();
+                this.Socket.Dispose();
+                this.Socket = null;
             }
         }
 
         #endregion
+
+        protected override void Dispose(bool disposing)
+        {
+            if (this.Socket != null)
+            {
+                if (this.Socket.IsAlive)
+                {
+                    this.Socket.Send(new byte[] { 0x1A });
+                    this.Socket.Close();
+                }
+
+                this.Socket.Dispose();
+            }
+
+            base.Dispose(disposing);
+        }
     }
 }

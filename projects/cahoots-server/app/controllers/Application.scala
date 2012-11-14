@@ -13,7 +13,7 @@ import models._
 object Application extends Controller {
 
   def index = Action {
-    Ok(html.application.index())
+    Ok("")
   }
 
   def authenticate = Action { request =>
@@ -60,7 +60,7 @@ object Application extends Controller {
   def deauthenticate = Action { request =>
     val token = request.body.asFormUrlEncoded.get.get("auth_token").get.apply(0)
     
-     var users:ListBuffer[ActiveUser] = Cache.get("users").asInstanceOf[ListBuffer[ActiveUser]]
+    var users:ListBuffer[ActiveUser] = Cache.get("users").asInstanceOf[ListBuffer[ActiveUser]]
     
     if(users == null)
     {
@@ -76,6 +76,11 @@ object Application extends Controller {
     }
     
     Ok("")
+  }
+  
+  def test = Action { implicit request =>
+    // not an error!
+    Ok(views.html.application.index("3F2504E0-4F89-11D3-9A0C-0305E82C3301"))
   }
   
   /**
