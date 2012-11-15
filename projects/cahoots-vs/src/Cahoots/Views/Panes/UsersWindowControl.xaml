@@ -8,9 +8,9 @@
              mc:Ignorable="d" 
              d:DesignHeight="400" d:DesignWidth="300"
              Name="UsersWindow"
-             Background="{DynamicResource {x:Static vsfx:VsBrushes.ToolWindowBackgroundKey}}">
+             Background="White">
     <Grid>
-        <DataGrid AutoGenerateColumns="False" HorizontalAlignment="Stretch" Name="dataGrid1" VerticalAlignment="Stretch">
+        <DataGrid AutoGenerateColumns="False" HorizontalAlignment="Stretch" Name="dataGrid1" VerticalAlignment="Stretch" Background="White">
             <DataGrid.Columns>
                 <DataGridTemplateColumn Header="User" Width="*" IsReadOnly="True">
                     <DataGridTemplateColumn.CellTemplate>

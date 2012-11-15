@@ -35,12 +35,12 @@ object Application extends Controller {
       users.remove(stored_user)
     }
     
-    var token:String = Cache.get(user + pass).asInstanceOf[String]
+    var token:String = Cache.get(user).asInstanceOf[String]
     
     if (token == null)
     {
       token = java.util.UUID.randomUUID().toString()
-      Cache.set(user + pass, token)
+      Cache.set(user, token)
     }
       
     if (token != null)
@@ -67,26 +67,32 @@ object Application extends Controller {
       users = new ListBuffer[ActiveUser]
     }
     
-    var stored_user = users.findIndexOf(x => x.token == token)
-    
+    val stored_user = users.findIndexOf(x => x.token == token)
+
     if(stored_user != -1)
     {
       Logger.info("User logged out with %s".format(token))
+      val username = users(stored_user).username
+      Cache.set(username, null)
       users.remove(stored_user)
     }
     
     Ok("")
   }
   
-  def test = Action { implicit request =>
-    // not an error!
-    Ok(views.html.application.index("3F2504E0-4F89-11D3-9A0C-0305E82C3301"))
-  }
-  
   /**
    * Handles the websocket connection.
    */
   def message(auth_token: String) = WebSocket.async[JsValue] { request  =>
-    MessageRelay.join(auth_token)
+    val users:ListBuffer[ActiveUser] = Cache.get("users").asInstanceOf[ListBuffer[ActiveUser]]
+    val stored_user = users.findIndexOf(x => x.token == auth_token)
+
+    if (stored_user == -1) {
+      throw new Exception("Not Validated")
+    }
+
+    val user = users(stored_user)
+
+    MessageRelay.join(user.username)
   }
 }

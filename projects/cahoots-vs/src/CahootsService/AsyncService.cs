@@ -27,20 +27,20 @@ namespace Cahoots.Services
         /// Initializes a new instance of the
         /// <see cref="AsyncService" /> class.
         /// </summary>
+        /// <param name="identifer">The identifer.</param>
         /// <param name="messageSender">The message sender.</param>
         /// <param name="dataSender">The data sender.</param>
-        public AsyncService(SendMessage messageSender, SendData dataSender)
+        public AsyncService(
+                string identifer,
+                SendMessage messageSender,
+                SendData dataSender)
         {
-            if (messageSender == null)
+            if (string.IsNullOrWhiteSpace(identifer))
             {
-                throw new ArgumentNullException("messageSender");
+                throw new ArgumentNullException("identifer");
             }
 
-            if (dataSender == null)
-            {
-                throw new ArgumentNullException("dataSender");
-            }
-
+            this.ServiceIdentifier = identifer;
             this.MessageSender = messageSender;
             this.DataSender = dataSender;
         }
@@ -67,13 +67,14 @@ namespace Cahoots.Services
         /// <value>
         /// The service identifier.
         /// </value>
-        public string ServiceIdentifier { get; protected set; }
+        public string ServiceIdentifier { get; private set; }
 
         /// <summary>
         /// Processes the JSON message.
         /// </summary>
+        /// <param name="type">The message type.</param>
         /// <param name="json">The json.</param>
-        public abstract void ProcessMessage(string json);
+        public abstract void ProcessMessage(string type, string json);
 
         /// <summary>
         /// Sends the data.

@@ -12,7 +12,6 @@ GET     /                                       controllers.Application.index
 # ~~~~~~~~~~~
 POST     /app/login                             controllers.Application.authenticate
 POST     /app/logout                            controllers.Application.deauthenticate
-GET		 /app/test								controllers.Application.test
 GET 	 /app/message							controllers.Application.message(auth_token)
 
 # ~~~~~~~~~~~

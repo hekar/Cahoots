@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Collections.ObjectModel;
 using Cahoots.Services.Models;
+using Cahoots.Services.MessageModels;
 
 namespace Cahoots.Services
 {
@@ -14,8 +15,10 @@ namespace Cahoots.Services
         /// <see cref="UsersService" /> class.
         /// </summary>
         /// <param name="messageSender">The message sender.</param>
-        public UsersService(SendMessage messageSender) : base(messageSender, null)
+        public UsersService(SendMessage messageSender)
+                                        : base("users", messageSender, null)
         {
+            this.Users = new ObservableCollection<Collaborator>();
         }
 
         /// <summary>
@@ -29,10 +32,64 @@ namespace Cahoots.Services
         /// <summary>
         /// Processes the JSON message.
         /// </summary>
+        /// <param name="type">The message type.</param>
         /// <param name="json">The json.</param>
-        public override void ProcessMessage(string json)
+        public override void ProcessMessage(string type, string json)
         {
             // TODO: Implement...
+            switch(type)
+            {
+                case "all":
+                    var all =
+                        JsonHelper.Deserialize<ReceiveAllUsersMessage>(json);
+                    this.LoadAllUsers(all);
+                    break;
+
+                case "status":
+                    var update =
+                        JsonHelper.Deserialize<ReceiveUserStatusMessage>(json);
+                    this.UpdateUserStatus(update);
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// Loads all users.
+        /// </summary>
+        /// <param name="message">The message.</param>
+        public void LoadAllUsers(ReceiveAllUsersMessage message)
+        {
+            if (message.Users != null)
+            {
+                this.Users.Clear();
+
+                foreach (var user in message.Users)
+                {
+                    this.Users.Add(user);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Updates the user status.
+        /// </summary>
+        /// <param name="message">The message.</param>
+        public void UpdateUserStatus(ReceiveUserStatusMessage message)
+        {
+            var user = this.Users.FirstOrDefault(u => u.Name == message.User);
+
+            if (user != null)
+            {
+                user.Status = message.Status;
+            }
+            else
+            {
+                this.Users.Add(new Collaborator()
+                    {
+                        Name = message.User,
+                        Status = message.Status
+                    });
+            }
         }
 
         /// <summary>

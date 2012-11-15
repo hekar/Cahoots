@@ -1,4 +1,3 @@
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +11,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Cahoots.Services;
+using System.Collections.Specialized;
 
 namespace Cahoots
 {
@@ -20,17 +21,28 @@ namespace Cahoots
     /// </summary>
     public partial class UsersWindowControl : UserControl
     {
+        /// <summary>
+        /// Initializes a new instance of the
+        /// <see cref="UsersWindowControl" /> class.
+        /// </summary>
         public UsersWindowControl()
         {
             InitializeComponent();
+            if (CahootsPackage.Instance != null)
+            {
+                this.dataGrid1.ItemsSource = CahootsPackage.Instance.ActiveUsers;
+                CahootsPackage.Instance.ActiveUsers.CollectionChanged += PropertyChanged;
+            }
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1300:SpecifyMessageBoxOptions")]
-        private void button1_Click(object sender, RoutedEventArgs e)
+        /// <summary>
+        /// Properties the changed.
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The <see cref="NotifyCollectionChangedEventArgs" /> instance containing the event data.</param>
+        public void PropertyChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            MessageBox.Show(string.Format(System.Globalization.CultureInfo.CurrentUICulture, "We are inside {0}.button1_Click()", this.ToString()),
-                            "UsersWindow");
-
+            this.dataGrid1.ItemsSource = CahootsPackage.Instance.ActiveUsers;
         }
     }
 }

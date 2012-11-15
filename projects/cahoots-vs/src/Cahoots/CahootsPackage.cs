@@ -14,6 +14,8 @@ namespace Cahoots
     using Cahoots.Services;
     using Microsoft.VisualStudio.Shell;
 using WebSocketSharp;
+using Cahoots.Services.Models;
+using System.Collections.ObjectModel;
 
     /// <summary>
     /// Cahoots VSPackage Extension class.
@@ -70,7 +72,19 @@ using WebSocketSharp;
         /// <value>
         /// The communication relay.
         /// </value>
-        private MessageRelay CommunicationRelay { get; set; }
+        public MessageRelay CommunicationRelay { get; private set; }
+
+        #region Collections
+
+        /// <summary>
+        /// Gets or sets the active users.
+        /// </summary>
+        /// <value>
+        /// The active users.
+        /// </value>
+        public ObservableCollection<Collaborator> ActiveUsers { get; private set; }
+
+        #endregion
 
         #region Menu Buttons
 
@@ -174,7 +188,7 @@ using WebSocketSharp;
                 object sender,
                 EventArgs evt)
         {
-            // TODO: make this async
+            // TODO: make this async???
             var window = new ConnectWindow();
             if (window.ShowDialog() == true)
             {
@@ -193,8 +207,9 @@ using WebSocketSharp;
                     this.DisconnectButton.Enabled = true;
                     //this.Host.Enabled = true;
 
-                    this.Socket = new WebSocket("ws://localhost:9000/app/message?auth_token=" + this.AuthenticationService.Token);
-
+                    // TODO: make this based on something legit
+                    this.Socket = new WebSocket(
+                            "ws://localhost:9000/app/message?auth_token=" + this.AuthenticationService.Token);
                     this.CommunicationRelay = new MessageRelay(
                             this.Socket,
                             new UsersService(this.Socket.Send));
@@ -255,6 +270,20 @@ using WebSocketSharp;
         }
 
         #endregion
+
+        /// <summary>
+        /// Initializes the messaging system.
+        /// </summary>
+        private void InitializeMessagingSystem()
+        {
+            var userService = new UsersService(this.Socket.Send);
+
+            this.CommunicationRelay = new MessageRelay(
+                    this.Socket,
+                    userService);
+
+            this.ActiveUsers = userService.Users;
+        }
 
         protected override void Dispose(bool disposing)
         {

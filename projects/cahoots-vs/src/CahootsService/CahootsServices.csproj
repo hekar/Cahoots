@@ -33,6 +33,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -48,6 +49,10 @@
     <Compile Include="AuthenticationService.cs" />
     <Compile Include="Contracts\IAuthenticationService.cs" />
     <Compile Include="Contracts\IAsyncService.cs" />
+    <Compile Include="JsonHelper.cs" />
+    <Compile Include="MessageModels\MessageBase.cs" />
+    <Compile Include="MessageModels\Users\ReceiveAllUsersMessage.cs" />
+    <Compile Include="MessageModels\Users\ReceiveUserStatusMessage.cs" />
     <Compile Include="Models\Collaborator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UsersService.cs" />

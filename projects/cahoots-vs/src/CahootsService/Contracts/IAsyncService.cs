@@ -19,6 +19,6 @@ namespace Cahoots.Services
         /// Processes the JSON message.
         /// </summary>
         /// <param name="json">The json.</param>
-        void ProcessMessage(string json);
+        void ProcessMessage(string type, string json);
     }
 }

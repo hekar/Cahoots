@@ -4,9 +4,13 @@ using System.Linq;
 using System.Text;
 using WebSocketSharp;
 using Cahoots.Services;
+using Cahoots.Services.MessageModels;
 
 namespace Cahoots
 {
+    /// <summary>
+    /// Class for relaying JSON messages to other services.
+    /// </summary>
     public class MessageRelay : IDisposable
     {
         /// <summary>
@@ -49,7 +53,7 @@ namespace Cahoots
         /// <value>
         /// The services.
         /// </value>
-        private Dictionary<string, IAsyncService> Services { get; set; }
+        public Dictionary<string, IAsyncService> Services { get; private set; }
 
         /// <summary>
         /// Relays the message.
@@ -61,13 +65,14 @@ namespace Cahoots
         /// </param>
         private void RelayMessage(object sender, MessageEventArgs e)
         {
-            // find identifier
-            string identifier = "user"; // e.Data, blah blah blah
+            var msg = JsonHelper.Deserialize<MessageBase>(e.Data);
+            var identifier = msg.Service;
+            var type = msg.MessageType;
 
             if (this.Services.ContainsKey(identifier))
             {
                 var service = this.Services[identifier];
-                service.ProcessMessage(e.Data);
+                service.ProcessMessage(type, e.Data);
             }
         }
 
