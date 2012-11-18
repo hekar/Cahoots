@@ -7,6 +7,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 
+import com.cahoots.eclipse.Activator;
 import com.cahoots.eclipse.collab.ConnectDialog;
 
 public class Connect implements IWorkbenchWindowActionDelegate {
@@ -15,8 +16,11 @@ public class Connect implements IWorkbenchWindowActionDelegate {
 	
 	@Override
 	public void run(IAction arg0) {
-		ConnectDialog dia = new ConnectDialog(shell, SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL);
-		dia.open();
+		if(Activator.getAuthToken() == null)
+		{
+			ConnectDialog dia = new ConnectDialog(shell, SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL);
+			dia.open();
+		}
 		
 	}
 
@@ -33,7 +37,6 @@ public class Connect implements IWorkbenchWindowActionDelegate {
 	@Override
 	public void init(IWorkbenchWindow window) {
 		shell = window.getShell();
-		
 	}
 
 }

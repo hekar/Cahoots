@@ -11,7 +11,8 @@ retrieveManaged := true
 
 resolvers ++= Seq("snapshots" at "http://oss.sonatype.org/content/repositories/snapshots",
     "releases" at "http://oss.sonatype.org/content/repositories/releases",
-    "Typesafe Repository" at "http://repo.typesafe.com/typesafe/releases/")
+    "Typesafe Repository" at "http://repo.typesafe.com/typesafe/releases/",
+	"ibiblio" at "http://mirrors.ibiblio.org/maven/")
 
 libraryDependencies += "com.miglayout" % "miglayout-swt" % "4.2"
 
@@ -24,6 +25,10 @@ libraryDependencies += "org.slf4j" % "slf4j-api" % "1.6.2"
 libraryDependencies += "com.google.inject" % "guice" % "3.0"
 
 libraryDependencies += "com.google.guava" % "guava" % "13.0.1"
+
+libraryDependencies += "org.eclipse.jetty" % "jetty-websocket" % "7.6.8.v20121106"
+
+libraryDependencies += "com.google.code.gson" % "gson" % "2.2.2"
 
 unmanagedJars in Compile <++= baseDirectory map { base =>
   val baseDirectories = (base / "lib") +++

@@ -2,6 +2,9 @@ package com.cahoots.eclipse;
 
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
+import org.eclipse.jetty.websocket.WebSocketClientFactory;
+import org.eclipse.jetty.websocket.WebSocketClient;
+import com.cahoots.websocket.CahootsSocket;
 
 public class Activator extends AbstractUIPlugin {
 
@@ -14,6 +17,16 @@ public class Activator extends AbstractUIPlugin {
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		plugin = this;
+
+        WebSocketClientFactory factory = new WebSocketClientFactory();
+        factory.setBufferSize(4096);
+        factory.start();
+        
+        WebSocketClient client = factory.newWebSocketClient();
+        client.setMaxIdleTime(30000);
+        
+        CahootsSocket.getInstance().setClient(client);
+		
 	}
 
 	@Override

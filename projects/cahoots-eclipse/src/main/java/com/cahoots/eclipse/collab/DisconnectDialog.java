@@ -17,6 +17,7 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 
 import com.cahoots.eclipse.Activator;
+import com.cahoots.websocket.CahootsSocket;
 
 public class DisconnectDialog extends Dialog {
 
@@ -79,8 +80,8 @@ public class DisconnectDialog extends Dialog {
 					int statusCode = client.executeMethod(method);
 					if(statusCode == 200)
 					{
-						String authToken = new String(method.getResponseBody());
-						Activator.setAuthToken(authToken);
+						Activator.setAuthToken(null);
+						CahootsSocket.getInstance().disconnect();
 						shell.close();
 					}
 					else

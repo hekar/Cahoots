@@ -19,6 +19,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
 import com.cahoots.eclipse.Activator;
+import com.cahoots.websocket.CahootsSocket;
 
 public class ConnectDialog extends Dialog {
 
@@ -126,6 +127,9 @@ public class ConnectDialog extends Dialog {
 						String authToken = new String(method.getResponseBody());
 						Activator.setAuthToken(authToken);
 						Activator.setServer(server);
+
+						CahootsSocket.getInstance().connect(authToken);
+						
 						shlConnectToCahoots.close();
 					}
 					else
