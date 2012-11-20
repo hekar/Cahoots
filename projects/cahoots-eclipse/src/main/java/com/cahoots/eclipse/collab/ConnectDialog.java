@@ -85,7 +85,7 @@ public class ConnectDialog extends Dialog {
 		lblNewLabel_1.setText("Server:");
 		
 		final Combo cb_server = new Combo(shlConnectToCahoots, SWT.NONE);
-		cb_server.setItems(new String[] {"http://localhost:9000"});
+		cb_server.setItems(new String[] {"localhost:9000"});
 		cb_server.setBounds(94, 58, 259, 23);
 		cb_server.select(0);
 		
@@ -113,7 +113,7 @@ public class ConnectDialog extends Dialog {
 				String server = cb_server.getText();
 				
 				HttpClient client = new HttpClient();
-				PostMethod method = new PostMethod( server + "/app/login");
+				PostMethod method = new PostMethod( "http://" + server + "/app/login");
 				List<NameValuePair> data = new LinkedList<NameValuePair>();
 				data.add( new NameValuePair("username", username));
 				data.add( new NameValuePair("password", password));
@@ -128,7 +128,7 @@ public class ConnectDialog extends Dialog {
 						Activator.setAuthToken(authToken);
 						Activator.setServer(server);
 
-						CahootsSocket.getInstance().connect(authToken);
+						CahootsSocket.getInstance().connect(server, authToken);
 						
 						shlConnectToCahoots.close();
 					}

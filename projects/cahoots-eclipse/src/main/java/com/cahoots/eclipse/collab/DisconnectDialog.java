@@ -70,7 +70,7 @@ public class DisconnectDialog extends Dialog {
 				//TODO move this stuff outside the UI thread
 				
 				HttpClient client = new HttpClient();
-				PostMethod method = new PostMethod( Activator.getServer() + "/app/logout");
+				PostMethod method = new PostMethod( "http://" + Activator.getServer() + "/app/logout");
 				List<NameValuePair> data = new LinkedList<NameValuePair>();
 				data.add( new NameValuePair("auth_token", Activator.getAuthToken()));
 				

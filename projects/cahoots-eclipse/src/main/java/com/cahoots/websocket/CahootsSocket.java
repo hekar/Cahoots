@@ -103,10 +103,10 @@ public class CahootsSocket implements WebSocket.OnTextMessage, WebSocket.OnBinar
 		connection = null;
     }
 	
-	public void connect(String authToken) throws InterruptedException, ExecutionException, IOException, URISyntaxException
+	public void connect(String server, String authToken) throws InterruptedException, ExecutionException, IOException, URISyntaxException
     {
         disconnect();
-        connection = client.open(new URI("ws://localhost:9000/app/message?auth_token=" + authToken), this).get();
+        connection = client.open(new URI("ws://"+server+"/app/message?auth_token=" + authToken), this).get();
         for(ConnectEventListener listener : connectListeners)
         {
         	listener.connected(new ConnectEvent());
