@@ -9,8 +9,13 @@ import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 
 import com.cahoots.eclipse.Activator;
 import com.cahoots.eclipse.collab.ConnectDialog;
+import com.cahoots.events.ConnectEvent;
+import com.cahoots.events.ConnectEventListener;
+import com.cahoots.events.DisconnectEvent;
+import com.cahoots.events.DisconnectEventListener;
+import com.cahoots.websocket.CahootsSocket;
 
-public class Connect implements IWorkbenchWindowActionDelegate {
+public class Connect implements IWorkbenchWindowActionDelegate, ConnectEventListener, DisconnectEventListener {
 	
 	private Shell shell = null;
 	
@@ -36,7 +41,19 @@ public class Connect implements IWorkbenchWindowActionDelegate {
 
 	@Override
 	public void init(IWorkbenchWindow window) {
+		CahootsSocket.getInstance().addDisconnectEventListener(this);
+		CahootsSocket.getInstance().addConnectEventListener(this);
 		shell = window.getShell();
+	}
+
+	@Override
+	public void disconnected(DisconnectEvent event) {
+		//TODO enable button
+	}
+
+	@Override
+	public void connected(ConnectEvent event) {
+		//TODO disable button
 	}
 
 }

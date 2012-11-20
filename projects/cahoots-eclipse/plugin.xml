@@ -14,7 +14,7 @@
 				<separator name="slot2"/>
 			</menu>
 			<action
-			label="Connect to Cahoots.."
+			label="Connect to Cahoots..."
 			class="com.cahoots.eclipse.indigo.popup.Connect"
 			menubarPath="window/cahoots_actionset/slot1"
 			id="com.cahoots.eclipse.indigo.popup.Connect" 

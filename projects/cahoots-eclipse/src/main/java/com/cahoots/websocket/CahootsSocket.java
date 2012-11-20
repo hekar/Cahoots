@@ -13,6 +13,8 @@ import java.util.concurrent.atomic.AtomicLong;
 import org.eclipse.jetty.websocket.WebSocket;
 import org.eclipse.jetty.websocket.WebSocketClient;
 
+import com.cahoots.events.ConnectEvent;
+import com.cahoots.events.ConnectEventListener;
 import com.cahoots.events.DisconnectEvent;
 import com.cahoots.events.DisconnectEventListener;
 import com.cahoots.events.UserChangeEvent;
@@ -34,6 +36,7 @@ public class CahootsSocket implements WebSocket.OnTextMessage, WebSocket.OnBinar
     
     private List<UserChangeEventListener> loginListeners = new ArrayList<UserChangeEventListener>();
     private List<DisconnectEventListener> disconnectListeners = new ArrayList<DisconnectEventListener>();
+    private List<ConnectEventListener> connectListeners = new ArrayList<ConnectEventListener>();
     
 
     private CahootsSocket(){}
@@ -107,6 +110,10 @@ public class CahootsSocket implements WebSocket.OnTextMessage, WebSocket.OnBinar
     {
         disconnect();
         connection = client.open(new URI("ws://localhost:9000/app/message?auth_token=" + authToken), this).get();
+        for(ConnectEventListener listener : connectListeners)
+        {
+        	listener.connected(new ConnectEvent());
+        }
         
     }
 	
@@ -137,6 +144,11 @@ public class CahootsSocket implements WebSocket.OnTextMessage, WebSocket.OnBinar
 	public void addDisconnectEventListener(DisconnectEventListener listener)
 	{
 		disconnectListeners.add(listener);
+	}
+
+	public void addConnectEventListener(ConnectEventListener listener) {
+		connectListeners.add(listener);
+		
 	}
 
 }

@@ -9,8 +9,12 @@ import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 
 import com.cahoots.eclipse.Activator;
 import com.cahoots.eclipse.collab.DisconnectDialog;
+import com.cahoots.events.ConnectEvent;
+import com.cahoots.events.ConnectEventListener;
+import com.cahoots.events.DisconnectEvent;
+import com.cahoots.events.DisconnectEventListener;
 
-public class Disconnect implements IWorkbenchWindowActionDelegate {
+public class Disconnect implements IWorkbenchWindowActionDelegate, ConnectEventListener, DisconnectEventListener {
 	
 	private Shell shell = null;
 	
@@ -37,6 +41,18 @@ public class Disconnect implements IWorkbenchWindowActionDelegate {
 	@Override
 	public void init(IWorkbenchWindow window) {
 		shell = window.getShell();
+		
+	}
+
+	@Override
+	public void disconnected(DisconnectEvent event) {
+		//TODO disable button
+		
+	}
+
+	@Override
+	public void connected(ConnectEvent event) {
+		// TODO enable button
 		
 	}
 
