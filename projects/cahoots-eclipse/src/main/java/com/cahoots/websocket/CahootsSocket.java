@@ -111,7 +111,6 @@ public class CahootsSocket implements WebSocket.OnTextMessage, WebSocket.OnBinar
         {
         	listener.connected(new ConnectEvent());
         }
-        
     }
 	
 	public void send(String message) throws IOException
