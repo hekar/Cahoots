@@ -1,7 +1,7 @@
 #!/usr/bin/python
 #
 # Requires:
-#   https://github.com/liris/websocket-client - install from source released version if buggy
+#   https://github.com/liris/websocket-client - install from source released version is buggy
 #   http://docs.python-requests.org/en/latest/
 #
 
