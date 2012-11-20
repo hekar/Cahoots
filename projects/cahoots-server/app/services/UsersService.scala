@@ -55,8 +55,13 @@ class UsersService(
       Seq(
         "service" -> JsString("users"),
         "type" -> JsString("status"),
-        "user" -> JsString(user),
-        "status" -> JsString("online")
+        "user" -> JsObject(
+          Seq(
+            "name"  -> JsString( user ),
+            "status" -> JsString("online"),
+            "role" -> JsString("none")
+          )
+        )
       )
     ))
   }
@@ -68,8 +73,13 @@ class UsersService(
       Seq(
         "service" -> JsString("users"),
         "type" -> JsString("status"),
-        "user" -> JsString(user),
-        "status" -> JsString("offline")
+        "user" -> JsObject(
+          Seq(
+            "name"  -> JsString( user ),
+            "status" -> JsString("offline"),
+            "role" -> JsString("none")
+          )
+        )
       )
     ))
   }

@@ -82,12 +82,9 @@ public class CahootsSocket implements WebSocket.OnTextMessage, WebSocket.OnBinar
         	else if ("status".equals(base.type))
         	{
         		ReceiveUserStatusMessage msg = gson.fromJson(message, ReceiveUserStatusMessage.class);
-        		Collaborator c = new Collaborator();
-        		c.status = msg.status;
-        		c.name = msg.user;
         		for(UserChangeEventListener listener: loginListeners)
 				{
-					listener.UserLoginEvent(new UserChangeEvent(c));
+					listener.UserLoginEvent(new UserChangeEvent(msg.user));
 				}
         	}
         }
