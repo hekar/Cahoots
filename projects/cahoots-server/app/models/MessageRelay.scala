@@ -96,7 +96,8 @@ class MessageRelay extends Actor {
     case Quit(username) => {
       // this should call UsersService.leave somehow...
       members = members - username
-      this.services("users").asInstanceOf[UsersService]
+      this.services("users").asInstanceOf[UsersService].leave(username)
+
     }
     
   }
