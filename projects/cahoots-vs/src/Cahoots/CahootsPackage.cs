@@ -7,15 +7,16 @@
 namespace Cahoots
 {
     using System;
+    using System.Collections.ObjectModel;
     using System.ComponentModel;
     using System.ComponentModel.Design;
     using System.Runtime.InteropServices;
     using System.Windows.Forms;
+
     using Cahoots.Services;
+    using Cahoots.Services.Models;
     using Microsoft.VisualStudio.Shell;
-using WebSocketSharp;
-using Cahoots.Services.Models;
-using System.Collections.ObjectModel;
+    using WebSocketSharp;
 
     /// <summary>
     /// Cahoots VSPackage Extension class.
@@ -34,6 +35,7 @@ using System.Collections.ObjectModel;
                         as OleMenuCommandService;
 
             Instance = this;
+            this.ActiveUsers = new ObservableCollection<Collaborator>();
         }
 
         /// <summary>

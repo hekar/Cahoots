@@ -76,18 +76,18 @@ namespace Cahoots.Services
         /// <param name="message">The message.</param>
         public void UpdateUserStatus(ReceiveUserStatusMessage message)
         {
-            var user = this.Users.FirstOrDefault(u => u.Name == message.User);
+            var user = this.Users.FirstOrDefault(u => u.Name == message.User.Name);
 
             if (user != null)
             {
-                user.Status = message.Status;
+                user.Status = message.User.Status;
             }
             else
             {
                 this.Users.Add(new Collaborator()
                     {
-                        Name = message.User,
-                        Status = message.Status
+                        Name = message.User.Name,
+                        Status = message.User.Status
                     });
             }
         }
