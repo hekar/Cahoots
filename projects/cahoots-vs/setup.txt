@@ -15,3 +15,5 @@ Make sure "Cahoots" is the StartUp project
 Right Click the Cahoots project, select Properties.  Click the debug tab.
 Select "Start external program" and point it to your Visual Studio 2010 devenv.exe file (Common7\IDE\devenv.exe)
 Add command line arguments: /rootsuffix Exp
+
+Please ignore this line.
