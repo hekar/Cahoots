@@ -21,6 +21,7 @@ namespace Cahoots.Ext.View
         {
             NotifyCollectionChangedEventHandler CollectionChanged = this.CollectionChanged;
             if (CollectionChanged != null)
+            {
                 foreach (NotifyCollectionChangedEventHandler nh in CollectionChanged.GetInvocationList())
                 {
                     DispatcherObject dispObj = nh.Target as DispatcherObject;
@@ -38,6 +39,7 @@ namespace Cahoots.Ext.View
                     }
                     nh.Invoke(this, e);
                 }
+            }
         }
     }
 }

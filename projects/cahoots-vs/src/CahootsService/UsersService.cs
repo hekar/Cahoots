@@ -99,6 +99,7 @@ namespace Cahoots.Services
             if (user != null)
             {
                 user.Status = collaborator.Status;
+                user.ForceRefresh("Status");
             }
             else
             {

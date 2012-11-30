@@ -54,6 +54,7 @@
     <Compile Include="MessageModels\Users\ReceiveAllUsersMessage.cs" />
     <Compile Include="MessageModels\Users\ReceiveUserStatusMessage.cs" />
     <Compile Include="Models\Collaborator.cs" />
+    <Compile Include="Models\ModelBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UsersService.cs" />
     <Compile Include="ViewModels\UsersViewModel.cs" />

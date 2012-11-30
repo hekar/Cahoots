@@ -1,13 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Runtime.Serialization;
+﻿// ----------------------------------------------------------------------
+// <copyright file="Collaborator.cs" company="Codeora">
+//     Copyright 2012. All rights reserved
+// </copyright>
+// ------------------------------------------------------------------------
 
 namespace Cahoots.Services.Models
 {
+    using System.ComponentModel;
+    using System.Runtime.Serialization;
+
     [DataContract]
-    public class Collaborator
+    public class Collaborator : ModelBase
     {
         [DataMember(Name = "name")]
         public string Name { get; set; }
