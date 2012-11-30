@@ -85,6 +85,7 @@ namespace Cahoots.Services
         /// <param name="message">The message.</param>
         public void UpdateUserStatus(ReceiveUserStatusMessage message)
         {
+            this.UpdateCollaborator(message.User);
         }
 
         /// <summary>
