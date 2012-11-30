@@ -72,11 +72,9 @@ namespace Cahoots.Services
         {
             if (message.Users != null)
             {
-                this.ViewModel.Users.Clear();
-
                 foreach (var user in message.Users)
                 {
-                    this.ViewModel.Users.Add(user);
+                    this.UpdateCollaborator(user);
                 }
             }
         }
@@ -87,20 +85,28 @@ namespace Cahoots.Services
         /// <param name="message">The message.</param>
         public void UpdateUserStatus(ReceiveUserStatusMessage message)
         {
-            var user = this.ViewModel.Users.FirstOrDefault(u => u.Name == message.User.Name);
+        }
+
+        /// <summary>
+        /// Updates the collaborator.
+        /// </summary>
+        /// <param name="collaborator">The collaborator.</param>
+        private void UpdateCollaborator(Collaborator collaborator)
+        {
+            var user = this.ViewModel.Users.FirstOrDefault(u => u.Name == collaborator.Name);
 
             if (user != null)
             {
-                user.Status = message.User.Status;
+                user.Status = collaborator.Status;
             }
             else
             {
                 this.ViewModel.Users.Add(new Collaborator()
-                    {
-                        Name = message.User.Name,
-                        Role = message.User.Role,
-                        Status = message.User.Status
-                    });
+                {
+                    Name = collaborator.Name,
+                    Role = collaborator.Role,
+                    Status = collaborator.Status
+                });
             }
         }
 
