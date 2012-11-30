@@ -75,7 +75,6 @@ object Application extends Controller {
       val username = users(stored_user).username
       Cache.set(username, null) //TODO is this used anywhere else?
       users.remove(stored_user)
-      MessageRelay.join(username)
     }
     Cache.set("users", users)
 
