@@ -1,13 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using WebSocketSharp;
-using Cahoots.Services;
-using Cahoots.Services.MessageModels;
+﻿// ----------------------------------------------------------------------
+// <copyright file="MessageRelay.cs" company="Codeora">
+//     Copyright 2012. All right reserved
+// </copyright>
+// ------------------------------------------------------------------------
 
 namespace Cahoots
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using WebSocketSharp;
+    using Cahoots.Services;
+    using Cahoots.Services.MessageModels;
+
     /// <summary>
     /// Class for relaying JSON messages to other services.
     /// </summary>
@@ -17,23 +23,16 @@ namespace Cahoots
         /// Initializes a new instance of the
         /// <see cref="MessageRelay" /> class.
         /// </summary>
-        /// <param name="socket">The socket.</param>
         /// <param name="services">The async message services.</param>
-        public MessageRelay(WebSocket socket, params IAsyncService[] services)
+        public MessageRelay(params IAsyncService[] services)
         {
-            if (socket == null)
-            {
-                throw new ArgumentNullException("socket");
-            }
-
-            this.Socket = socket;
-            this.Socket.OnMessage += RelayMessage;
             this.Services = new Dictionary<string, IAsyncService>();
 
             if (services != null)
             {
                 foreach (var service in services)
                 {
+                    service.Initialize(this.SendMessage);
                     this.Services.Add(service.ServiceIdentifier, service);
                 }
             }
@@ -45,7 +44,7 @@ namespace Cahoots
         /// <value>
         /// The web socket.
         /// </value>
-        private WebSocket Socket { get; set; }
+        public WebSocket Socket { get; private set; }
 
         /// <summary>
         /// Gets or sets the services.
@@ -73,6 +72,39 @@ namespace Cahoots
             {
                 var service = this.Services[identifier];
                 service.ProcessMessage(type, e.Data);
+            }
+        }
+
+        /// <summary>
+        /// Sets the socket.
+        /// </summary>
+        /// <param name="socket">The socket.</param>
+        public void SetSocket(WebSocket socket)
+        {
+            if (socket == null)
+            {
+                foreach (var service in this.Services)
+                {
+                    service.Value.Disconnect();
+                }
+            }
+            else
+            {
+                socket.OnMessage += RelayMessage;
+            }
+
+            this.Socket = socket;
+        }
+
+        /// <summary>
+        /// Sends a to the server message.
+        /// </summary>
+        /// <param name="message">The message.</param>
+        public void SendMessage(string message)
+        {
+            if (this.Socket != null && this.Socket.IsAlive)
+            {
+                this.Socket.Send(message);
             }
         }
 

@@ -5,6 +5,7 @@ using System.Text;
 using System.Collections.ObjectModel;
 using Cahoots.Services.Models;
 using Cahoots.Services.MessageModels;
+using Cahoots.Services.ViewModels;
 
 namespace Cahoots.Services
 {
@@ -14,20 +15,12 @@ namespace Cahoots.Services
         /// Initializes a new instance of the
         /// <see cref="UsersService" /> class.
         /// </summary>
-        /// <param name="messageSender">The message sender.</param>
-        public UsersService(SendMessage messageSender)
-                                        : base("users", messageSender, null)
+        public UsersService() : base("users")
         {
-            this.Users = new ObservableCollection<Collaborator>();
+            this.ViewModel = new UsersViewModel();
         }
 
-        /// <summary>
-        /// Gets the users.
-        /// </summary>
-        /// <value>
-        /// The users.
-        /// </value>
-        public ObservableCollection<Collaborator> Users { get; private set; }
+        private UsersViewModel ViewModel { get; set; }
 
         /// <summary>
         /// Processes the JSON message.
@@ -36,7 +29,6 @@ namespace Cahoots.Services
         /// <param name="json">The json.</param>
         public override void ProcessMessage(string type, string json)
         {
-            // TODO: Implement...
             switch(type)
             {
                 case "all":
@@ -54,6 +46,25 @@ namespace Cahoots.Services
         }
 
         /// <summary>
+        /// Gets a view model for the service.
+        /// </summary>
+        /// <param name="parameters">The parameters.</param>
+        /// <returns>The users view model.</returns>
+        public override BaseViewModel GetViewModel(params object[] parameters)
+        {
+            return this.ViewModel;
+        }
+
+        /// <summary>
+        /// Cleans up the service if the user disconnects.
+        /// </summary>
+        public override void Disconnect()
+        {
+            // clean up view model and such...
+            this.ViewModel.Users.Clear();
+        }
+
+        /// <summary>
         /// Loads all users.
         /// </summary>
         /// <param name="message">The message.</param>
@@ -61,11 +72,11 @@ namespace Cahoots.Services
         {
             if (message.Users != null)
             {
-                this.Users.Clear();
+                this.ViewModel.Users.Clear();
 
                 foreach (var user in message.Users)
                 {
-                    this.Users.Add(user);
+                    this.ViewModel.Users.Add(user);
                 }
             }
         }
@@ -76,7 +87,7 @@ namespace Cahoots.Services
         /// <param name="message">The message.</param>
         public void UpdateUserStatus(ReceiveUserStatusMessage message)
         {
-            var user = this.Users.FirstOrDefault(u => u.Name == message.User.Name);
+            var user = this.ViewModel.Users.FirstOrDefault(u => u.Name == message.User.Name);
 
             if (user != null)
             {
@@ -84,9 +95,10 @@ namespace Cahoots.Services
             }
             else
             {
-                this.Users.Add(new Collaborator()
+                this.ViewModel.Users.Add(new Collaborator()
                     {
                         Name = message.User.Name,
+                        Role = message.User.Role,
                         Status = message.User.Status
                     });
             }

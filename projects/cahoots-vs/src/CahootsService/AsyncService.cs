@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using WebSocketSharp;
+using Cahoots.Services.ViewModels;
 
 namespace Cahoots.Services
 {
@@ -11,12 +8,6 @@ namespace Cahoots.Services
     /// </summary>
     /// <param name="json">The json.</param>
     public delegate void SendMessage(string json);
-
-    /// <summary>
-    /// Delegate for sending a binary data message.
-    /// </summary>
-    /// <param name="data">The data.</param>
-    public delegate void SendData(byte[] data);
 
     /// <summary>
     /// Abstract class for async services.
@@ -30,10 +21,7 @@ namespace Cahoots.Services
         /// <param name="identifer">The identifer.</param>
         /// <param name="messageSender">The message sender.</param>
         /// <param name="dataSender">The data sender.</param>
-        public AsyncService(
-                string identifer,
-                SendMessage messageSender,
-                SendData dataSender)
+        public AsyncService(string identifer)
         {
             if (string.IsNullOrWhiteSpace(identifer))
             {
@@ -41,8 +29,6 @@ namespace Cahoots.Services
             }
 
             this.ServiceIdentifier = identifer;
-            this.MessageSender = messageSender;
-            this.DataSender = dataSender;
         }
 
         /// <summary>
@@ -52,14 +38,6 @@ namespace Cahoots.Services
         /// The message sender.
         /// </value>
         private SendMessage MessageSender { get; set; }
-
-        /// <summary>
-        /// Gets or sets the data sender.
-        /// </summary>
-        /// <value>
-        /// The data sender.
-        /// </value>
-        private SendData DataSender { get; set; }
 
         /// <summary>
         /// Gets or sets the service identifier.
@@ -77,18 +55,23 @@ namespace Cahoots.Services
         public abstract void ProcessMessage(string type, string json);
 
         /// <summary>
-        /// Sends the data.
+        /// Gets a view model for the service.
         /// </summary>
-        /// <param name="data">The data.</param>
-        protected void SendData(byte[] data)
-        {
-            if (this.DataSender == null)
-            {
-                throw new InvalidOperationException(
-                    "This instance is not configured to send binary data.");
-            }
+        /// <param name="parameters">The parameters.</param>
+        public abstract BaseViewModel GetViewModel(params object[] parameters);
 
-            this.DataSender(data);
+        /// <summary>
+        /// Cleans up the service if the user disconnects.
+        /// </summary>
+        public abstract void Disconnect();
+
+        /// <summary>
+        /// Initializes the service senders.
+        /// </summary>
+        /// <param name="messageSender">The message sender.</param>
+        public void Initialize(SendMessage messageSender)
+        {
+            this.MessageSender = messageSender;
         }
 
         /// <summary>

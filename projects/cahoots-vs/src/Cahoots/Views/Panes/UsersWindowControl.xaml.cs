@@ -13,6 +13,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Cahoots.Services;
 using System.Collections.Specialized;
+using Cahoots.Services.ViewModels;
 
 namespace Cahoots
 {
@@ -30,19 +31,20 @@ namespace Cahoots
             InitializeComponent();
             if (CahootsPackage.Instance != null)
             {
-                this.dataGrid1.ItemsSource = CahootsPackage.Instance.ActiveUsers;
-                CahootsPackage.Instance.ActiveUsers.CollectionChanged += PropertyChanged;
+                //this.dataGrid1.ItemsSource = CahootsPackage.Instance.ActiveUsers;
+                //CahootsPackage.Instance.ActiveUsers.CollectionChanged += PropertyChanged;
+                this.ViewModel = CahootsPackage.Instance.GetViewModel("users") as UsersViewModel;
+                this.DataContext = this.ViewModel;
+                this.dataGrid1.ItemsSource = this.ViewModel.Users;
             }
         }
 
         /// <summary>
-        /// Properties the changed.
+        /// Gets or sets the view model.
         /// </summary>
-        /// <param name="sender">The sender.</param>
-        /// <param name="e">The <see cref="NotifyCollectionChangedEventArgs" /> instance containing the event data.</param>
-        public void PropertyChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            this.dataGrid1.ItemsSource = CahootsPackage.Instance.ActiveUsers;
-        }
+        /// <value>
+        /// The view model.
+        /// </value>
+        private UsersViewModel ViewModel { get; set; }
     }
 }

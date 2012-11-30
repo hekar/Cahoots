@@ -1,6 +1,6 @@
 ﻿// ----------------------------------------------------------------------
-// <copyright file="CahootsPackage.cs" company="My Company">
-//     Copyright statement. All right reserved
+// <copyright file="CahootsPackage.cs" company="Codeora">
+//     Copyright 2012. All rights reserved
 // </copyright>
 // ------------------------------------------------------------------------
 
@@ -17,6 +17,7 @@ namespace Cahoots
     using Cahoots.Services.Models;
     using Microsoft.VisualStudio.Shell;
     using WebSocketSharp;
+using Cahoots.Services.ViewModels;
 
     /// <summary>
     /// Cahoots VSPackage Extension class.
@@ -24,6 +25,8 @@ namespace Cahoots
     [Guid(GuidList.guidCahootsPkgString)]
     public class CahootsPackage : CahootsPackageBase
     {
+        #region Initialization
+
         /// <summary>
         /// Initializes a new instance of the 
         /// <see cref="CahootsPackage" /> class.
@@ -35,7 +38,6 @@ namespace Cahoots
                         as OleMenuCommandService;
 
             Instance = this;
-            this.ActiveUsers = new ObservableCollection<Collaborator>();
         }
 
         /// <summary>
@@ -47,9 +49,19 @@ namespace Cahoots
         protected override void Initialize()
         {
             base.Initialize();
+            this.InitializeMessagingSystem();
 
             // find references to the toolbar buttons
             FindToolbarButtons();
+        }
+
+        /// <summary>
+        /// Initializes the messaging system.
+        /// </summary>
+        private void InitializeMessagingSystem()
+        {
+            this.CommunicationRelay = new MessageRelay(
+                    new UsersService());
         }
 
         /// <summary>
@@ -59,6 +71,10 @@ namespace Cahoots
         /// The instance.
         /// </value>
         public static CahootsPackage Instance { get; private set; }
+
+        #endregion
+
+        #region Members
 
         /// <summary>
         /// Gets or sets the socket.
@@ -75,16 +91,6 @@ namespace Cahoots
         /// The communication relay.
         /// </value>
         public MessageRelay CommunicationRelay { get; private set; }
-
-        #region Collections
-
-        /// <summary>
-        /// Gets or sets the active users.
-        /// </summary>
-        /// <value>
-        /// The active users.
-        /// </value>
-        public ObservableCollection<Collaborator> ActiveUsers { get; private set; }
 
         #endregion
 
@@ -212,9 +218,8 @@ namespace Cahoots
                     // TODO: make this based on something legit
                     this.Socket = new WebSocket(
                             "ws://localhost:9000/app/message?auth_token=" + this.AuthenticationService.Token);
-                    this.CommunicationRelay = new MessageRelay(
-                            this.Socket,
-                            new UsersService(this.Socket.Send));
+
+                    this.CommunicationRelay.SetSocket(this.Socket);
 
                     this.Socket.Connect();
                 }
@@ -268,25 +273,37 @@ namespace Cahoots
                 this.Socket.Close();
                 this.Socket.Dispose();
                 this.Socket = null;
+                this.CommunicationRelay.SetSocket(null);
             }
         }
 
         #endregion
 
         /// <summary>
-        /// Initializes the messaging system.
+        /// Gets the view model.
         /// </summary>
-        private void InitializeMessagingSystem()
+        /// <param name="service">The service.</param>
+        /// <param name="parameters">The parameters.</param>
+        /// <returns>The service view model.</returns>
+        public BaseViewModel GetViewModel(string service, params object[] parameters)
         {
-            var userService = new UsersService(this.Socket.Send);
+            var serv = this.CommunicationRelay.Services[service];
 
-            this.CommunicationRelay = new MessageRelay(
-                    this.Socket,
-                    userService);
+            if (serv != null)
+            {
+                return serv.GetViewModel(parameters);
+            }
 
-            this.ActiveUsers = userService.Users;
+            return null;
         }
 
+        /// <summary>
+        /// Releases unmanaged and - optionally - managed resources.
+        /// </summary>
+        /// <param name="disposing">
+        ///   <c>true</c> to release both managed and unmanaged resources;
+        ///   <c>false</c> to release only unmanaged resources.
+        /// </param>
         protected override void Dispose(bool disposing)
         {
             if (this.Socket != null)

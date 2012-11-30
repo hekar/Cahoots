@@ -113,23 +113,6 @@ class MessageRelay extends Actor {
     channel.push(msg)
   }
 
-  /*
-  def notifyAll(kind: String, user: String, text: String) {
-    val msg = JsObject(
-      Seq(
-        "kind" -> JsString(kind),
-        "user" -> JsString(user),
-        "message" -> JsString(text),
-        "members" -> JsArray(
-          members.keySet.toList.map(JsString)
-        )
-      )
-    )
-    members.foreach { 
-      case (_, channel) => channel.push(msg)
-    }
-
-  }*/
 }
 
 case class Join(username: String)
