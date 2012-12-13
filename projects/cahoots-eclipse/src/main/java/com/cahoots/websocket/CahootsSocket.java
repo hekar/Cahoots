@@ -17,12 +17,15 @@ import com.cahoots.events.ConnectEvent;
 import com.cahoots.events.ConnectEventListener;
 import com.cahoots.events.DisconnectEvent;
 import com.cahoots.events.DisconnectEventListener;
+import com.cahoots.events.OpInsertEvent;
+import com.cahoots.events.OpInsertEventListener;
 import com.cahoots.events.UserChangeEvent;
 import com.cahoots.events.UserChangeEventListener;
 import com.cahoots.json.Collaborator;
 import com.cahoots.json.MessageBase;
 import com.cahoots.json.ReceiveAllUsersMessage;
 import com.cahoots.json.ReceiveUserStatusMessage;
+import com.cahoots.json.receive.OpInsertMessage;
 import com.google.gson.Gson;
 
 public class CahootsSocket implements WebSocket.OnTextMessage, WebSocket.OnBinaryMessage {
@@ -38,6 +41,7 @@ public class CahootsSocket implements WebSocket.OnTextMessage, WebSocket.OnBinar
     private List<DisconnectEventListener> disconnectListeners = new ArrayList<DisconnectEventListener>();
     private List<ConnectEventListener> connectListeners = new ArrayList<ConnectEventListener>();
     
+    private List<OpInsertEventListener> opInsertListeners = new ArrayList<OpInsertEventListener>();
 
     private CahootsSocket(){}
     
@@ -85,6 +89,17 @@ public class CahootsSocket implements WebSocket.OnTextMessage, WebSocket.OnBinar
         		for(UserChangeEventListener listener: loginListeners)
 				{
 					listener.UserLoginEvent(new UserChangeEvent(msg.user));
+				}
+        	}
+        }
+        else if ("op".equals(base.service))
+        {
+        	if ("insert".equals(base.type))
+        	{
+        		OpInsertMessage msg = gson.fromJson(message, OpInsertMessage.class);
+				for(OpInsertEventListener listener: opInsertListeners)
+				{
+					listener.onInsert(new OpInsertEvent(msg));
 				}
         	}
         }
@@ -142,9 +157,14 @@ public class CahootsSocket implements WebSocket.OnTextMessage, WebSocket.OnBinar
 		disconnectListeners.add(listener);
 	}
 
-	public void addConnectEventListener(ConnectEventListener listener) {
+	public void addConnectEventListener(ConnectEventListener listener)
+	{
 		connectListeners.add(listener);
-		
+	}
+	
+	public void addOpInsertEventListener(OpInsertEventListener listener)
+	{
+		opInsertListeners.add(listener);
 	}
 
 }

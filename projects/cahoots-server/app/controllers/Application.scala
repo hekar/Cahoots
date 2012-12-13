@@ -96,4 +96,5 @@ object Application extends Controller {
 
     MessageRelay.join(user.username)
   }
+
 }

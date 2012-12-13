@@ -57,7 +57,8 @@ class MessageRelay extends Actor {
   var members = Map.empty[String, PushEnumerator[JsValue]]
 
   var services = Map[String, AsyncService](
-            "users" -> new UsersService(this.notifyOne, this.notifyAll))
+            "users" -> new UsersService(this.notifyOne, this.notifyAll),
+            "op" -> new OpService(this.notifyOne, this.notifyAll))
 
   def receive = {
 

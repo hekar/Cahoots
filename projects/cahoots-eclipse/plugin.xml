@@ -59,4 +59,66 @@
           file="contexts.xml">
     </contexts>
  </extension>
+ <extension
+       point="org.eclipse.ui.popupMenus">
+       		<objectContribution
+            id="cahoot.java.popup.share"
+            objectClass="org.eclipse.jdt.core.ICompilationUnit">
+			<menu
+               id="cahoot.java.menu"
+               label="Cahoot"
+               path="additions">
+				<separator
+                  name="main">
+				</separator>
+			</menu>
+			<action
+               class="com.cahoots.eclipse.indigo.popup.ShareDocument"
+               id="cahoot.java.shareAction"
+               label="Share"
+               menubarPath="cahoot.java.menu/main"
+               style="push"
+               tooltip="Share file">
+			</action>
+		</objectContribution>
+		<objectContribution
+            id="cahoot.package.popup.share"
+            objectClass="org.eclipse.jdt.internal.ui.packageview.PackageExplorerPart">
+			<menu
+               id="cahoot.package.menu"
+               label="Cahoot"
+               path="additions">
+				<separator
+                  name="main">
+				</separator>
+			</menu>
+			<action
+               class="com.cahoots.eclipse.indigo.popup.ShareDocument"
+               id="cahoot.package.shareAction"
+               label="Share"
+               menubarPath="cahoot.package.menu/main"
+               style="push"
+               tooltip="Share file">
+			</action>
+		</objectContribution>
+		<viewerContribution
+            id="cahoot.editor.popup"
+            targetID="#AbstractTextEditorContext">
+			<menu
+               id="cahoot.editor.menu"
+               label="&amp;Cahoot">
+				<separator
+                  name="main">
+				</separator>
+			</menu>
+			<action
+               class="com.cahoots.eclipse.indigo.popup.ShareDocument"
+               id="cahoot.editor.shareAction"
+               label="&amp;Share"
+               menubarPath="cahoot.editor.menu/main"
+               style="push"
+               tooltip="Share file">
+			</action>
+		</viewerContribution>
+ </extension>
 </plugin>
