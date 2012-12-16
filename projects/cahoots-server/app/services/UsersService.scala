@@ -4,6 +4,9 @@ import akka.actor._
 import akka.util.duration._
 
 import play.api._
+import libs.json.JsArray
+import libs.json.JsObject
+import libs.json.JsString
 import play.api.libs.json._
 import play.api.libs.iteratee._
 import play.api.libs.concurrent._
@@ -12,8 +15,12 @@ import akka.util.Timeout
 import akka.pattern.ask
 
 import play.api.Play.current
-import models.MessageRelay
+import models.{ActiveUser, MessageRelay}
 import collection.mutable.ListBuffer
+import play.db.DB
+import org.jooq.impl.Factory
+import org.jooq.SQLDialect
+import com.cahoots.jooq.tables.Users._
 
 
 class UsersService(
@@ -21,7 +28,16 @@ class UsersService(
         sendAll: (JsValue) => Unit)
     extends AsyncService("users", sendOne, sendAll){
 
-  var users = Map.empty[String, String]
+  var users:Map[String,String] = {
+
+    var ma = new collection.mutable.HashMap[String,String]
+    val c = DB.getConnection()
+    val f = new Factory(c, SQLDialect.POSTGRES)
+    for( x <-f.select(USERS.USERNAME).from(USERS).fetch(USERS.USERNAME).toArray){
+      ma.put(x.asInstanceOf[String], "offline")
+    }
+    ma.toMap
+  }
 
   def processMessage(json: JsValue) {
   }
@@ -67,7 +83,7 @@ class UsersService(
   }
 
   def leave(user: String) {
-    users = users - user
+    users = users + (user -> "offline")
 
     notifyAll(JsObject(
       Seq(

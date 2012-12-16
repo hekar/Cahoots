@@ -22,13 +22,6 @@ object Auth extends Controller with Secured {
     })
   )
 
-  def check(username: String, password: String) = {
-    val c = DB.getConnection()
-    val f = new Factory(c, SQLDialect.POSTGRES)
-    val pass = hash(password)
-    val result = f.select(USERS.USERNAME).from(USERS).where( USERS.USERNAME equal username).and(USERS.PASSWORD equal pass).fetch()
-    (result.size() == 1)
-  }
 
   def login = Action { implicit request =>
     Ok(html.login(loginForm))
@@ -64,5 +57,13 @@ trait Secured {
 
   def hash(text: String) : String = {
     MessageDigest.getInstance("MD5").digest(text.getBytes).map("%02x" format _).mkString
+  }
+
+  def check(username: String, password: String) = {
+    val c = DB.getConnection()
+    val f = new Factory(c, SQLDialect.POSTGRES)
+    val pass = hash(password)
+    val result = f.select(USERS.USERNAME).from(USERS).where( USERS.USERNAME equal username).and(USERS.PASSWORD equal pass).fetch()
+    (result.size() == 1)
   }
 }
