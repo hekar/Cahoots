@@ -1,12 +1,15 @@
 package controllers
 
-import play._
-import play.api._
+import play.db.DB
 import play.api.Play._
 import play.api.mvc._
 import play.api.data._
 import play.api.data.Forms._
 import views._
+import org.jooq.SQLDialect
+import org.jooq.impl.Factory
+import com.cahoots.jooq.tables.Users._
+import java.security.MessageDigest
 
 object Auth extends Controller {
 
@@ -20,7 +23,11 @@ object Auth extends Controller {
   )
 
   def check(username: String, password: String) = {
-    (username == "admin" && password == "1234")
+    val c = DB.getConnection()
+    val f = new Factory(c, SQLDialect.POSTGRES)
+    val pass = md5(password)
+    var result = f.select(USERS.USERNAME).from(USERS).where( USERS.USERNAME equal username).and(USERS.PASSWORD equal pass).fetch()
+    (result.size() == 1)
   }
 
   def login = Action { implicit request =>
@@ -38,6 +45,10 @@ object Auth extends Controller {
     Redirect(routes.Auth.login).withNewSession.flashing(
       "success" -> "You are now logged out."
     )
+  }
+
+  def md5(s: String) : String = {
+    MessageDigest.getInstance("MD5").digest(s.getBytes).map("%02x" format _).mkString
   }
 }
 
