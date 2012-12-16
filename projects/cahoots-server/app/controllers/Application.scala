@@ -1,16 +1,14 @@
 package controllers
 
 import play.api._
-import play.api.mvc._
 import play.api.libs.json._
-import play.api.libs.iteratee._
 import play.cache._
 import scala.collection.mutable._
 
-import views._
 import models._
+import play.api.mvc._
 
-object Application extends Controller {
+object Application extends Controller with Secured {
 
   def index = Action {
     Ok("")

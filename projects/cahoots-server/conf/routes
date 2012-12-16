@@ -12,7 +12,7 @@ GET     /                                       controllers.Application.index
 # ~~~~~~~~~~~
 POST     /app/login                             controllers.Application.authenticate
 POST     /app/logout                            controllers.Application.deauthenticate
-GET 	 /app/message							controllers.Application.message(auth_token)
+GET      /app/message                           controllers.Application.message(auth_token)
 
 # ~~~~~~~~~~~
 # Administrative Portal
@@ -21,6 +21,7 @@ GET     /auth/login                             controllers.Auth.login
 POST    /auth/login                             controllers.Auth.checkCredentials
 GET     /auth/logout                            controllers.Auth.logout
 GET     /portal/index                           controllers.Portal.index
+POST    /portal/createUser                      controllers.Portal.createUser
 
 
 # ~~~~~~~~~~~

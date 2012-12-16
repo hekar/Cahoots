@@ -11,7 +11,7 @@ import org.jooq.impl.Factory
 import com.cahoots.jooq.tables.Users._
 import java.security.MessageDigest
 
-object Auth extends Controller {
+object Auth extends Controller with Secured {
 
   val loginForm = Form(
     tuple(
@@ -25,8 +25,8 @@ object Auth extends Controller {
   def check(username: String, password: String) = {
     val c = DB.getConnection()
     val f = new Factory(c, SQLDialect.POSTGRES)
-    val pass = md5(password)
-    var result = f.select(USERS.USERNAME).from(USERS).where( USERS.USERNAME equal username).and(USERS.PASSWORD equal pass).fetch()
+    val pass = hash(password)
+    val result = f.select(USERS.USERNAME).from(USERS).where( USERS.USERNAME equal username).and(USERS.PASSWORD equal pass).fetch()
     (result.size() == 1)
   }
 
@@ -47,9 +47,6 @@ object Auth extends Controller {
     )
   }
 
-  def md5(s: String) : String = {
-    MessageDigest.getInstance("MD5").digest(s.getBytes).map("%02x" format _).mkString
-  }
 }
 
 /**
@@ -65,4 +62,7 @@ trait Secured {
     Action(request => f(user)(request))
   }
 
+  def hash(text: String) : String = {
+    MessageDigest.getInstance("MD5").digest(text.getBytes).map("%02x" format _).mkString
+  }
 }
