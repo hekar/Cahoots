@@ -40,10 +40,10 @@ object Application extends Controller with Secured {
     }
     
     val stored_user = users.findIndexOf(x => x.username == user)
-    
+
+    val token = java.util.UUID.randomUUID().toString()
     if(stored_user != -1)
     {
-      val token = java.util.UUID.randomUUID().toString()
       users(stored_user).token = token;
       Cache.set("users", users)
       Logger.info("User logged in with %s:%s".format(user, token))
@@ -51,7 +51,9 @@ object Application extends Controller with Secured {
     }
     else
     {
-      Unauthorized("User not found")
+      users.append(new ActiveUser(user, token))
+      Cache.set("users", users)
+      Ok(token)
     }
     
   }
