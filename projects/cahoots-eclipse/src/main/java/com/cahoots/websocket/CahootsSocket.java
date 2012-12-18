@@ -2,14 +2,12 @@ package com.cahoots.websocket;
 
 import java.io.IOException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.eclipse.jetty.websocket.WebSocket;
@@ -85,34 +83,34 @@ public class CahootsSocket implements WebSocket.OnTextMessage,
 	}
 
 	@Override
-	public void onClose(int arg0, String arg1) {
+	public void onClose(final int arg0, final String arg1) {
 		members.remove(this);
 
 	}
 
 	@Override
-	public void onOpen(Connection arg0) {
+	public void onOpen(final Connection arg0) {
 		members.add(this);
 	}
 
 	@Override
-	public void onMessage(String message) {
+	public void onMessage(final String message) {
 		received.incrementAndGet();
-		Gson gson = new Gson();
-		MessageBase base = gson.fromJson(message, MessageBase.class);
+		final Gson gson = new Gson();
+		final MessageBase base = gson.fromJson(message, MessageBase.class);
 		if ("users".equals(base.service)) {
 			if ("all".equals(base.type)) {
-				ReceiveAllUsersMessage msg = gson.fromJson(message,
+				final ReceiveAllUsersMessage msg = gson.fromJson(message,
 						ReceiveAllUsersMessage.class);
-				for (Collaborator c : msg.users) {
-					for (UserChangeEventListener listener : loginListeners) {
+				for (final Collaborator c : msg.users) {
+					for (final UserChangeEventListener listener : loginListeners) {
 						listener.userConnected(new UserChangeEvent(c));
 					}
 				}
 			} else if ("status".equals(base.type)) {
-				ReceiveUserStatusMessage msg = gson.fromJson(message,
+				final ReceiveUserStatusMessage msg = gson.fromJson(message,
 						ReceiveUserStatusMessage.class);
-				for (UserChangeEventListener listener : loginListeners) {
+				for (final UserChangeEventListener listener : loginListeners) {
 					listener.userConnected(new UserChangeEvent(msg.user));
 				}
 			}
@@ -130,15 +128,15 @@ public class CahootsSocket implements WebSocket.OnTextMessage,
 		}
 	}
 
-	private <K, T> void fireEvents(String eventType,
-			Class<K> eventListenerClazz, Class<T> clazz, MessageBase base,
-			String message, Gson gson) {
+	private <K, T> void fireEvents(final String eventType,
+			final Class<K> eventListenerClazz, final Class<T> clazz, final MessageBase base,
+			final String message, final Gson gson) {
 
-		List<? extends GenericEventListener<T>> listeners = (List<? extends GenericEventListener<T>>) this.listeners
+		final List<? extends GenericEventListener<T>> listeners = this.listeners
 				.get(eventListenerClazz);
 		if (eventType.equals(base.type)) {
-			T msg = gson.fromJson(message, clazz);
-			for (GenericEventListener<T> listener : listeners) {
+			final T msg = gson.fromJson(message, clazz);
+			for (final GenericEventListener<T> listener : listeners) {
 				listener.onEvent(msg);
 			}
 		}
@@ -147,43 +145,45 @@ public class CahootsSocket implements WebSocket.OnTextMessage,
 	public void disconnect() {
 		if (connection != null) {
 			connection.close();
-			for (DisconnectEventListener listener : disconnectListeners) {
+			for (final DisconnectEventListener listener : disconnectListeners) {
 				listener.userDisconnected(new DisconnectEvent());
 			}
 		}
 		connection = null;
 	}
 
-	public void connect(String server, String authToken)
-			throws InterruptedException, ExecutionException, IOException,
-			URISyntaxException {
-		disconnect();
-		connection = client.open(
-				new URI("ws://" + server + "/app/message?auth_token="
-						+ authToken), this).get();
-		for (ConnectEventListener listener : connectListeners) {
-			listener.connected(new ConnectEvent());
-		}
-	}
-
-	public String send(Object obj) {
+	public void connect(final String server, final String authToken){
 		try {
-			String json = new Gson().toJson(obj);
-			send(json);
-			return json;
-		} catch (Exception e) {
+			disconnect();
+			connection = client.open(
+					new URI("ws://" + server + "/app/message?auth_token="
+							+ authToken), this).get();
+			for (final ConnectEventListener listener : connectListeners) {
+				listener.connected(new ConnectEvent());
+			}
+		} catch (final Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
 
-	public void send(String message) throws IOException {
+	public String send(final Object obj) {
+		try {
+			final String json = new Gson().toJson(obj);
+			send(json);
+			return json;
+		} catch (final Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	public void send(final String message) throws IOException {
 		if (connection != null) {
 			connection.sendMessage(message);
 			sent.incrementAndGet();
 		}
 	}
 
-	public void setClient(WebSocketClient client) {
+	public void setClient(final WebSocketClient client) {
 		this.client = client;
 	}
 
@@ -199,12 +199,12 @@ public class CahootsSocket implements WebSocket.OnTextMessage,
 			final Object lock = new Object();
 			synchronized (lock) {
 				final List<K> events = new ArrayList<K>();
-				Thread thread = new Thread(new Runnable() {
+				final Thread thread = new Thread(new Runnable() {
 					@Override
 					public void run() {
 						listeners.get(clazz).add(new GenericEventListener<K>() {
 							@Override
-							public void onEvent(K msg) {
+							public void onEvent(final K msg) {
 								synchronized (lock) {
 									events.add(msg);
 									lock.notifyAll();
@@ -224,34 +224,34 @@ public class CahootsSocket implements WebSocket.OnTextMessage,
 					throw new RuntimeException("No responses received");
 				}
 			}
-		} catch (InterruptedException e) {
+		} catch (final InterruptedException e) {
 			throw new RuntimeException(e);
 		}
 	}
 
 	@Override
-	public void onMessage(byte[] arg0, int arg1, int arg2) {
+	public void onMessage(final byte[] arg0, final int arg1, final int arg2) {
 		System.out.println(new String(arg0));
 	}
 
-	public void addUserLoginEventListener(UserChangeEventListener listener) {
+	public void addUserLoginEventListener(final UserChangeEventListener listener) {
 		loginListeners.add(listener);
 	}
 
-	public void addDisconnectEventListener(DisconnectEventListener listener) {
+	public void addDisconnectEventListener(final DisconnectEventListener listener) {
 		disconnectListeners.add(listener);
 	}
 
-	public void addConnectEventListener(ConnectEventListener listener) {
+	public void addConnectEventListener(final ConnectEventListener listener) {
 		connectListeners.add(listener);
 	}
 
-	public void addOpInsertEventListener(OpInsertEventListener listener) {
+	public void addOpInsertEventListener(final OpInsertEventListener listener) {
 		listeners.get(OpInsertEventListener.class).add(listener);
 	}
 
 	public void addShareDocumentEventListener(
-			ShareDocumentEventListener listener) {
+			final ShareDocumentEventListener listener) {
 		listeners.get(ShareDocumentEventListener.class).add(listener);
 	}
 

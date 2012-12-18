@@ -1,8 +1,15 @@
 package com.cahoots.eclipse.indigo.widget;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
+import net.miginfocom.swt.MigLayout;
+
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
@@ -12,14 +19,16 @@ import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 
+import com.cahoots.eclipse.Activator;
 import com.cahoots.events.DisconnectEvent;
 import com.cahoots.events.DisconnectEventListener;
 import com.cahoots.events.UserChangeEvent;
 import com.cahoots.events.UserChangeEventListener;
+import com.cahoots.http.CahootsHttpService;
 import com.cahoots.json.Collaborator;
 import com.cahoots.websocket.CahootsSocket;
 
@@ -94,27 +103,57 @@ public class UsersList extends Composite implements UserChangeEventListener,
 	/**
 	 * The constructor.
 	 */
-	public UsersList(final Shell parent) {
-		super(parent, SWT.BORDER);
+	public UsersList(final Composite parent, final int style) {
+		super(parent, style);
 
+		setLayout(new MigLayout("fill"));
+		
+		viewer = new TableViewer(this, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
+		viewer.getControl().setLayoutData("grow");
+		viewer.setLabelProvider(new ViewLabelProvider());
+		viewer.setSorter(new NameSorter());
+		source = new ViewContentProvider();
+		viewer.setContentProvider(source);
+		
+		populateUsersList();
+		
 		final CahootsSocket socket = CahootsSocket.getInstance();
 		socket.addUserLoginEventListener(this);
 		socket.addDisconnectEventListener(this);
+	}
 
-		// TODO: Populates users from http service first
+	private void populateUsersList() {
+		final Job job = new Job("Job1") {
+			@Override
+			protected IStatus run(final IProgressMonitor monitor) {
+				final CahootsHttpService service = new CahootsHttpService(Activator.getServer());
 
-		viewer = new TableViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
-		source = new ViewContentProvider();
-		viewer.setContentProvider(source);
-		viewer.setLabelProvider(new ViewLabelProvider());
-		viewer.setSorter(new NameSorter());
+				final List<String> users = service.listUsers().getUsers();
+
+				Display.getDefault().asyncExec(new Runnable() {
+					@Override
+					public void run() {
+						source.clear();
+						for (final String user : users) {
+							source.add(new Collaborator(user));
+						}
+					}
+				});
+
+				return Status.OK_STATUS;
+			}
+		};
+
+		job.schedule();
 	}
 
 	@Override
 	public void userConnected(final UserChangeEvent event) {
+		source.add(event.getUser());
 	}
 
 	@Override
 	public void userDisconnected(final DisconnectEvent event) {
+		// TODO: What to do here?
 	}
 }

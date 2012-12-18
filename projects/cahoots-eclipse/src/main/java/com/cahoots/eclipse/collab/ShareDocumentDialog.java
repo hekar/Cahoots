@@ -18,6 +18,8 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.texteditor.ITextEditor;
 
+import com.cahoots.eclipse.indigo.widget.UsersList;
+
 /**
  * Dialog to share documents on right click
  */
@@ -34,12 +36,15 @@ public class ShareDocumentDialog extends Window {
 		// Layout panel
 		final Composite c = new Composite(parent, SWT.NONE);
 		c.setLayout(new MigLayout("fill"));
+
+		// TODO: Label
 		
 		// Title
 		final Text title = new Text(c, SWT.SINGLE | SWT.BORDER);
-		title.setLayoutData("wrap");
+		title.setLayoutData("growx, wrap");
 		
-		
+		final UsersList usersList = new UsersList(c, SWT.BORDER);
+		usersList.setLayoutData("grow, wrap");
 		
 		// ok/cancel buttons
 		final Button ok = new Button(c, SWT.PUSH);
