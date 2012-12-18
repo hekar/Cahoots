@@ -6,9 +6,10 @@ class ActiveUser(var username: String, var name: String, var role: String, var t
   def toJson = {
     JsObject(
       Seq(
-        "name"  -> JsString( username ),
+        "username"  -> JsString( username ),
         "status" -> JsString(status),
-        "role" -> JsString(role)
+        "role" -> JsString(role),
+        "name" -> JsString(name)
       )
     )
   }

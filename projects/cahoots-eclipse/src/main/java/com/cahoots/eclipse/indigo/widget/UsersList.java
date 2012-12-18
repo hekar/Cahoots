@@ -57,7 +57,7 @@ public class UsersList extends Composite implements UserChangeEventListener,
 
 		public void add(final Collaborator element)
 		{
-			elements.put(element.name, element);
+			elements.put(element.username, element);
 		}
 
 		public void clear()

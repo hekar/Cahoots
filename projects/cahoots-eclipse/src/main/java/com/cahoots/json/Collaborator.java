@@ -7,6 +7,8 @@ public class Collaborator {
 	public String role;
 
 	public String status;
+	
+	public String username;
 
 	public Collaborator() {
 	}

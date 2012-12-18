@@ -38,7 +38,7 @@ object Application extends Controller with Secured {
       val create = new Factory(connection, SQLDialect.POSTGRES)
       for(r <- (create.select(USERS.USERNAME, USERS.NAME, ROLES.NAME).from(USERS).join(ROLES).on(ROLES.ID equal USERS.ROLE).fetch))
       {
-        users.append(new ActiveUser(r.getValue(USERS.USERNAME), r.getValue(USERS.NAME), r.getValue(USERS.NAME), null, "offline"))
+        users.append(new ActiveUser(r.getValue(USERS.USERNAME), r.getValue(USERS.NAME), r.getValue(ROLES.NAME), null, "offline"))
       }
       Cache.set("users", users)
     }
