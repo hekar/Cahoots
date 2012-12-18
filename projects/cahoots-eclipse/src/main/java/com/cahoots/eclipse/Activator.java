@@ -7,11 +7,10 @@ import java.util.List;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.NameValuePair;
 import org.apache.commons.httpclient.methods.PostMethod;
+import org.eclipse.jetty.websocket.WebSocketClient;
+import org.eclipse.jetty.websocket.WebSocketClientFactory;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
-import org.eclipse.jetty.websocket.WebSocketClientFactory;
-import org.eclipse.jetty.websocket.WebSocketClient;
-import org.eclipse.jface.dialogs.MessageDialog;
 
 import com.cahoots.websocket.CahootsSocket;
 
@@ -23,7 +22,7 @@ public class Activator extends AbstractUIPlugin {
 	private static String server;
 
 	@Override
-	public void start(BundleContext context) throws Exception {
+	public void start(final BundleContext context) throws Exception {
 		super.start(context);
 		plugin = this;
 
@@ -35,38 +34,38 @@ public class Activator extends AbstractUIPlugin {
 	 * @throws Exception
 	 */
 	public static void initializeCahootsSocket() throws Exception {
-		WebSocketClientFactory factory = new WebSocketClientFactory();
+		final WebSocketClientFactory factory = new WebSocketClientFactory();
         factory.setBufferSize(4096);
         factory.start();
         
-        WebSocketClient client = factory.newWebSocketClient();
+        final WebSocketClient client = factory.newWebSocketClient();
         client.setMaxIdleTime(30000);
         
         CahootsSocket.getInstance().setClient(client);
 	}
 
 	@Override
-	public void stop(BundleContext context) throws Exception {
+	public void stop(final BundleContext context) throws Exception {
 		super.stop(context);
 		plugin = null;
 	}
 
-	public static void connect(String username,
-			String password,
-			String server) {	
-		HttpClient client = new HttpClient();
-		PostMethod method = new PostMethod( "http://" + server + "/app/login");
-		List<NameValuePair> data = new LinkedList<NameValuePair>();
+	public static void connect(final String username,
+			final String password,
+			final String server) {	
+		final HttpClient client = new HttpClient();
+		final PostMethod method = new PostMethod( "http://" + server + "/app/login");
+		final List<NameValuePair> data = new LinkedList<NameValuePair>();
 		data.add( new NameValuePair("username", username));
 		data.add( new NameValuePair("password", password));
 		
 		method.setRequestBody(data.toArray(new NameValuePair[data.size()]));
 		try
 		{
-			int statusCode = client.executeMethod(method);
+			final int statusCode = client.executeMethod(method);
 			if(statusCode == 200)
 			{
-				String authToken = new String(method.getResponseBody());
+				final String authToken = new String(method.getResponseBody());
 				setAuthToken(authToken);
 				setServer(server);
 	
@@ -77,7 +76,7 @@ public class Activator extends AbstractUIPlugin {
 				throw new SocketException("Error connecting to server");
 			}
 		}
-		catch(Exception ex)
+		catch(final Exception ex)
 		{
 			throw new RuntimeException("Error connecting to server", ex);
 		}
@@ -87,7 +86,7 @@ public class Activator extends AbstractUIPlugin {
 		return authToken;
 	}
 
-	public static void setAuthToken(String authToken) {
+	public static void setAuthToken(final String authToken) {
 		Activator.authToken = authToken;
 	}
 
@@ -95,7 +94,7 @@ public class Activator extends AbstractUIPlugin {
 		return server;
 	}
 	
-	public static void setServer(String server){
+	public static void setServer(final String server){
 		Activator.server = server;
 	}
 

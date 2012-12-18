@@ -36,7 +36,7 @@ public class TestOpService {
 	}
 
 	private ShareDocumentMessage shareDocument() {
-		SendShareDocumentMessage shareDocumentMessage = new SendShareDocumentMessage(
+		final SendShareDocumentMessage shareDocumentMessage = new SendShareDocumentMessage(
 				"admin", "cahoots-eclipse/README.txt", Arrays.asList("admin"));
 		return socket.sendAndWaitForResponse(shareDocumentMessage,
 				ShareDocumentMessage.class, ShareDocumentEventListener.class);
@@ -44,9 +44,9 @@ public class TestOpService {
 
 	@Test
 	public void testOpInsert() {
-		ShareDocumentMessage document = shareDocument();
+		final ShareDocumentMessage document = shareDocument();
 		
-		SendOpInsertMessage op = new SendOpInsertMessage();
+		final SendOpInsertMessage op = new SendOpInsertMessage();
 		op.setOpId(document.getOpId());
 		op.setDocumentId(document.getDocumentId());
 		op.setStart(0);
@@ -59,13 +59,16 @@ public class TestOpService {
 
 	@Test
 	public void testOpReplace() {
-		ShareDocumentMessage document = shareDocument();
+		final ShareDocumentMessage document = shareDocument();
 		
-		SendOpReplaceMessage op = new SendOpReplaceMessage();
+		final String contents = "Testing replace 123";
+		
+		final SendOpReplaceMessage op = new SendOpReplaceMessage();
 		op.setOpId(document.getOpId());
 		op.setStart(0);
+		op.setEnd(contents.length());
 		op.setTickStamp(0L);
-		op.setContents("Testing insert 123");
+		op.setContents(contents);
 
 		socket.sendAndWaitForResponse(op,
 				OpReplaceMessage.class, OpReplaceEventListener.class);
@@ -73,13 +76,13 @@ public class TestOpService {
 
 	@Test
 	public void testOpDelete() {
-		ShareDocumentMessage document = shareDocument();
+		final ShareDocumentMessage document = shareDocument();
 		
-		SendOpDeleteMessage op = new SendOpDeleteMessage();
+		final SendOpDeleteMessage op = new SendOpDeleteMessage();
 		op.setOpId(document.getOpId());
 		op.setStart(0);
+		op.setEnd(1);
 		op.setTickStamp(0L);
-		op.setContents("Testing insert 123");
 		
 		socket.sendAndWaitForResponse(op,
 				OpDeleteMessage.class, OpDeleteEventListener.class);

@@ -2,7 +2,6 @@ package com.cahoots.eclipse.collab;
 
 import net.miginfocom.swt.MigLayout;
 
-import org.eclipse.jface.window.IShellProvider;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
@@ -24,45 +23,45 @@ import org.eclipse.ui.texteditor.ITextEditor;
  */
 public class ShareDocumentDialog extends Window {
 
-	public ShareDocumentDialog(Shell parentShell) {
+	public ShareDocumentDialog(final Shell parentShell) {
 		super(parentShell);
 	}
 
 	@Override
-	protected Control createContents(Composite parent) {
+	protected Control createContents(final Composite parent) {
 		this.getShell().setText("Share Document(s)");
 		
 		// Layout panel
-		Composite c = new Composite(parent, SWT.NONE);
+		final Composite c = new Composite(parent, SWT.NONE);
 		c.setLayout(new MigLayout("fill"));
 		
 		// Title
 		new Text(c, SWT.SINGLE | SWT.BORDER);
 		
 		// ok/cancel buttons
-		Button ok = new Button(c, SWT.BORDER | SWT.PUSH);
+		final Button ok = new Button(c, SWT.BORDER | SWT.PUSH);
 		ok.setText("OK");
 		ok.setLayoutData("tag ok");
 		ok.addSelectionListener(new SelectionListener() {
 			@Override
-			public void widgetSelected(SelectionEvent arg0) {
+			public void widgetSelected(final SelectionEvent arg0) {
 			}
 			
 			@Override
-			public void widgetDefaultSelected(SelectionEvent arg0) {
+			public void widgetDefaultSelected(final SelectionEvent arg0) {
 			}
 		});
 		
-		Button cancel = new Button(c, SWT.BORDER | SWT.PUSH);
+		final Button cancel = new Button(c, SWT.BORDER | SWT.PUSH);
 		cancel.setText("Cancel");
 		cancel.setLayoutData("tag cancel");
 		cancel.addSelectionListener(new SelectionListener() {
 			@Override
-			public void widgetSelected(SelectionEvent arg0) {
+			public void widgetSelected(final SelectionEvent arg0) {
 			}
 			
 			@Override
-			public void widgetDefaultSelected(SelectionEvent arg0) {
+			public void widgetDefaultSelected(final SelectionEvent arg0) {
 			}
 		});
 		
