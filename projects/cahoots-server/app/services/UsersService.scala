@@ -1,26 +1,12 @@
 package services
 
-import akka.actor._
-import akka.util.duration._
 
-import play.api._
-import libs.json.JsArray
-import libs.json.JsObject
-import libs.json.JsString
 import play.api.libs.json._
-import play.api.libs.iteratee._
-import play.api.libs.concurrent._
 
-import akka.util.Timeout
-import akka.pattern.ask
 
-import play.api.Play.current
-import models.{ActiveUser, MessageRelay}
+import models.ActiveUser
 import collection.mutable.ListBuffer
-import play.db.DB
-import org.jooq.impl.Factory
-import org.jooq.SQLDialect
-import com.cahoots.jooq.tables.Users._
+import play.cache.Cache
 
 
 class UsersService(
@@ -28,37 +14,22 @@ class UsersService(
         sendAll: (JsValue) => Unit)
     extends AsyncService("users", sendOne, sendAll){
 
-  var users:Map[String,String] = {
-
-    var ma = new collection.mutable.HashMap[String,String]
-    val c = DB.getConnection()
-    val f = new Factory(c, SQLDialect.POSTGRES)
-    for( x <-f.select(USERS.USERNAME).from(USERS).fetch(USERS.USERNAME).toArray){
-      ma.put(x.asInstanceOf[String], "offline")
-    }
-    ma.toMap
-  }
-
   def processMessage(json: JsValue) {
   }
 
-  def join(user: String) {
-    users = users + (user -> "online")
-
+  def join(username: String) {
+    val users:ListBuffer[ActiveUser] = Cache.get("users").asInstanceOf[ListBuffer[ActiveUser]]
+    val user = users.filter(t => t.username == username)(0)
+    user.status = "online"
+    Cache.set("users", users)
     val objects = new ListBuffer[JsObject]
-
-    users.foreach {
-      case (a, b) => {
-        objects.append(JsObject(
-          Seq(
-            "name" -> JsString(a),
-            "status" -> JsString(b)
-          )))
-      }
+    for (user <- users)
+    {
+      objects.append(user toJson)
     }
 
     notifyOne(
-      user,
+      user.username,
       JsObject(
         Seq(
           "service" -> JsString("users"),
@@ -71,31 +42,22 @@ class UsersService(
       Seq(
         "service" -> JsString("users"),
         "type" -> JsString("status"),
-        "user" -> JsObject(
-          Seq(
-            "name"  -> JsString( user ),
-            "status" -> JsString("online"),
-            "role" -> JsString("none")
-          )
-        )
+        "user" -> (user toJson)
       )
     ))
   }
 
-  def leave(user: String) {
-    users = users + (user -> "offline")
+  def leave(username: String) {
+    val users:ListBuffer[ActiveUser] = Cache.get("users").asInstanceOf[ListBuffer[ActiveUser]]
+    val user = users.filter(t => t.username == username)(0)
+    user.status = "offline"
+    Cache.set("users", users)
 
     notifyAll(JsObject(
       Seq(
         "service" -> JsString("users"),
         "type" -> JsString("status"),
-        "user" -> JsObject(
-          Seq(
-            "name"  -> JsString( user ),
-            "status" -> JsString("offline"),
-            "role" -> JsString("none")
-          )
-        )
+        "user" -> (user toJson)
       )
     ))
   }

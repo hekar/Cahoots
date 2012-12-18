@@ -33,23 +33,22 @@ public class ShareDocumentDialog extends Window {
 	@Override
 	protected Control createContents(final Composite parent) {
 		this.getShell().setText("Share Document(s)");
-		
+
 		// Layout panel
 		final Composite c = new Composite(parent, SWT.NONE);
 		c.setLayout(new MigLayout("fill"));
 
-		
 		// Title
 		final Label titleLabel = new Label(c, SWT.None);
 		titleLabel.setLayoutData("split 2");
 		titleLabel.setText("Title: ");
-		
+
 		final Text title = new Text(c, SWT.SINGLE | SWT.BORDER);
 		title.setLayoutData("growx, wrap");
-		
+
 		final UsersList usersList = new UsersList(c, SWT.BORDER);
 		usersList.setLayoutData("grow, wrap");
-		
+
 		// ok/cancel buttons
 		final Button ok = new Button(c, SWT.PUSH);
 		ok.setText("OK");
@@ -63,12 +62,12 @@ public class ShareDocumentDialog extends Window {
 					e.printStackTrace();
 				}
 			}
-			
+
 			@Override
 			public void widgetDefaultSelected(final SelectionEvent arg0) {
 			}
 		});
-		
+
 		final Button cancel = new Button(c, SWT.PUSH);
 		cancel.setText("Cancel");
 		cancel.setLayoutData("tag cancel");
@@ -77,12 +76,12 @@ public class ShareDocumentDialog extends Window {
 			public void widgetSelected(final SelectionEvent arg0) {
 				ShareDocumentDialog.this.getShell().dispose();
 			}
-			
+
 			@Override
 			public void widgetDefaultSelected(final SelectionEvent arg0) {
 			}
 		});
-		
+
 		return super.createContents(parent);
 	}
 
