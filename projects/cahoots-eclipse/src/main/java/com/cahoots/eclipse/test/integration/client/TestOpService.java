@@ -55,11 +55,11 @@ public class TestOpService {
 		ShareDocumentMessage document = shareDocument();
 		
 		SendOpReplaceMessage op = new SendOpReplaceMessage();
-		op.setOpId(Integer.parseInt(document.getOpId()));
-		op.setDocumentId(document.getDocumentId());
-		op.setStart(0);
-		op.setTickStamp(0);
-		op.setContents("Testing insert 123");
+//		op.setOpId(Integer.parseInt(document.getOpId()));
+//		op.setDocumentId(document.getDocumentId());
+//		op.setStart(0);
+//		op.setTickStamp(0);
+//		op.setContents("Testing insert 123");
 
 		socket.send(op);
 	}
@@ -67,7 +67,7 @@ public class TestOpService {
 	@Test
 	public void testOpDelete() {
 		OpInsertMessage message = new OpInsertMessage();
-		message.setOpId();
+//		message.setOpId();
 
 		socket.send(message);
 	}
