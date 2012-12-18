@@ -48,7 +48,7 @@ object Portal extends Controller with Secured {
     val c = DB.getConnection
     val f = new Factory(c, SQLDialect.POSTGRES)
     val pass = hash(password)
-    val roleId:Integer = f.select(ROLES.ID).from(ROLES).where(ROLES.NAME equal role).fetchOne(ROLES.ID)
+    val roleId = f.select(ROLES.ID).from(ROLES).where(ROLES.NAME equal role).fetchOne(ROLES.ID)
 
     f.insertInto(USERS, USERS.PASSWORD, USERS.NAME, USERS.USERNAME, USERS.ROLE)
       .values(pass, username, username, roleId).execute()

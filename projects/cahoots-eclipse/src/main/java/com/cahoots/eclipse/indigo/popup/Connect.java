@@ -47,7 +47,7 @@ public class Connect implements IWorkbenchWindowActionDelegate, ConnectEventList
 	}
 
 	@Override
-	public void disconnected(DisconnectEvent event) {
+	public void userDisconnected(DisconnectEvent event) {
 		//TODO enable button
 	}
 

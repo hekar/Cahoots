@@ -7,13 +7,13 @@ import play.api._
 import play.api.libs.json._
 import play.api.libs.iteratee._
 import play.api.libs.concurrent._
+import play.api.Play.current
 
 import services._
 
 import akka.util.Timeout
 import akka.pattern.ask
 
-import play.api.Play.current
 
 /**
  * Reference:
@@ -21,7 +21,7 @@ import play.api.Play.current
  */
 object MessageRelay {
   
-  implicit val timeout = Timeout(1 second)
+  implicit val timeout = Timeout(500 second)
   
   lazy val default = {
     val messageActor = Akka.system.actorOf(Props[MessageRelay])

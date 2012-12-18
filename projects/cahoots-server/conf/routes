@@ -8,11 +8,16 @@
 GET     /                                       controllers.Application.index
 
 # ~~~~~~~~~~~
-#
+# Application
 # ~~~~~~~~~~~
 POST     /app/login                             controllers.Application.authenticate
 POST     /app/logout                            controllers.Application.deauthenticate
 GET      /app/message                           controllers.Application.message(auth_token)
+
+# ~~~~~~~~~~~
+# Users
+# ~~~~~~~~~~~
+GET      /user/list                             controllers.User.listUsers(auth_token)
 
 # ~~~~~~~~~~~
 # Administrative Portal

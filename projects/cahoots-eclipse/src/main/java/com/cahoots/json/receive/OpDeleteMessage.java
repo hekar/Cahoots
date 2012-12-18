@@ -1,6 +1,8 @@
 package com.cahoots.json.receive;
 
-public class OpDeleteMessage {
+import com.cahoots.eclipse.op.OpTransformation;
+
+public class OpDeleteMessage extends OpTransformation {
 	private String service;
 	private String type;
 	private String user;
@@ -8,13 +10,12 @@ public class OpDeleteMessage {
 	private String documentId;
 	private Integer start;
 	private Integer end;
-	private Long tickStamp;
 
 	public String getService() {
 		return service;
 	}
 
-	public void setService(String service) {
+	public void setService(final String service) {
 		this.service = service;
 	}
 
@@ -22,7 +23,7 @@ public class OpDeleteMessage {
 		return type;
 	}
 
-	public void setType(String type) {
+	public void setType(final String type) {
 		this.type = type;
 	}
 
@@ -30,7 +31,7 @@ public class OpDeleteMessage {
 		return user;
 	}
 
-	public void setUser(String user) {
+	public void setUser(final String user) {
 		this.user = user;
 	}
 
@@ -38,7 +39,7 @@ public class OpDeleteMessage {
 		return opId;
 	}
 
-	public void setOpId(String opId) {
+	public void setOpId(final String opId) {
 		this.opId = opId;
 	}
 
@@ -46,7 +47,7 @@ public class OpDeleteMessage {
 		return documentId;
 	}
 
-	public void setDocumentId(String documentId) {
+	public void setDocumentId(final String documentId) {
 		this.documentId = documentId;
 	}
 
@@ -54,7 +55,7 @@ public class OpDeleteMessage {
 		return start;
 	}
 
-	public void setStart(Integer start) {
+	public void setStart(final Integer start) {
 		this.start = start;
 	}
 
@@ -62,16 +63,8 @@ public class OpDeleteMessage {
 		return end;
 	}
 
-	public void setEnd(Integer end) {
+	public void setEnd(final Integer end) {
 		this.end = end;
-	}
-
-	public Long getTickStamp() {
-		return tickStamp;
-	}
-
-	public void setTickStamp(Long tickStamp) {
-		this.tickStamp = tickStamp;
 	}
 
 }

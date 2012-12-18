@@ -26,8 +26,11 @@ public class Activator extends AbstractUIPlugin {
 		super.start(context);
 		plugin = this;
 
-        initializeCahootsSocket();
-		
+        try {
+			initializeCahootsSocket();
+		} catch (final Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**

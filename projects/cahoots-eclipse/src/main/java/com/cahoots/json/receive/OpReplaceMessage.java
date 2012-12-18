@@ -1,21 +1,22 @@
 package com.cahoots.json.receive;
 
-public class OpReplaceMessage {
+import com.cahoots.eclipse.op.OpTransformation;
+
+public class OpReplaceMessage extends OpTransformation {
 	private String user;
 	private String opId;
 	private String contents;
 	private Integer start;
 	private Integer end;
-	private Long tickStamp;
 
 	public OpReplaceMessage() {
 	}
-	
+
 	public String getUser() {
 		return user;
 	}
 
-	public void setUser(String user) {
+	public void setUser(final String user) {
 		this.user = user;
 	}
 
@@ -23,7 +24,7 @@ public class OpReplaceMessage {
 		return opId;
 	}
 
-	public void setOpId(String opId) {
+	public void setOpId(final String opId) {
 		this.opId = opId;
 	}
 
@@ -31,7 +32,7 @@ public class OpReplaceMessage {
 		return contents;
 	}
 
-	public void setContents(String content) {
+	public void setContents(final String content) {
 		this.contents = content;
 	}
 
@@ -39,7 +40,7 @@ public class OpReplaceMessage {
 		return start;
 	}
 
-	public void setStart(Integer start) {
+	public void setStart(final Integer start) {
 		this.start = start;
 	}
 
@@ -47,16 +48,8 @@ public class OpReplaceMessage {
 		return end;
 	}
 
-	public void setEnd(Integer end) {
+	public void setEnd(final Integer end) {
 		this.end = end;
-	}
-
-	public Long getTickStamp() {
-		return tickStamp;
-	}
-
-	public void setTickStamp(Long tickStamp) {
-		this.tickStamp = tickStamp;
 	}
 
 }

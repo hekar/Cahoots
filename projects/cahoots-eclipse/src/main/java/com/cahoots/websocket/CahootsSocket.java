@@ -106,14 +106,14 @@ public class CahootsSocket implements WebSocket.OnTextMessage,
 						ReceiveAllUsersMessage.class);
 				for (Collaborator c : msg.users) {
 					for (UserChangeEventListener listener : loginListeners) {
-						listener.UserLoginEvent(new UserChangeEvent(c));
+						listener.userConnected(new UserChangeEvent(c));
 					}
 				}
 			} else if ("status".equals(base.type)) {
 				ReceiveUserStatusMessage msg = gson.fromJson(message,
 						ReceiveUserStatusMessage.class);
 				for (UserChangeEventListener listener : loginListeners) {
-					listener.UserLoginEvent(new UserChangeEvent(msg.user));
+					listener.userConnected(new UserChangeEvent(msg.user));
 				}
 			}
 		} else if ("op".equals(base.service)) {
@@ -148,7 +148,7 @@ public class CahootsSocket implements WebSocket.OnTextMessage,
 		if (connection != null) {
 			connection.close();
 			for (DisconnectEventListener listener : disconnectListeners) {
-				listener.disconnected(new DisconnectEvent());
+				listener.userDisconnected(new DisconnectEvent());
 			}
 		}
 		connection = null;

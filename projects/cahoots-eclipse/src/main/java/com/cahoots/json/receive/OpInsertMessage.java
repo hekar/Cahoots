@@ -1,6 +1,8 @@
 package com.cahoots.json.receive;
 
-public class OpInsertMessage {
+import com.cahoots.eclipse.op.OpTransformation;
+
+public class OpInsertMessage extends OpTransformation {
 	/**
 	 * The cursor index that the message was inserted at
 	 */
@@ -10,11 +12,6 @@ public class OpInsertMessage {
 	 * The contents of the message
 	 */
 	private String contents;
-
-	/**
-	 * The tickstamp that the message was created with
-	 */
-	private long tickStamp;
 
 	/**
 	 * Document id
@@ -33,7 +30,7 @@ public class OpInsertMessage {
 		return start;
 	}
 
-	public void setStart(int start) {
+	public void setStart(final int start) {
 		this.start = start;
 	}
 
@@ -41,23 +38,15 @@ public class OpInsertMessage {
 		return contents;
 	}
 
-	public void setContents(String contents) {
+	public void setContents(final String contents) {
 		this.contents = contents;
-	}
-
-	public long getTickStamp() {
-		return tickStamp;
-	}
-
-	public void setTickStamp(long tickStamp) {
-		this.tickStamp = tickStamp;
 	}
 
 	public String getDocumentId() {
 		return documentId;
 	}
 
-	public void setDocumentId(String documentId) {
+	public void setDocumentId(final String documentId) {
 		this.documentId = documentId;
 	}
 
@@ -65,7 +54,7 @@ public class OpInsertMessage {
 		return opId;
 	}
 
-	public void setOpId(String opId) {
+	public void setOpId(final String opId) {
 		this.opId = opId;
 	}
 

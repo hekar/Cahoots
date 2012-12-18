@@ -1,6 +1,5 @@
 package com.cahoots.json.send;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class SendShareDocumentMessage {
@@ -11,8 +10,8 @@ public class SendShareDocumentMessage {
 	private String documentId;
 	private List<String> collaborators;
 
-	public SendShareDocumentMessage(String user, String documentId,
-			List<String> collaborators) {
+	public SendShareDocumentMessage(final String user, final String documentId,
+			final List<String> collaborators) {
 		super();
 		this.user = user;
 		this.documentId = documentId;
@@ -23,7 +22,7 @@ public class SendShareDocumentMessage {
 		return user;
 	}
 
-	public void setUser(String user) {
+	public void setUser(final String user) {
 		this.user = user;
 	}
 
@@ -31,7 +30,7 @@ public class SendShareDocumentMessage {
 		return documentId;
 	}
 
-	public void setDocumentId(String documentId) {
+	public void setDocumentId(final String documentId) {
 		this.documentId = documentId;
 	}
 
@@ -39,7 +38,7 @@ public class SendShareDocumentMessage {
 		return collaborators;
 	}
 
-	public void setCollaborators(List<String> collaborators) {
+	public void setCollaborators(final List<String> collaborators) {
 		this.collaborators = collaborators;
 	}
 

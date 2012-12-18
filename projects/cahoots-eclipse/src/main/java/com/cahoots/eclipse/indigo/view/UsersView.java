@@ -64,10 +64,10 @@ public class UsersView extends ViewPart implements UserChangeEventListener, Disc
 	public static final String ID = "com.cahoots.eclipse.indigo.view.UsersView";
 
 	private TableViewer viewer;
+	private ViewContentProvider source;
 	private Action action1;
 	private Action action2;
 	private Action doubleClickAction;
-	private ViewContentProvider source;
 
 	/*
 	 * The content provider class is responsible for
@@ -87,15 +87,15 @@ public class UsersView extends ViewPart implements UserChangeEventListener, Disc
 			super();
 		}
 		
-		public void inputChanged(Viewer v, Object oldInput, Object newInput) {
+		public void inputChanged(final Viewer v, final Object oldInput, final Object newInput) {
 		}
 		public void dispose() {
 		}
-		public Object[] getElements(Object parent) {
+		public Object[] getElements(final Object parent) {
 			return elements.values().toArray(new Object[elements.size()]);
 		}
 		
-		public void add(Collaborator element)
+		public void add(final Collaborator element)
 		{			
 			elements.put(element.name, element);
 		}
@@ -107,16 +107,16 @@ public class UsersView extends ViewPart implements UserChangeEventListener, Disc
 		
 	}
 	class ViewLabelProvider extends LabelProvider implements ITableLabelProvider {
-		public String getColumnText(Object obj, int index) {
+		public String getColumnText(final Object obj, final int index) {
 			return getText(obj);
 		}
-		public Image getColumnImage(Object obj, int index) {
+		public Image getColumnImage(final Object obj, final int index) {
 			return getImage(obj);
 		}
-		public Image getImage(Object obj) {
+		public Image getImage(final Object obj) {
 			if(obj instanceof Collaborator)
 			{
-				Collaborator c = (Collaborator)obj;
+				final Collaborator c = (Collaborator)obj;
 				if("online".equals(c.status))
 				{
 					return PlatformUI.getWorkbench().
@@ -148,7 +148,7 @@ public class UsersView extends ViewPart implements UserChangeEventListener, Disc
 	 * This is a callback that will allow us
 	 * to create the viewer and initialize it.
 	 */
-	public void createPartControl(Composite parent) {
+	public void createPartControl(final Composite parent) {
 		viewer = new TableViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
 		source = new ViewContentProvider();
 		viewer.setContentProvider(source);
@@ -165,38 +165,38 @@ public class UsersView extends ViewPart implements UserChangeEventListener, Disc
 	}
 
 	private void hookContextMenu() {
-		MenuManager menuMgr = new MenuManager("#PopupMenu");
+		final MenuManager menuMgr = new MenuManager("#PopupMenu");
 		menuMgr.setRemoveAllWhenShown(true);
 		menuMgr.addMenuListener(new IMenuListener() {
-			public void menuAboutToShow(IMenuManager manager) {
+			public void menuAboutToShow(final IMenuManager manager) {
 				UsersView.this.fillContextMenu(manager);
 			}
 		});
-		Menu menu = menuMgr.createContextMenu(viewer.getControl());
+		final Menu menu = menuMgr.createContextMenu(viewer.getControl());
 		viewer.getControl().setMenu(menu);
 		getSite().registerContextMenu(menuMgr, viewer);
 	}
 
 	private void contributeToActionBars() {
-		IActionBars bars = getViewSite().getActionBars();
+		final IActionBars bars = getViewSite().getActionBars();
 		fillLocalPullDown(bars.getMenuManager());
 		fillLocalToolBar(bars.getToolBarManager());
 	}
 
-	private void fillLocalPullDown(IMenuManager manager) {
+	private void fillLocalPullDown(final IMenuManager manager) {
 		manager.add(action1);
 		manager.add(new Separator());
 		manager.add(action2);
 	}
 
-	private void fillContextMenu(IMenuManager manager) {
+	private void fillContextMenu(final IMenuManager manager) {
 		manager.add(action1);
 		manager.add(action2);
 		// Other plug-ins can contribute there actions here
 		manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
 	}
 	
-	private void fillLocalToolBar(IToolBarManager manager) {
+	private void fillLocalToolBar(final IToolBarManager manager) {
 		manager.add(action1);
 		manager.add(action2);
 	}
@@ -223,8 +223,8 @@ public class UsersView extends ViewPart implements UserChangeEventListener, Disc
 				getImageDescriptor(ISharedImages.IMG_OBJS_INFO_TSK));
 		doubleClickAction = new Action() {
 			public void run() {
-				ISelection selection = viewer.getSelection();
-				Object obj = ((IStructuredSelection)selection).getFirstElement();
+				final ISelection selection = viewer.getSelection();
+				final Object obj = ((IStructuredSelection)selection).getFirstElement();
 				showMessage("Double-click detected on "+obj.toString());
 			}
 		};
@@ -232,12 +232,12 @@ public class UsersView extends ViewPart implements UserChangeEventListener, Disc
 
 	private void hookDoubleClickAction() {
 		viewer.addDoubleClickListener(new IDoubleClickListener() {
-			public void doubleClick(DoubleClickEvent event) {
+			public void doubleClick(final DoubleClickEvent event) {
 				doubleClickAction.run();
 			}
 		});
 	}
-	private void showMessage(String message) {
+	private void showMessage(final String message) {
 		MessageDialog.openInformation(
 			viewer.getControl().getShell(),
 			"Users View",
@@ -252,27 +252,24 @@ public class UsersView extends ViewPart implements UserChangeEventListener, Disc
 	}
 
 	@Override
-	public void UserLoginEvent(com.cahoots.events.UserChangeEvent event) {
-
+	public void userConnected(final com.cahoots.events.UserChangeEvent event) {
 		source.add(event.getUser());
 		getSite().getShell().getDisplay().asyncExec(new Runnable() {
 			@Override
 			public void run() {
 				viewer.refresh();
-				
 			}
 		});
 		
 	}
 
 	@Override
-	public void disconnected(DisconnectEvent event) {
+	public void userDisconnected(final DisconnectEvent event) {
 		source.clear();
 		getSite().getShell().getDisplay().asyncExec(new Runnable() {
 			@Override
 			public void run() {
 				viewer.refresh();
-				
 			}
 		});
 	}

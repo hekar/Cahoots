@@ -36,15 +36,23 @@ public class ShareDocumentDialog extends Window {
 		c.setLayout(new MigLayout("fill"));
 		
 		// Title
-		new Text(c, SWT.SINGLE | SWT.BORDER);
+		final Text title = new Text(c, SWT.SINGLE | SWT.BORDER);
+		title.setLayoutData("wrap");
+		
+		
 		
 		// ok/cancel buttons
-		final Button ok = new Button(c, SWT.BORDER | SWT.PUSH);
+		final Button ok = new Button(c, SWT.PUSH);
 		ok.setText("OK");
 		ok.setLayoutData("tag ok");
 		ok.addSelectionListener(new SelectionListener() {
 			@Override
 			public void widgetSelected(final SelectionEvent arg0) {
+				try {
+					ShareDocumentDialog.this.getShell().dispose();
+				} catch (final Exception e) {
+					e.printStackTrace();
+				}
 			}
 			
 			@Override
@@ -52,12 +60,13 @@ public class ShareDocumentDialog extends Window {
 			}
 		});
 		
-		final Button cancel = new Button(c, SWT.BORDER | SWT.PUSH);
+		final Button cancel = new Button(c, SWT.PUSH);
 		cancel.setText("Cancel");
 		cancel.setLayoutData("tag cancel");
 		cancel.addSelectionListener(new SelectionListener() {
 			@Override
 			public void widgetSelected(final SelectionEvent arg0) {
+				ShareDocumentDialog.this.getShell().dispose();
 			}
 			
 			@Override
