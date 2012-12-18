@@ -1,14 +1,17 @@
 package controllers
 
-import play._
-import play.api._
+import play.db.DB
 import play.api.Play._
 import play.api.mvc._
 import play.api.data._
 import play.api.data.Forms._
 import views._
+import org.jooq.SQLDialect
+import org.jooq.impl.Factory
+import com.cahoots.jooq.tables.Users._
+import java.security.MessageDigest
 
-object Auth extends Controller {
+object Auth extends Controller with Secured {
 
   val loginForm = Form(
     tuple(
@@ -19,9 +22,6 @@ object Auth extends Controller {
     })
   )
 
-  def check(username: String, password: String) = {
-    (username == "admin" && password == "1234")
-  }
 
   def login = Action { implicit request =>
     Ok(html.login(loginForm))
@@ -39,6 +39,7 @@ object Auth extends Controller {
       "success" -> "You are now logged out."
     )
   }
+
 }
 
 /**
@@ -54,4 +55,15 @@ trait Secured {
     Action(request => f(user)(request))
   }
 
+  def hash(text: String) : String = {
+    MessageDigest.getInstance("MD5").digest(text.getBytes).map("%02x" format _).mkString
+  }
+
+  def check(username: String, password: String) = {
+    val c = DB.getConnection()
+    val f = new Factory(c, SQLDialect.POSTGRES)
+    val pass = hash(password)
+    val result = f.select(USERS.USERNAME).from(USERS).where( USERS.USERNAME equal username).and(USERS.PASSWORD equal pass).fetch()
+    (result.size() == 1)
+  }
 }

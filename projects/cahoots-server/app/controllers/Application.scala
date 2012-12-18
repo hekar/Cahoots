@@ -1,16 +1,18 @@
 package controllers
 
 import play.api._
-import play.api.mvc._
 import play.api.libs.json._
-import play.api.libs.iteratee._
 import play.cache._
 import scala.collection.mutable._
 
-import views._
 import models._
+import play.api.mvc._
+import play.db.DB
+import org.jooq.impl.Factory
+import org.jooq.SQLDialect
+import com.cahoots.jooq.tables.Users._
 
-object Application extends Controller {
+object Application extends Controller with Secured {
 
   def index = Action {
     Ok("")
@@ -20,39 +22,38 @@ object Application extends Controller {
     val user = request.body.asFormUrlEncoded.get.get("username").get.apply(0)
     val pass = request.body.asFormUrlEncoded.get.get("password").get.apply(0)
     
-    // TODO: do actual authenticaty stuff here...
+    if(!check(user, pass))
+    {
+      Unauthorized("Invalid username/password")
+    }
+
     var users:ListBuffer[ActiveUser] = Cache.get("users").asInstanceOf[ListBuffer[ActiveUser]]
     
     if(users == null)
     {
       users = new ListBuffer[ActiveUser]
+      val c = DB.getConnection()
+      val f = new Factory(c, SQLDialect.POSTGRES)
+      val g = f.select(USERS.USERNAME).from(USERS).fetch(USERS.USERNAME).toArray.map(a => new ActiveUser(a.asInstanceOf[String], null))
+      users.appendAll(g)
+      Cache.set("users", users)
     }
     
-    var stored_user = users.findIndexOf(x => x.username == user)
-    
+    val stored_user = users.findIndexOf(x => x.username == user)
+
+    val token = java.util.UUID.randomUUID().toString()
     if(stored_user != -1)
     {
-      users.remove(stored_user)
-    }
-    
-    var token:String = Cache.get(user).asInstanceOf[String]
-    
-    if (token == null)
-    {
-      token = java.util.UUID.randomUUID().toString()
-      Cache.set(user, token)
-    }
-      
-    if (token != null)
-    {
-      users.append(new ActiveUser(user, token))
+      users(stored_user).token = token;
       Cache.set("users", users)
       Logger.info("User logged in with %s:%s".format(user, token))
       Ok(token)
     }
     else
     {
-      Unauthorized("Invalid username/password")
+      users.append(new ActiveUser(user, token))
+      Cache.set("users", users)
+      Ok(token)
     }
     
   }
@@ -74,7 +75,7 @@ object Application extends Controller {
       Logger.info("User logged out with %s".format(token))
       val username = users(stored_user).username
       Cache.set(username, null) //TODO is this used anywhere else?
-      users.remove(stored_user)
+      users(stored_user).token = null
     }
     Cache.set("users", users)
 

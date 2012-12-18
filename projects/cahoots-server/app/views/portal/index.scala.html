@@ -1,13 +1,30 @@
-@portalBase("Index") {
-<div class="nav">
-    <ul class="nav">
-        <li class="nav"><a class="nav"
-            href=""></a></li>
-    </ul>
-</div>
-<div class="content">
-</div>
-<div class="footer">
+@(myForm: Form[Tuple4[String, String, String, String]], roles:java.util.List[String])
 
-</div>
+@import helper._
+
+@portalBase("Index") {
+        @main("Cahoots - Login") {
+
+        @form(action = routes.Portal.createUser) {
+        @myForm.globalError.map { error =>
+        <p class="error">
+            @error.message
+        </p>
+        }
+
+        @inputText(myForm("username"))
+        @inputPassword(myForm("password"))
+        @inputText(myForm("email"))
+        @select(
+            myForm("role"),
+            options = options(roles),
+            '_default -> "--- Choose a role ---",
+            '_label -> "Role",
+            '_error -> myForm("profile.roles").error.map(_.withMessage("Please select a role"))
+        )
+
+        <input type="submit" value="Create" />
+        }
+
+    }
 }
