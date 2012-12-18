@@ -11,6 +11,7 @@ import org.jooq.impl.Factory
 import org.jooq.SQLDialect
 import org.jooq.Record
 import com.cahoots.jooq.tables.Users._
+import com.cahoots.jooq.tables.Roles._
 import scala.collection.JavaConversions._
 
 object Application extends Controller with Secured {
@@ -35,9 +36,9 @@ object Application extends Controller with Secured {
       users = new ListBuffer[ActiveUser]
       val connection = DB.getConnection
       val create = new Factory(connection, SQLDialect.POSTGRES)
-      for(r <- (create select(USERS.USERNAME, USERS.NAME, USERS.ROLE) from USERS fetch))
+      for(r <- (create.select(USERS.USERNAME, USERS.NAME, ROLES.NAME).from(USERS).join(ROLES).on(ROLES.ID equal USERS.ROLE).fetch))
       {
-        users.append(new ActiveUser(r.getValue(USERS.USERNAME), r.getValue(USERS.NAME), r.getValue(USERS.ROLE), null, "offline"))
+        users.append(new ActiveUser(r.getValue(USERS.USERNAME), r.getValue(USERS.NAME), r.getValue(USERS.NAME), null, "offline"))
       }
       Cache.set("users", users)
     }
@@ -54,7 +55,7 @@ object Application extends Controller with Secured {
     }
     else
     {
-      users.append(new ActiveUser(user, user, 2, token, "offline"))
+      users.append(new ActiveUser(user, user, "user", token, "offline"))
       Cache.set("users", users)
       Ok(token)
     }
