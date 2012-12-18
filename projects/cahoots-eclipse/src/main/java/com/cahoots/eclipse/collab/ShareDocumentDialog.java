@@ -9,6 +9,7 @@ import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IEditorPart;
@@ -37,9 +38,12 @@ public class ShareDocumentDialog extends Window {
 		final Composite c = new Composite(parent, SWT.NONE);
 		c.setLayout(new MigLayout("fill"));
 
-		// TODO: Label
 		
 		// Title
+		final Label titleLabel = new Label(c, SWT.None);
+		titleLabel.setLayoutData("split 2");
+		titleLabel.setText("Title: ");
+		
 		final Text title = new Text(c, SWT.SINGLE | SWT.BORDER);
 		title.setLayoutData("growx, wrap");
 		
