@@ -31,7 +31,7 @@ class OpService(
         val opId = (json \ "opId").as[String]
         val collaborators = (json \ "collaborators").as[List[String]]
 
-        shareDocument(user, opId, collaborators)
+        unshareDocument(user, opId, collaborators)
       case "insert" =>
         val user = (json \ "user").as[String]
         val opId = (json \ "opId").as[String]
@@ -40,6 +40,23 @@ class OpService(
         val tickStamp = (json \ "tickStamp").as[Long]
 
         insert(user, opId, content, start, tickStamp)
+      case "replace" =>
+        val user = (json \ "user").as[String]
+        val opId = (json \ "opId").as[String]
+        val content = (json \ "content").as[String]
+        val start = (json \ "start").as[Int]
+        val end = (json \ "end").as[Int]
+        val tickStamp = (json \ "tickStamp").as[Long]
+
+        replace(user, opId, content, start, end, tickStamp)
+      case "delete" =>
+        val user = (json \ "user").as[String]
+        val opId = (json \ "opId").as[String]
+        val start = (json \ "start").as[Int]
+        val end = (json \ "end").as[Int]
+        val tickStamp = (json \ "tickStamp").as[Long]
+
+      // TODO: Replace
       case _ =>
         throw new RuntimeException("Invalid message type for 'op': %s".format(t))
     }
@@ -123,6 +140,74 @@ class OpService(
    * The tickstamp that the message was created at
    */
   def insert(user: String, opId: String, content: String, start: Int, tickStamp: Long) {
+    val handle = {
+      (collaborator: String, opSession: OpSession) =>
+        notifyOne(collaborator, JsObject(Seq(
+          "service" -> JsString("op"),
+          "type" -> JsString("insert"),
+          "user" -> JsString(user),
+          "opId" -> JsString(opId),
+          "documentId" -> JsString(opSession.documentId),
+          "contents" -> JsString(content),
+          "start" -> JsNumber(start),
+          "tickStamp" -> JsNumber(tickStamp)
+        )))
+    }
+
+    replicateOp(user, opId, handle)
+  }
+
+  def replace(user: String, opId: String, content: String, start: Int, end: Int, tickStamp: Long) {
+    val handle = {
+      (collaborator: String, opSession: OpSession) =>
+        notifyOne(collaborator, JsObject(Seq(
+          "service" -> JsString("op"),
+          "type" -> JsString("replace"),
+          "user" -> JsString(user),
+          "opId" -> JsString(opId),
+          "documentId" -> JsString(opSession.documentId),
+          "contents" -> JsString(content),
+          "start" -> JsNumber(start),
+          "end" -> JsNumber(end),
+          "tickStamp" -> JsNumber(tickStamp)
+        )))
+    }
+
+    replicateOp(user, opId, handle)
+  }
+
+  def delete(user: String, opId: String, start: Int, end: Int, tickStamp: Long) {
+    val handle = {
+      (collaborator: String, opSession: OpSession) =>
+        notifyOne(collaborator, JsObject(Seq(
+          "service" -> JsString("op"),
+          "type" -> JsString("delete"),
+          "user" -> JsString(user),
+          "opId" -> JsString(opId),
+          "documentId" -> JsString(opSession.documentId),
+          "start" -> JsNumber(start),
+          "end" -> JsNumber(end),
+          "tickStamp" -> JsNumber(tickStamp)
+        )))
+    }
+
+    replicateOp(user, opId, handle)
+  }
+
+
+  /**
+   * Perform the replication of an operational transformation event
+   *
+   * This sends the Op event to all respective clients
+   *
+   * @param user
+   * User sending the event
+   * @param opId
+   * Operational session Id
+   * @param handle
+   * Handle each collaborator (push the changes)
+   */
+  def replicateOp(user: String, opId: String, handle: (String, OpSession) => Unit) {
     if (ops.contains(opId)) {
       val opSession = ops(opId)
 
@@ -133,14 +218,9 @@ class OpService(
          * Notify all clients of this operational transformation that an insert
          * operation has been performed
          */
-        opSession.collaborators.foreach { collaborator =>
-          notifyOne(collaborator, JsObject(Seq(
-            "service" -> JsString("op"),
-            "type" -> JsString("insert"),
-            "by" -> JsString(user),
-            "opId" -> JsString(opId),
-            "documentId" -> JsString(opSession.documentId)
-          )))
+        opSession.collaborators.foreach {
+          collaborator =>
+            handle(collaborator, opSession)
         }
 
       } else {

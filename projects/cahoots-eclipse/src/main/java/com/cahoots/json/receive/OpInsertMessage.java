@@ -25,7 +25,7 @@ public class OpInsertMessage {
 	 * Operational session id
 	 */
 	private int opId;
-	
+
 	public OpInsertMessage() {
 	}
 
