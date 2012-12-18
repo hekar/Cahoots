@@ -3,7 +3,7 @@ package com.cahoots.json.receive;
 public class OpReplaceMessage {
 	private String user;
 	private String opId;
-	private String content;
+	private String contents;
 	private Integer start;
 	private Integer end;
 	private Long tickStamp;
@@ -27,12 +27,12 @@ public class OpReplaceMessage {
 		this.opId = opId;
 	}
 
-	public String getContent() {
-		return content;
+	public String getContents() {
+		return contents;
 	}
 
-	public void setContent(String content) {
-		this.content = content;
+	public void setContents(String content) {
+		this.contents = content;
 	}
 
 	public Integer getStart() {

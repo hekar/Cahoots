@@ -6,9 +6,15 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.cahoots.eclipse.Activator;
+import com.cahoots.events.OpDeleteEventListener;
+import com.cahoots.events.OpInsertEventListener;
+import com.cahoots.events.OpReplaceEventListener;
 import com.cahoots.events.ShareDocumentEventListener;
+import com.cahoots.json.receive.OpDeleteMessage;
 import com.cahoots.json.receive.OpInsertMessage;
+import com.cahoots.json.receive.OpReplaceMessage;
 import com.cahoots.json.receive.ShareDocumentMessage;
+import com.cahoots.json.send.SendOpDeleteMessage;
 import com.cahoots.json.send.SendOpInsertMessage;
 import com.cahoots.json.send.SendOpReplaceMessage;
 import com.cahoots.json.send.SendShareDocumentMessage;
@@ -41,13 +47,14 @@ public class TestOpService {
 		ShareDocumentMessage document = shareDocument();
 		
 		SendOpInsertMessage op = new SendOpInsertMessage();
-		op.setOpId(Integer.parseInt(document.getOpId()));
+		op.setOpId(document.getOpId());
 		op.setDocumentId(document.getDocumentId());
 		op.setStart(0);
 		op.setTickStamp(0);
 		op.setContents("Testing insert 123");
-
-		socket.send(op);
+		
+		socket.sendAndWaitForResponse(op,
+				OpInsertMessage.class, OpInsertEventListener.class);
 	}
 
 	@Test
@@ -55,21 +62,27 @@ public class TestOpService {
 		ShareDocumentMessage document = shareDocument();
 		
 		SendOpReplaceMessage op = new SendOpReplaceMessage();
-//		op.setOpId(Integer.parseInt(document.getOpId()));
-//		op.setDocumentId(document.getDocumentId());
-//		op.setStart(0);
-//		op.setTickStamp(0);
-//		op.setContents("Testing insert 123");
+		op.setOpId(document.getOpId());
+		op.setStart(0);
+		op.setTickStamp(0L);
+		op.setContents("Testing insert 123");
 
-		socket.send(op);
+		socket.sendAndWaitForResponse(op,
+				OpReplaceMessage.class, OpReplaceEventListener.class);
 	}
 
 	@Test
 	public void testOpDelete() {
-		OpInsertMessage message = new OpInsertMessage();
-//		message.setOpId();
-
-		socket.send(message);
+		ShareDocumentMessage document = shareDocument();
+		
+		SendOpDeleteMessage op = new SendOpDeleteMessage();
+		op.setOpId(document.getOpId());
+		op.setStart(0);
+		op.setTickStamp(0L);
+		op.setContents("Testing insert 123");
+		
+		socket.sendAndWaitForResponse(op,
+				OpDeleteMessage.class, OpDeleteEventListener.class);
 	}
 
 }

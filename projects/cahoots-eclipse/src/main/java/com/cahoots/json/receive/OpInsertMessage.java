@@ -24,7 +24,7 @@ public class OpInsertMessage {
 	/**
 	 * Operational session id
 	 */
-	private int opId;
+	private String opId;
 
 	public OpInsertMessage() {
 	}
@@ -61,11 +61,11 @@ public class OpInsertMessage {
 		this.documentId = documentId;
 	}
 
-	public int getOpId() {
+	public String getOpId() {
 		return opId;
 	}
 
-	public void setOpId(int opId) {
+	public void setOpId(String opId) {
 		this.opId = opId;
 	}
 
