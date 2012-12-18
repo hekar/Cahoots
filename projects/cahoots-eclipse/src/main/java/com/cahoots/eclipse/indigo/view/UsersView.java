@@ -35,6 +35,7 @@ import com.cahoots.events.DisconnectEvent;
 import com.cahoots.events.DisconnectEventListener;
 import com.cahoots.events.UserChangeEventListener;
 import com.cahoots.json.Collaborator;
+import com.cahoots.json.receive.UserChangeMessage;
 import com.cahoots.websocket.CahootsSocket;
 
 
@@ -252,18 +253,6 @@ public class UsersView extends ViewPart implements UserChangeEventListener, Disc
 	}
 
 	@Override
-	public void userConnected(final com.cahoots.events.UserChangeEvent event) {
-		source.add(event.getUser());
-		getSite().getShell().getDisplay().asyncExec(new Runnable() {
-			@Override
-			public void run() {
-				viewer.refresh();
-			}
-		});
-		
-	}
-
-	@Override
 	public void userDisconnected(final DisconnectEvent event) {
 		source.clear();
 		getSite().getShell().getDisplay().asyncExec(new Runnable() {
@@ -272,5 +261,17 @@ public class UsersView extends ViewPart implements UserChangeEventListener, Disc
 				viewer.refresh();
 			}
 		});
+	}
+
+	@Override
+	public void onEvent(UserChangeMessage msg) {
+		source.add(msg.user);
+		getSite().getShell().getDisplay().asyncExec(new Runnable() {
+			@Override
+			public void run() {
+				viewer.refresh();
+			}
+		});
+		
 	}
 }

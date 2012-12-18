@@ -1,5 +1,6 @@
 package com.cahoots.events;
 
-public interface UserChangeEventListener {
-	public void userConnected(UserChangeEvent event);
+import com.cahoots.json.receive.UserChangeMessage;
+
+public interface UserChangeEventListener extends GenericEventListener<UserChangeMessage> {
 }

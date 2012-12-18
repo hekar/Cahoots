@@ -26,10 +26,10 @@ import org.eclipse.ui.PlatformUI;
 import com.cahoots.eclipse.Activator;
 import com.cahoots.events.DisconnectEvent;
 import com.cahoots.events.DisconnectEventListener;
-import com.cahoots.events.UserChangeEvent;
 import com.cahoots.events.UserChangeEventListener;
 import com.cahoots.http.CahootsHttpService;
 import com.cahoots.json.Collaborator;
+import com.cahoots.json.receive.UserChangeMessage;
 import com.cahoots.websocket.CahootsSocket;
 
 public class UsersList extends Composite implements UserChangeEventListener,
@@ -146,14 +146,15 @@ public class UsersList extends Composite implements UserChangeEventListener,
 
 		job.schedule();
 	}
-
-	@Override
-	public void userConnected(final UserChangeEvent event) {
-		source.add(event.getUser());
-	}
-
+	
 	@Override
 	public void userDisconnected(final DisconnectEvent event) {
 		// TODO: What to do here?
+	}
+
+	@Override
+	public void onEvent(UserChangeMessage msg) {
+		source.add(msg.user);
+		
 	}
 }

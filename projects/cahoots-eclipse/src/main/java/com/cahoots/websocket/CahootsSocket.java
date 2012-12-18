@@ -23,17 +23,16 @@ import com.cahoots.events.OpInsertEventListener;
 import com.cahoots.events.OpReplaceEventListener;
 import com.cahoots.events.ShareDocumentEventListener;
 import com.cahoots.events.UnShareDocumentEventListener;
-import com.cahoots.events.UserChangeEvent;
 import com.cahoots.events.UserChangeEventListener;
 import com.cahoots.json.Collaborator;
 import com.cahoots.json.MessageBase;
-import com.cahoots.json.ReceiveAllUsersMessage;
-import com.cahoots.json.ReceiveUserStatusMessage;
 import com.cahoots.json.receive.OpDeleteMessage;
 import com.cahoots.json.receive.OpInsertMessage;
 import com.cahoots.json.receive.OpReplaceMessage;
 import com.cahoots.json.receive.ShareDocumentMessage;
 import com.cahoots.json.receive.UnShareDocumentMessage;
+import com.cahoots.json.receive.UserChangeMessage;
+import com.cahoots.json.receive.UserListMessage;
 import com.google.gson.Gson;
 
 @SuppressWarnings("unchecked")
@@ -65,10 +64,10 @@ public class CahootsSocket implements WebSocket.OnTextMessage,
 					new ArrayList<OpReplaceEventListener>());
 			put(OpDeleteEventListener.class,
 					new ArrayList<OpDeleteEventListener>());
+			put(UserChangeEventListener.class,
+					new ArrayList<UserChangeEventListener>());
 		}
 	};
-
-	private List<UserChangeEventListener> loginListeners = new ArrayList<UserChangeEventListener>();
 	private List<DisconnectEventListener> disconnectListeners = new ArrayList<DisconnectEventListener>();
 	private List<ConnectEventListener> connectListeners = new ArrayList<ConnectEventListener>();
 
@@ -100,19 +99,16 @@ public class CahootsSocket implements WebSocket.OnTextMessage,
 		final MessageBase base = gson.fromJson(message, MessageBase.class);
 		if ("users".equals(base.service)) {
 			if ("all".equals(base.type)) {
-				final ReceiveAllUsersMessage msg = gson.fromJson(message,
-						ReceiveAllUsersMessage.class);
-				for (final Collaborator c : msg.users) {
-					for (final UserChangeEventListener listener : loginListeners) {
-						listener.userConnected(new UserChangeEvent(c));
-					}
+				UserListMessage msg = gson.fromJson(message,
+						UserListMessage.class);
+				for (Collaborator user : msg.users) {
+					fireEvents("all", UserChangeEventListener.class,
+							UserChangeMessage.class, base,
+							gson.toJson(new UserChangeMessage(user)), gson);
 				}
-			} else if ("status".equals(base.type)) {
-				final ReceiveUserStatusMessage msg = gson.fromJson(message,
-						ReceiveUserStatusMessage.class);
-				for (final UserChangeEventListener listener : loginListeners) {
-					listener.userConnected(new UserChangeEvent(msg.user));
-				}
+			} else {
+				fireEvents("status", UserChangeEventListener.class,
+						UserChangeMessage.class, base, message, gson);
 			}
 		} else if ("op".equals(base.service)) {
 			fireEvents("shared", ShareDocumentEventListener.class,
@@ -129,12 +125,12 @@ public class CahootsSocket implements WebSocket.OnTextMessage,
 	}
 
 	private <K, T> void fireEvents(final String eventType,
-			final Class<K> eventListenerClazz, final Class<T> clazz, final MessageBase base,
-			final String message, final Gson gson) {
+			final Class<K> eventListenerClazz, final Class<T> clazz,
+			final MessageBase base, final String message, final Gson gson) {
 
-		final List<? extends GenericEventListener<T>> listeners = this.listeners
-				.get(eventListenerClazz);
 		if (eventType.equals(base.type)) {
+			final List<? extends GenericEventListener<T>> listeners = this.listeners
+					.get(eventListenerClazz);
 			final T msg = gson.fromJson(message, clazz);
 			for (final GenericEventListener<T> listener : listeners) {
 				listener.onEvent(msg);
@@ -152,7 +148,7 @@ public class CahootsSocket implements WebSocket.OnTextMessage,
 		connection = null;
 	}
 
-	public void connect(final String server, final String authToken){
+	public void connect(final String server, final String authToken) {
 		try {
 			disconnect();
 			connection = client.open(
@@ -235,10 +231,11 @@ public class CahootsSocket implements WebSocket.OnTextMessage,
 	}
 
 	public void addUserLoginEventListener(final UserChangeEventListener listener) {
-		loginListeners.add(listener);
+		listeners.get(UserChangeEventListener.class).add(listener);
 	}
 
-	public void addDisconnectEventListener(final DisconnectEventListener listener) {
+	public void addDisconnectEventListener(
+			final DisconnectEventListener listener) {
 		disconnectListeners.add(listener);
 	}
 
