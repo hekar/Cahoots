@@ -7,18 +7,21 @@ import play.api._
 import play.api.libs.json._
 import play.api.libs.iteratee._
 import play.api.libs.concurrent._
+import play.api.Play.current
 
 import services._
 
 import akka.util.Timeout
 import akka.pattern.ask
 
-import play.api.Play.current
 
-
+/**
+ * Reference:
+ * https://github.com/playframework/Play20/blob/master/samples/scala/websocket-chat/app/models/ChatRoom.scala
+ */
 object MessageRelay {
   
-  implicit val timeout = Timeout(1 second)
+  implicit val timeout = Timeout(500 second)
   
   lazy val default = {
     val messageActor = Akka.system.actorOf(Props[MessageRelay])
@@ -69,12 +72,11 @@ class MessageRelay extends Actor {
     case Join(username) => {
       // Create an Enumerator to write to this socket
       val channel =  Enumerator.imperative[JsValue]( onStart = self ! NotifyJoin(username))
-      if(members.contains(username)) {
-        sender ! CannotConnect("This username is already used")
-      } else {
+      if(!members.contains(username)) {
         members = members + (username -> channel)
-        sender ! Connected(channel)
       }
+
+      sender ! Connected(channel)
     }
 
     case NotifyJoin(username) => {
@@ -98,7 +100,6 @@ class MessageRelay extends Actor {
       // this should call UsersService.leave somehow...
       members = members - username
       this.services("users").asInstanceOf[UsersService].leave(username)
-
     }
     
   }

@@ -1,7 +1,7 @@
-Configure Password File
+1. Configure Password File
 ==========================
 WINDOWS:
-	%APPDATA%\postgresql\pgpass.config
+	%APPDATA%\postgresql\pgpass.conf
 *NIX
 	~/.pgpass
 
@@ -11,13 +11,13 @@ localhost:5432:cahoots:postgres:password
 
 
 
-System Variable
+2. System Variable
 ==================
 add a system variable called pgbin to point to postgresql's bin directory
 
 
 
-Creating Versions
+3. Creating Versions
 ====================
 new database versions are created by adding a new directory to the versions directory.
 these folders must be sequentially named as integers.

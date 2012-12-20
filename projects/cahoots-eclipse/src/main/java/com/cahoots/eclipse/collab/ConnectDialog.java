@@ -1,11 +1,6 @@
 package com.cahoots.eclipse.collab;
 
-import java.util.LinkedList;
-import java.util.List;
 
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.NameValuePair;
-import org.apache.commons.httpclient.methods.PostMethod;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -19,12 +14,11 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
 import com.cahoots.eclipse.Activator;
-import com.cahoots.websocket.CahootsSocket;
 
 public class ConnectDialog extends Dialog {
 
 	protected Object result;
-	protected Shell shlConnectToCahoots;
+	public Shell shlConnectToCahoots;
 	private Text tb_username;
 	private Text tb_password;
 
@@ -108,45 +102,18 @@ public class ConnectDialog extends Dialog {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				//TODO move this stuff outside the UI thread
-				String username = tb_username.getText();
-				String password = tb_password.getText();
-				String server = cb_server.getText();
-				
-				HttpClient client = new HttpClient();
-				PostMethod method = new PostMethod( "http://" + server + "/app/login");
-				List<NameValuePair> data = new LinkedList<NameValuePair>();
-				data.add( new NameValuePair("username", username));
-				data.add( new NameValuePair("password", password));
-				
-				method.setRequestBody(data.toArray(new NameValuePair[data.size()]));
-				try
-				{
-					int statusCode = client.executeMethod(method);
-					if(statusCode == 200)
-					{
-						String authToken = new String(method.getResponseBody());
-						Activator.setAuthToken(authToken);
-						Activator.setServer(server);
-
-						CahootsSocket.getInstance().connect(server, authToken);
-						
-						shlConnectToCahoots.close();
-					}
-					else
-					{
-					    MessageDialog.openInformation(
-								null,
-								"Connect Error",
-								"Error connecting to server");
-					}
-					
-				}
-				catch(Exception ex)
-				{
+				try {
+					String username = tb_username.getText();
+					String password = tb_password.getText();
+					String server = cb_server.getText();
+					Activator.connect(username, password, server);
+					shlConnectToCahoots.close();
+				} catch (Exception e1) {
+					e1.printStackTrace();
 					MessageDialog.openInformation(
 							null,
 							"Connect Error",
-							"Error connecting to server. " + ex.getMessage());
+							"Error connecting to server");
 				}
 			}
 		});

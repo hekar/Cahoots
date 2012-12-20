@@ -2,15 +2,17 @@ package controllers
 
 import play.api._
 import play.api.libs.json._
-import play.cache._
 import scala.collection.mutable._
-
+import play.cache.Cache
 import models._
 import play.api.mvc._
 import play.db.DB
 import org.jooq.impl.Factory
 import org.jooq.SQLDialect
+import org.jooq.Record
 import com.cahoots.jooq.tables.Users._
+import com.cahoots.jooq.tables.Roles._
+import scala.collection.JavaConversions._
 
 object Application extends Controller with Secured {
 
@@ -32,26 +34,28 @@ object Application extends Controller with Secured {
     if(users == null)
     {
       users = new ListBuffer[ActiveUser]
-      val c = DB.getConnection()
-      val f = new Factory(c, SQLDialect.POSTGRES)
-      val g = f.select(USERS.USERNAME).from(USERS).fetch(USERS.USERNAME).toArray.map(a => new ActiveUser(a.asInstanceOf[String], null))
-      users.appendAll(g)
+      val connection = DB.getConnection
+      val create = new Factory(connection, SQLDialect.POSTGRES)
+      for(r <- (create.select(USERS.USERNAME, USERS.NAME, ROLES.NAME).from(USERS).join(ROLES).on(ROLES.ID equal USERS.ROLE).fetch))
+      {
+        users.append(new ActiveUser(r.getValue(USERS.USERNAME), r.getValue(USERS.NAME), r.getValue(ROLES.NAME), null, "offline"))
+      }
       Cache.set("users", users)
     }
     
     val stored_user = users.findIndexOf(x => x.username == user)
 
-    val token = java.util.UUID.randomUUID().toString()
+    val token = java.util.UUID.randomUUID().toString
     if(stored_user != -1)
     {
-      users(stored_user).token = token;
+      users(stored_user).token = token
       Cache.set("users", users)
       Logger.info("User logged in with %s:%s".format(user, token))
       Ok(token)
     }
     else
     {
-      users.append(new ActiveUser(user, token))
+      users.append(new ActiveUser(user, user, "user", token, "offline"))
       Cache.set("users", users)
       Logger.info("User logged in with %s:%s".format(user, token))
       Ok(token)

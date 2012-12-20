@@ -1,6 +1,16 @@
 package models
 
-class ActiveUser(name: String, authToken: String) {
-  var username: String = name
-  var token: String = authToken
+import play.api.libs.json.{JsString, JsObject}
+
+class ActiveUser(var username: String, var name: String, var role: String, var token: String, var status: String) {
+  def toJson = {
+    JsObject(
+      Seq(
+        "username"  -> JsString( username ),
+        "status" -> JsString(status),
+        "role" -> JsString(role),
+        "name" -> JsString(name)
+      )
+    )
+  }
 }
