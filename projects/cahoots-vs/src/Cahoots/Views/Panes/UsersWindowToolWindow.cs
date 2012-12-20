@@ -23,7 +23,6 @@ namespace Cahoots
     [Guid("c5d2c22e-28af-4fe9-87ed-aee833b7f3d4")]
     public class UsersWindowToolWindow : UsersWindowToolWindowBase
     {
-
         /// <summary>
         /// Standard constructor for the tool window.
         /// </summary>

@@ -53,6 +53,7 @@ object Application extends Controller with Secured {
     {
       users.append(new ActiveUser(user, token))
       Cache.set("users", users)
+      Logger.info("User logged in with %s:%s".format(user, token))
       Ok(token)
     }
     

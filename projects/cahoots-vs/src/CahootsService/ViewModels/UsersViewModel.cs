@@ -9,6 +9,9 @@ namespace Cahoots.Services.ViewModels
     using System;
     using Cahoots.Ext.View;
     using Cahoots.Services.Models;
+using System.Windows.Controls;
+using System.Windows.Input;
+    using System.Windows;
 
     /// <summary>
     /// View model for the users service.
@@ -21,6 +24,11 @@ namespace Cahoots.Services.ViewModels
         public UsersViewModel()
         {
             this.Users = new ViewModelCollection<Collaborator>();
+            this.InviteCommand = new SimpleCommand()
+            {
+                ExecuteDelegate = () => MessageBox.Show("asdf"),
+                CanExecuteDelegate = () => { return true; }
+            };
         }
 
         /// <summary>
@@ -30,6 +38,8 @@ namespace Cahoots.Services.ViewModels
         /// The users.
         /// </value>
         public ViewModelCollection<Collaborator> Users { get; private set; }
+
+        public ICommand InviteCommand { get; private set; }
 
         /// <summary>
         /// Relays the command.
