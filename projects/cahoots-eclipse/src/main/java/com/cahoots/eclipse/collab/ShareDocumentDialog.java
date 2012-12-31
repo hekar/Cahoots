@@ -2,6 +2,8 @@ package com.cahoots.eclipse.collab;
 
 import net.miginfocom.swt.MigLayout;
 
+import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
@@ -12,6 +14,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.IEditorActionDelegate;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
@@ -24,7 +27,9 @@ import com.cahoots.eclipse.indigo.widget.UsersList;
 /**
  * Dialog to share documents on right click
  */
-public class ShareDocumentDialog extends Window {
+public class ShareDocumentDialog extends Window implements IEditorActionDelegate {
+
+	private IEditorPart targetEditor;
 
 	public ShareDocumentDialog(final Shell parentShell) {
 		super(parentShell);
@@ -33,26 +38,33 @@ public class ShareDocumentDialog extends Window {
 	@Override
 	protected Control createContents(final Composite parent) {
 		this.getShell().setText("Share Document(s)");
+		
 
 		// Layout panel
-		final Composite c = new Composite(parent, SWT.NONE);
-		c.setLayout(new MigLayout("fill"));
+		final Composite c = parent; // new Composite(parent, SWT.NONE);
+		c.setLayout(new MigLayout("fill", "[growprio 100][growprio 0]", 
+				"[growprio 0][growprio 0][growprio 0][growprio 100][growprio 0]"));
 
 		// Title
 		final Label titleLabel = new Label(c, SWT.None);
-		titleLabel.setLayoutData("split 2");
+		titleLabel.setLayoutData("wrap");
 		titleLabel.setText("Title: ");
 
 		final Text title = new Text(c, SWT.SINGLE | SWT.BORDER);
 		title.setLayoutData("growx, wrap");
 
+		// Collaborators
+		final Label collaboratorsLabel = new Label(c, SWT.None);
+		collaboratorsLabel.setLayoutData("wrap");
+		collaboratorsLabel.setText("Collaborators: ");
+		
 		final UsersList usersList = new UsersList(c, SWT.BORDER);
 		usersList.setLayoutData("grow, wrap");
 
 		// ok/cancel buttons
 		final Button ok = new Button(c, SWT.PUSH);
 		ok.setText("OK");
-		ok.setLayoutData("tag ok");
+		ok.setLayoutData("tag ok, split 2");
 		ok.addSelectionListener(new SelectionListener() {
 			@Override
 			public void widgetSelected(final SelectionEvent arg0) {
@@ -82,6 +94,9 @@ public class ShareDocumentDialog extends Window {
 			}
 		});
 
+		
+		getShell().setSize(640, 600);
+		
 		return super.createContents(parent);
 	}
 
@@ -109,5 +124,18 @@ public class ShareDocumentDialog extends Window {
 		}
 
 		return null;
+	}
+
+	@Override
+	public void run(final IAction action) {
+	}
+
+	@Override
+	public void selectionChanged(final IAction action, final ISelection selection) {
+	}
+
+	@Override
+	public void setActiveEditor(final IAction action, final IEditorPart targetEditor) {
+		this.targetEditor = targetEditor;
 	}
 }
