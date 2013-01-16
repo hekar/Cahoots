@@ -1,8 +1,16 @@
 === To build ===
 
-1. Install Eclipse Classic, Scala and SBT.
+1. Install Eclipse Classic
 
-2. Type:
+2. Install Scala IDE Plugin for Eclipse Classic
+
+3. Install SBT for Windows
+
+4. Type:
   sbt compile
 
-3. Open the project with Eclipse
+5. Open the project with Eclipse
+
+6. Set ECLIPSE_HOME=<path to Eclipse Indigo unzipped>
+
+
