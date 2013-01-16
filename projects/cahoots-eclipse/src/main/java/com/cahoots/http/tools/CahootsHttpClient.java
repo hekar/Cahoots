@@ -15,12 +15,10 @@ public class CahootsHttpClient {
 		final GetMethod method = new GetMethod("http://" + server + path);
 
 		method.setQueryString(data.toArray(new NameValuePair[] {}));
-		try
-		{
+		try {
 			final int statusCode = client.executeMethod(method);
 			listener.onReceive(statusCode, method);
-		} catch (final Exception ex)
-		{
+		} catch (final Exception ex) {
 			throw new RuntimeException("Error connecting to server", ex);
 		}
 	}
@@ -31,12 +29,10 @@ public class CahootsHttpClient {
 		final PostMethod method = new PostMethod("http://" + server + path);
 
 		method.setRequestBody(data.toArray(new NameValuePair[data.size()]));
-		try
-		{
+		try {
 			final int statusCode = client.executeMethod(method);
 			listener.onReceive(statusCode, method);
-		} catch (final Exception ex)
-		{
+		} catch (final Exception ex) {
 			throw new RuntimeException("Error connecting to server", ex);
 		}
 	}
