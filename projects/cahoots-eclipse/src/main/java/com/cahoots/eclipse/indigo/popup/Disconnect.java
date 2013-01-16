@@ -7,53 +7,39 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 
+import com.cahoots.connection.CahootsConnection;
 import com.cahoots.eclipse.Activator;
 import com.cahoots.eclipse.collab.DisconnectDialog;
-import com.cahoots.events.ConnectEvent;
-import com.cahoots.events.ConnectEventListener;
-import com.cahoots.events.DisconnectEvent;
-import com.cahoots.events.DisconnectEventListener;
+import com.google.inject.Injector;
 
-public class Disconnect implements IWorkbenchWindowActionDelegate, ConnectEventListener, DisconnectEventListener {
-	
-	private Shell shell = null;
-	
-	@Override
-	public void run(IAction arg0) {
-		if(Activator.getAuthToken() == null)
-		{
-			return;
-		}
-		DisconnectDialog dia = new DisconnectDialog(shell, SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL);
-		dia.open();
-	}
+public class Disconnect implements IWorkbenchWindowActionDelegate {
 
-	@Override
-	public void selectionChanged(IAction action, ISelection selection) {
-		// TODO Auto-generated method stub
-	}
-
-	@Override
-	public void dispose() {
-		
-	}
+	private Shell shell;
+	private CahootsConnection connection;
 
 	@Override
 	public void init(IWorkbenchWindow window) {
 		shell = window.getShell();
-		
+
+		Injector injector = Activator.getInjector();
+		connection = injector.getInstance(CahootsConnection.class);
 	}
 
 	@Override
-	public void userDisconnected(DisconnectEvent event) {
-		//TODO disable button
-		
+	public void run(IAction action) {
+		boolean authenticated = connection.isAuthenticated();
+		if (authenticated) {
+			DisconnectDialog dialog = new DisconnectDialog(shell, SWT.DIALOG_TRIM
+					| SWT.APPLICATION_MODAL);
+			dialog.open();
+		}
 	}
 
 	@Override
-	public void connected(ConnectEvent event) {
-		// TODO enable button
-		
+	public void selectionChanged(IAction action, ISelection selection) {
 	}
 
+	@Override
+	public void dispose() {
+	}
 }

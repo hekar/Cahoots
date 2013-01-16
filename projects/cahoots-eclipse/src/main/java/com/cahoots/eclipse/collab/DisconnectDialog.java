@@ -16,26 +16,37 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 
+import com.cahoots.connection.CahootsConnection;
+import com.cahoots.connection.ConnectionDetails;
+import com.cahoots.connection.websocket.CahootsSocket;
 import com.cahoots.eclipse.Activator;
-import com.cahoots.websocket.CahootsSocket;
+import com.google.inject.Injector;
 
 public class DisconnectDialog extends Dialog {
 
-	protected Object result;
-	protected Shell shell;
+	private Object result;
+	private Shell shell;
+	private CahootsConnection cahootsConnection;
+	private CahootsSocket cahootsSocket;
 
 	/**
 	 * Create the dialog.
+	 * 
 	 * @param parent
 	 * @param style
 	 */
 	public DisconnectDialog(Shell parent, int style) {
 		super(parent, style);
 		setText("SWT Dialog");
+		
+		Injector injector = Activator.getInjector();
+		cahootsConnection = injector.getInstance(CahootsConnection.class);
+		cahootsSocket = injector.getInstance(CahootsSocket.class);
 	}
 
 	/**
 	 * Open the dialog.
+	 * 
 	 * @return the result
 	 */
 	public Object open() {
@@ -58,63 +69,57 @@ public class DisconnectDialog extends Dialog {
 		shell = new Shell(getParent(), getStyle());
 		shell.setSize(262, 91);
 		shell.setText(getText());
-		
-		Label lblNewLabel = new Label(shell, SWT.NONE);
-		lblNewLabel.setBounds(10, 10, 244, 15);
-		lblNewLabel.setText("Would you like to disconnect from Cahoots?");
-		
-		Button btn_disconnect = new Button(shell, SWT.NONE);
-		btn_disconnect.addSelectionListener(new SelectionAdapter() {
+
+		// Disconnect label
+		Label disconnectLabel = new Label(shell, SWT.NONE);
+		disconnectLabel.setBounds(10, 10, 244, 15);
+		disconnectLabel.setText("Would you like to disconnect from Cahoots?");
+
+		// Disconnect button
+		Button disconnect = new Button(shell, SWT.NONE);
+		disconnect.setBounds(98, 31, 75, 25);
+		disconnect.setText("Disconnect");
+		disconnect.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				//TODO move this stuff outside the UI thread
-				
 				HttpClient client = new HttpClient();
-				PostMethod method = new PostMethod( "http://" + Activator.getServer() + "/app/logout");
+				PostMethod method = new PostMethod("http://"
+						+ cahootsConnection.getServer() + "/app/logout");
 				List<NameValuePair> data = new LinkedList<NameValuePair>();
-				data.add( new NameValuePair("auth_token", Activator.getAuthToken()));
-				
-				method.setRequestBody(data.toArray(new NameValuePair[data.size()]));
-				try
-				{
+				data.add(new NameValuePair("auth_token", cahootsConnection.getAuthToken()));
+
+				method.setRequestBody(data.toArray(new NameValuePair[data
+						.size()]));
+				try {
 					int statusCode = client.executeMethod(method);
-					if(statusCode == 200)
-					{
-						Activator.setAuthToken(null);
-						CahootsSocket.getInstance().disconnect();
+					if (statusCode == 200) {
+						cahootsConnection.updateConnectionDetails(new ConnectionDetails("", "", "", ""));
+						cahootsSocket.disconnect();
 						shell.close();
-					}
-					else
-					{
-					    MessageDialog.openInformation(
-								null,
-								"Disconnect Error",
+					} else {
+						MessageDialog.openInformation(null, "Disconnect Error",
 								"Error disconnecting from server");
 					}
-					
-				}
-				catch(Exception ex)
-				{
+
+				} catch (Exception ex) {
 					MessageDialog.openInformation(
 							null,
 							"Disconnect Error",
-							"Error disconnecting from server. " + ex.getMessage());
+							"Error disconnecting from server. "
+									+ ex.getMessage());
 				}
 			}
 		});
-		btn_disconnect.setBounds(98, 31, 75, 25);
-		btn_disconnect.setText("Disconnect");
-		
-		Button btn_cancel = new Button(shell, SWT.NONE);
-		btn_cancel.addSelectionListener(new SelectionAdapter() {
+
+		// Cancel button 
+		Button cancel = new Button(shell, SWT.NONE);
+		cancel.setBounds(179, 31, 75, 25);
+		cancel.setText("Cancel");
+		cancel.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				shell.close();
 			}
 		});
-		btn_cancel.setBounds(179, 31, 75, 25);
-		btn_cancel.setText("Cancel");
-
 	}
-
 }

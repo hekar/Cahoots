@@ -3,6 +3,12 @@ package com.cahoots.json.receive;
 import com.cahoots.eclipse.op.OpTransformation;
 
 public class OpInsertMessage extends OpTransformation {
+
+	private final String service = "op";
+	private final String type = "insert";
+
+	private String user;
+
 	/**
 	 * The cursor index that the message was inserted at
 	 */
@@ -56,6 +62,22 @@ public class OpInsertMessage extends OpTransformation {
 
 	public void setOpId(final String opId) {
 		this.opId = opId;
+	}
+
+	public String getService() {
+		return service;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public String getUser() {
+		return user;
+	}
+
+	public void setUser(String user) {
+		this.user = user;
 	}
 
 }
