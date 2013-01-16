@@ -2,10 +2,13 @@ package com.cahoots.eclipse.test.integration.client;
 
 import java.util.Arrays;
 
+import org.eclipse.jetty.websocket.WebSocketClientFactory;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.cahoots.eclipse.Activator;
+import com.cahoots.connection.CahootsConnection;
+import com.cahoots.connection.websocket.CahootsSocket;
+import com.cahoots.eclipse.indigo.widget.TextEditorTools;
 import com.cahoots.events.OpDeleteEventListener;
 import com.cahoots.events.OpInsertEventListener;
 import com.cahoots.events.OpReplaceEventListener;
@@ -18,16 +21,17 @@ import com.cahoots.json.send.SendOpDeleteMessage;
 import com.cahoots.json.send.SendOpInsertMessage;
 import com.cahoots.json.send.SendOpReplaceMessage;
 import com.cahoots.json.send.SendShareDocumentMessage;
-import com.cahoots.websocket.CahootsSocket;
 
 public class TestOpService {
 
 	private static CahootsSocket socket;
+	private static CahootsConnection cahootsConnection;
+
 	@BeforeClass
 	public static void classSetUp() throws Exception {
-		Activator.initializeCahootsSocket();
-		Activator.connect("admin", "admin", "127.0.0.1:9000");
-		socket = CahootsSocket.getInstance();
+		cahootsConnection = new CahootsConnection();
+		socket = new CahootsSocket(cahootsConnection, new WebSocketClientFactory(), new TextEditorTools());
+		socket.connect("admin", "admin", "127.0.0.1:9000");
 	}
 
 	@Test
@@ -45,24 +49,24 @@ public class TestOpService {
 	@Test
 	public void testOpInsert() {
 		final ShareDocumentMessage document = shareDocument();
-		
+
 		final SendOpInsertMessage op = new SendOpInsertMessage();
 		op.setOpId(document.getOpId());
 		op.setDocumentId(document.getDocumentId());
 		op.setStart(0);
 		op.setTickStamp(0L);
 		op.setContents("Testing insert 123");
-		
-		socket.sendAndWaitForResponse(op,
-				OpInsertMessage.class, OpInsertEventListener.class);
+
+		socket.sendAndWaitForResponse(op, OpInsertMessage.class,
+				OpInsertEventListener.class);
 	}
 
 	@Test
 	public void testOpReplace() {
 		final ShareDocumentMessage document = shareDocument();
-		
+
 		final String contents = "Testing replace 123";
-		
+
 		final SendOpReplaceMessage op = new SendOpReplaceMessage();
 		op.setOpId(document.getOpId());
 		op.setStart(0);
@@ -70,22 +74,22 @@ public class TestOpService {
 		op.setTickStamp(0L);
 		op.setContents(contents);
 
-		socket.sendAndWaitForResponse(op,
-				OpReplaceMessage.class, OpReplaceEventListener.class);
+		socket.sendAndWaitForResponse(op, OpReplaceMessage.class,
+				OpReplaceEventListener.class);
 	}
 
 	@Test
 	public void testOpDelete() {
 		final ShareDocumentMessage document = shareDocument();
-		
+
 		final SendOpDeleteMessage op = new SendOpDeleteMessage();
 		op.setOpId(document.getOpId());
 		op.setStart(0);
 		op.setEnd(1);
 		op.setTickStamp(0L);
-		
-		socket.sendAndWaitForResponse(op,
-				OpDeleteMessage.class, OpDeleteEventListener.class);
+
+		socket.sendAndWaitForResponse(op, OpDeleteMessage.class,
+				OpDeleteEventListener.class);
 	}
 
 }

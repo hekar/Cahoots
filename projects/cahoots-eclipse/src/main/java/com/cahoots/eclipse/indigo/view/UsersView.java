@@ -30,34 +30,17 @@ import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 
+import com.cahoots.connection.websocket.CahootsSocket;
+import com.cahoots.eclipse.Activator;
 import com.cahoots.events.DisconnectEvent;
 import com.cahoots.events.DisconnectEventListener;
 import com.cahoots.events.UserChangeEventListener;
 import com.cahoots.json.Collaborator;
 import com.cahoots.json.receive.UserChangeMessage;
-import com.cahoots.websocket.CahootsSocket;
+import com.google.inject.Injector;
 
-/**
- * This sample class demonstrates how to plug-in a new workbench view. The view
- * shows data obtained from the model. The sample creates a dummy model on the
- * fly, but a real implementation would connect to the model available either in
- * this or another plug-in (e.g. the workspace). The view is connected to the
- * model using a content provider.
- * <p>
- * The view uses a label provider to define how model objects should be
- * presented in the view. Each view can present the same model objects using
- * different labels and icons, if needed. Alternatively, a single label provider
- * can be shared between views in order to ensure that objects of the same type
- * are presented in the same way everywhere.
- * <p>
- */
+public class UsersView extends ViewPart {
 
-public class UsersView extends ViewPart implements UserChangeEventListener,
-		DisconnectEventListener {
-
-	/**
-	 * The ID of the view as specified by the extension.
-	 */
 	public static final String ID = "com.cahoots.eclipse.indigo.view.UsersView";
 
 	private TableViewer viewer;
@@ -66,13 +49,7 @@ public class UsersView extends ViewPart implements UserChangeEventListener,
 	private Action action2;
 	private Action doubleClickAction;
 
-	/*
-	 * The content provider class is responsible for providing objects to the
-	 * view. It can wrap existing objects in adapters or simply return objects
-	 * as-is. These objects may be sensitive to the current input of the view,
-	 * or ignore it and always show the same content (like Task List, for
-	 * example).
-	 */
+	private CahootsSocket cahootsServer;
 
 	class ViewContentProvider implements IStructuredContentProvider {
 		Map<String, Collaborator> elements = new LinkedHashMap<String, Collaborator>();
@@ -132,18 +109,37 @@ public class UsersView extends ViewPart implements UserChangeEventListener,
 	class NameSorter extends ViewerSorter {
 	}
 
-	/**
-	 * The constructor.
-	 */
 	public UsersView() {
-		CahootsSocket.getInstance().addUserLoginEventListener(this);
-		CahootsSocket.getInstance().addDisconnectEventListener(this);
+		Injector injector = Activator.getInjector();
+		cahootsServer = injector.getInstance(CahootsSocket.class);
+
+		cahootsServer.addUserLoginEventListener(new UserChangeEventListener() {
+			@Override
+			public void onEvent(UserChangeMessage msg) {
+				source.add(msg.user);
+				getSite().getShell().getDisplay().asyncExec(new Runnable() {
+					@Override
+					public void run() {
+						viewer.refresh();
+					}
+				});
+			}
+		});
+
+		cahootsServer.addDisconnectEventListener(new DisconnectEventListener() {
+			@Override
+			public void userDisconnected(DisconnectEvent event) {
+				source.clear();
+				getSite().getShell().getDisplay().asyncExec(new Runnable() {
+					@Override
+					public void run() {
+						viewer.refresh();
+					}
+				});
+			}
+		});
 	}
 
-	/**
-	 * This is a callback that will allow us to create the viewer and initialize
-	 * it.
-	 */
 	public void createPartControl(final Composite parent) {
 		viewer = new TableViewer(parent, SWT.MULTI | SWT.H_SCROLL
 				| SWT.V_SCROLL);
@@ -242,33 +238,7 @@ public class UsersView extends ViewPart implements UserChangeEventListener,
 				"Users View", message);
 	}
 
-	/**
-	 * Passing the focus request to the viewer's control.
-	 */
 	public void setFocus() {
 		viewer.getControl().setFocus();
-	}
-
-	@Override
-	public void userDisconnected(final DisconnectEvent event) {
-		source.clear();
-		getSite().getShell().getDisplay().asyncExec(new Runnable() {
-			@Override
-			public void run() {
-				viewer.refresh();
-			}
-		});
-	}
-
-	@Override
-	public void onEvent(final UserChangeMessage msg) {
-		source.add(msg.user);
-		getSite().getShell().getDisplay().asyncExec(new Runnable() {
-			@Override
-			public void run() {
-				viewer.refresh();
-			}
-		});
-
 	}
 }

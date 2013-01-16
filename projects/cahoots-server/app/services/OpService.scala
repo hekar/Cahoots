@@ -70,7 +70,7 @@ class OpService(
      * Always resend the notification, allow the client to deal with multiple notifications
      * on their end
      */
-    val userJson = collaborators.map {
+    val userJson = (user :: collaborators).map {
       collaborator =>
         (collaborator, JsObject(Seq(
           "service" -> JsString("op"),

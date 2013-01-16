@@ -1,4 +1,4 @@
-package com.cahoots.http.tools;
+package com.cahoots.connection.http.tools;
 
 import java.util.List;
 
