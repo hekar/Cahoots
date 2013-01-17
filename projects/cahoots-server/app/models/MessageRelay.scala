@@ -64,7 +64,8 @@ class MessageRelay extends Actor {
 
   var services = Map[String, AsyncService](
             "users" -> new UsersService(this.notifyOne, this.notifyAll),
-            "op" -> new OpService(this.notifyOne, this.notifyAll))
+            "op" -> new OpService(this.notifyOne, this.notifyAll),
+            "chat" -> new ChatService(this.notifyOne, this.notifyAll))
 
   def receive = {
 

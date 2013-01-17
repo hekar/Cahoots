@@ -12,7 +12,7 @@ using Microsoft.VisualStudio.Shell;
 namespace Cahoots
 {
 	/// <summary>
-    /// This class implements the tool window UsersWindowToolWindow exposed by this package and hosts a user control.
+    /// This class implements the tool window ChatWindowToolWindow exposed by this package and hosts a user control.
     ///
     /// In Visual Studio tool windows are composed of a frame (implemented by the shell) and a pane, 
     /// usually implemented by the package implementer.
@@ -20,15 +20,16 @@ namespace Cahoots
     /// This class derives from the ToolWindowPane class provided from the MPF in order to use its 
     /// implementation of the IVsUIElementPane interface.
     /// </summary>
-    [Guid("c5d2c22e-28af-4fe9-87ed-aee833b7f3d4")]
-    public class UsersWindowToolWindow : UsersWindowToolWindowBase
+    [Guid("0968dc05-0eee-4e07-b222-9a305fb2a016")]
+    public class ChatWindowToolWindow : ChatWindowToolWindowBase
     {
+
         /// <summary>
         /// Standard constructor for the tool window.
         /// </summary>
-        public UsersWindowToolWindow()
+        public ChatWindowToolWindow()
         {
-            base.Content = new UsersWindowControl();
+            base.Content = new ChatWindowControl();
         }
 
 	}

@@ -32,4 +32,25 @@ namespace Cahoots
 			this.Caption = "Collaborators";
         }
     }
+	/// <summary>
+    /// This class implements the tool window ChatWindowToolWindowBase exposed by this package and hosts a user control.
+    ///
+    /// In Visual Studio tool windows are composed of a frame (implemented by the shell) and a pane, 
+    /// usually implemented by the package implementer.
+    ///
+    /// This class derives from the ToolWindowPane class provided from the MPF in order to use its 
+    /// implementation of the IVsUIElementPane interface.
+    /// </summary>
+    [Guid("0968dc05-0eee-4e07-b222-9a305fb2a016")]
+    public class ChatWindowToolWindowBase : ToolWindowPane
+    {
+        /// <summary>
+        /// Standard constructor for the tool window.
+        /// </summary>
+        public ChatWindowToolWindowBase()
+            : base(null)
+        {
+			this.Caption = "ChatWindow";
+        }
+    }
 }

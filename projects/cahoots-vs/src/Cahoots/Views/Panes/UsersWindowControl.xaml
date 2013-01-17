@@ -9,8 +9,23 @@
              d:DesignHeight="400" d:DesignWidth="300"
              Name="UsersWindow"
              Background="White">
+    <UserControl.Resources>
+        <ContextMenu  x:Key="RowMenu" DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
+            <MenuItem Header="Chat" Click="MenuItem_Click">
+            </MenuItem>
+        </ContextMenu>
+        <Style x:Key="DefaultRowStyle" TargetType="{x:Type DataGridRow}">
+            <Setter Property="ContextMenu" Value="{StaticResource RowMenu}" />
+        </Style>
+    </UserControl.Resources>
     <Grid>
-        <DataGrid AutoGenerateColumns="False" HorizontalAlignment="Stretch" Name="dataGrid1" VerticalAlignment="Stretch" Background="White">
+        <DataGrid RowStyle="{StaticResource DefaultRowStyle}"
+                  CanUserAddRows="False"
+                  AutoGenerateColumns="False"
+                  HorizontalAlignment="Stretch"
+                  Name="dataGrid1"
+                  VerticalAlignment="Stretch"
+                  Background="White">
             <DataGrid.Columns>
                 <DataGridTemplateColumn Header="User" Width="*" IsReadOnly="True">
                     <DataGridTemplateColumn.CellTemplate>

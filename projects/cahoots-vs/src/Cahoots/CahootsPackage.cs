@@ -298,6 +298,15 @@ using Cahoots.Services.ViewModels;
         }
 
         /// <summary>
+        /// Sends to socket.
+        /// </summary>
+        /// <param name="message">The message.</param>
+        public void SendToSocket(string message)
+        {
+            Socket.Send(message);
+        }
+
+        /// <summary>
         /// Releases unmanaged and - optionally - managed resources.
         /// </summary>
         /// <param name="disposing">

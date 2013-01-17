@@ -2,8 +2,6 @@ package services
 
 
 import play.api.libs.json._
-
-
 import models.ActiveUser
 import collection.mutable.ListBuffer
 import play.cache.Cache

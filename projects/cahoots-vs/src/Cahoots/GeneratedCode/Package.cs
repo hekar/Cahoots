@@ -30,6 +30,7 @@ namespace Cahoots
     // This attribute is needed to let the shell know that this package exposes some menus.
     [ProvideMenuResource("Menus.ctmenu", 1)]
 	[ProvideToolWindow(typeof(UsersWindowToolWindow), Orientation=ToolWindowOrientation.Right, Style=VsDockStyle.Tabbed, MultiInstances = false, Transient = false, PositionX = 100 , PositionY = 100 , Width = 250 , Height = 400 )]
+	[ProvideToolWindow(typeof(ChatWindowToolWindow), Orientation=ToolWindowOrientation.Right, Style=VsDockStyle.Float, MultiInstances = false, Transient = false, PositionX = 100 , PositionY = 100 , Width = 300 , Height = 300 )]
 	[Guid(GuidList.guidCahootsPkgString)]
     public abstract class CahootsPackageBase : Package
     {
@@ -148,6 +149,25 @@ namespace Cahoots
             if ((null == window) || (null == window.Frame))
             {
                 throw new NotSupportedException(String.Format("Can not create Toolwindow: UsersWindow"));
+            }
+            IVsWindowFrame windowFrame = (IVsWindowFrame)window.Frame;
+            Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(windowFrame.Show());
+        }
+
+        /// <summary>
+        /// This function is called when the user clicks the menu item that shows the 
+        /// tool window. See the Initialize method to see how the menu item is associated to 
+        /// this function using the OleMenuCommandService service and the MenuCommand class.
+        /// </summary>
+        private void ShowToolWindowChatWindow(object sender, EventArgs e)
+        {
+            // Get the instance number 0 of this tool window. This window is single instance so this instance
+            // is actually the only one.
+            // The last flag is set to true so that if the tool window does not exists it will be created.
+            ToolWindowPane window = this.FindToolWindow(typeof(ChatWindowToolWindow), 0, true);
+            if ((null == window) || (null == window.Frame))
+            {
+                throw new NotSupportedException(String.Format("Can not create Toolwindow: ChatWindow"));
             }
             IVsWindowFrame windowFrame = (IVsWindowFrame)window.Frame;
             Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(windowFrame.Show());

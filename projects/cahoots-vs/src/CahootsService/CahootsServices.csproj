@@ -31,10 +31,14 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Web" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -43,6 +47,7 @@
     <Reference Include="websocket-sharp">
       <HintPath>.\websocket-sharp.dll</HintPath>
     </Reference>
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AsyncService.cs" />
@@ -50,6 +55,7 @@
     <Compile Include="Contracts\IAuthenticationService.cs" />
     <Compile Include="Contracts\IAsyncService.cs" />
     <Compile Include="JsonHelper.cs" />
+    <Compile Include="MessageModels\Chat\SendChatMessage.cs" />
     <Compile Include="MessageModels\MessageBase.cs" />
     <Compile Include="MessageModels\Users\ReceiveAllUsersMessage.cs" />
     <Compile Include="MessageModels\Users\ReceiveUserStatusMessage.cs" />
