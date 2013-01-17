@@ -11,7 +11,7 @@
              Background="White">
     <UserControl.Resources>
         <ContextMenu  x:Key="RowMenu" DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
-            <MenuItem Header="Invite to Chat..." Command="{Binding InviteCommand}">
+            <MenuItem Header="Chat" Click="MenuItem_Click">
             </MenuItem>
         </ContextMenu>
         <Style x:Key="DefaultRowStyle" TargetType="{x:Type DataGridRow}">
@@ -20,6 +20,7 @@
     </UserControl.Resources>
     <Grid>
         <DataGrid RowStyle="{StaticResource DefaultRowStyle}"
+                  CanUserAddRows="False"
                   AutoGenerateColumns="False"
                   HorizontalAlignment="Stretch"
                   Name="dataGrid1"

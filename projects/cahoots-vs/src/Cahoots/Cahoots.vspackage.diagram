@@ -80,9 +80,12 @@
         <wpfToolWindowShape Id="df4a25e1-076a-4e22-9d5e-f0e187581bed" absoluteBounds="8.7833333333333332, 2.5, 1.5, 0.625">
           <toolWindowMoniker Id="3519dca9-6f4a-4f39-896b-b16667665260" />
         </wpfToolWindowShape>
+        <wpfToolWindowShape Id="6dc3bd5f-1eba-40a6-8676-5d9d447bce26" absoluteBounds="8.6583333333333332, 1.25, 1.5, 0.625">
+          <toolWindowMoniker Id="2bc45ccf-5461-4cc7-8996-8e2de22c717a" />
+        </wpfToolWindowShape>
       </nestedChildShapes>
     </toolwindowSwimlane>
-    <launches Id="95353647-a524-42d0-b2f2-1ac2beea58b6" edgePoints="[(6.125 : 2.8125); (8.78333333333333 : 2.8125)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+    <launches Id="95353647-a524-42d0-b2f2-1ac2beea58b6" edgePoints="[(6.125 : 2.8125); (8.78333333333333 : 2.8125)]" fixedFrom="NotFixed" fixedTo="NotFixed">
       <buttonReferencesToolWindowsMoniker Id="4b69d999-1f74-4ee0-9378-6db12e4526e3" />
       <relativeChildShapes />
       <nodes>

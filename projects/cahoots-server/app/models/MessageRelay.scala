@@ -101,8 +101,8 @@ class MessageRelay extends Actor {
       members = members - username
       this.services("users").asInstanceOf[UsersService].leave(username)
     }
-    
-  }
+
+}
 
   def notifyAll(msg: JsValue) {
     members.foreach {

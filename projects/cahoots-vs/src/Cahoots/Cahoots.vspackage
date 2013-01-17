@@ -69,6 +69,9 @@
           <userInterfaceHasToolWindows Id="88d1de2b-f3f9-44c2-b3de-60f952d07f94">
             <toolWindow Id="3519dca9-6f4a-4f39-896b-b16667665260" name="UsersWindow" idNumeric="15" caption="Collaborators" userCodeGenerated="true" style="Tabbed" transient="false" multiInstance="false" height="400" width="250" visibilityConstraints="0" guid="c5d2c22e-28af-4fe9-87ed-aee833b7f3d4" />
           </userInterfaceHasToolWindows>
+          <userInterfaceHasToolWindows Id="4bfd425e-0b8f-4fe2-9d68-5fbba94b231b">
+            <toolWindow Id="2bc45ccf-5461-4cc7-8996-8e2de22c717a" name="ChatWindow" idNumeric="16" caption="ChatWindow" userCodeGenerated="true" transient="false" multiInstance="false" visibilityConstraints="0" guid="0968dc05-0eee-4e07-b222-9a305fb2a016" />
+          </userInterfaceHasToolWindows>
         </toolWindows>
       </userInterface>
     </rootHasUserInterface>

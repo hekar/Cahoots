@@ -33,5 +33,18 @@ namespace Cahoots
         /// The view model.
         /// </value>
         private UsersViewModel ViewModel { get; set; }
+
+        /// <summary>
+        /// Handles the Click event of the MenuItem control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">
+        ///   The <see cref="System.Windows.RoutedEventArgs" />
+        ///   instance containing the event data.
+        /// </param>
+        private void MenuItem_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+
+        }
     }
 }
