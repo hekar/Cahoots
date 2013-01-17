@@ -10,12 +10,15 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.inject.Inject;
 
 import org.apache.commons.httpclient.HttpMethodBase;
 import org.apache.commons.httpclient.NameValuePair;
 import org.eclipse.jetty.websocket.WebSocket;
+import org.eclipse.jetty.websocket.WebSocket.Connection;
 import org.eclipse.jetty.websocket.WebSocketClient;
 import org.eclipse.jetty.websocket.WebSocketClientFactory;
 import org.eclipse.jface.text.BadLocationException;
@@ -49,9 +52,10 @@ import com.cahoots.json.receive.UserListMessage;
 import com.google.gson.Gson;
 
 @SuppressWarnings("unchecked")
-public class CahootsSocket implements WebSocket.OnTextMessage,
-		WebSocket.OnBinaryMessage {
+public class CahootsSocket {
 
+	private static final Logger logger = Logger.getLogger(CahootsSocket.class.getName());
+	
 	/**
 	 * Timeout is 30 minutes long.
 	 * 
@@ -60,8 +64,6 @@ public class CahootsSocket implements WebSocket.OnTextMessage,
 	private static final int TIMEOUT = 1800000;
 
 	private final AtomicLong sent = new AtomicLong(0);
-	private final AtomicLong received = new AtomicLong(0);
-	private final Set<CahootsSocket> members = new CopyOnWriteArraySet<CahootsSocket>();
 
 	private Connection connection;
 	private WebSocketClient client;
@@ -113,53 +115,11 @@ public class CahootsSocket implements WebSocket.OnTextMessage,
 		}
 	}
 
-	@Override
-	public void onClose(final int closeCode, final String message) {
-		members.remove(this);
-	}
-
-	@Override
-	public void onOpen(final Connection connection) {
-		members.add(this);
-	}
-
 	/**
 	 * TODO: Replace with real check
 	 */
 	public boolean isConnected() {
 		return cahootsConnection.isAuthenticated();
-	}
-
-	@Override
-	public void onMessage(final String message) {
-		received.incrementAndGet();
-		final Gson gson = new Gson();
-		final MessageBase base = gson.fromJson(message, MessageBase.class);
-		if ("users".equals(base.service)) {
-			if ("all".equals(base.type)) {
-				UserListMessage msg = gson.fromJson(message,
-						UserListMessage.class);
-				for (Collaborator user : msg.users) {
-					fireEvents("all", UserChangeEventListener.class,
-							UserChangeMessage.class, base,
-							gson.toJson(new UserChangeMessage(user)), gson);
-				}
-			} else {
-				fireEvents("status", UserChangeEventListener.class,
-						UserChangeMessage.class, base, message, gson);
-			}
-		} else if ("op".equals(base.service)) {
-			fireEvents("shared", ShareDocumentEventListener.class,
-					ShareDocumentMessage.class, base, message, gson);
-			fireEvents("unshared", UnShareDocumentEventListener.class,
-					UnShareDocumentMessage.class, base, message, gson);
-			fireEvents("insert", OpInsertEventListener.class,
-					OpInsertMessage.class, base, message, gson);
-			fireEvents("replace", OpReplaceEventListener.class,
-					OpReplaceMessage.class, base, message, gson);
-			fireEvents("delete", OpDeleteEventListener.class,
-					OpDeleteMessage.class, base, message, gson);
-		}
 	}
 
 	private <K, T> void fireEvents(final String eventType,
@@ -253,7 +213,7 @@ public class CahootsSocket implements WebSocket.OnTextMessage,
 			disconnect();
 			connection = client.open(
 					new URI("ws://" + server + "/app/message?auth_token="
-							+ authToken), this).get();
+							+ authToken), new CahootsSocketClient()).get();
 
 			for (final ConnectEventListener listener : connectListeners) {
 				listener.connected(new ConnectEvent());
@@ -323,11 +283,6 @@ public class CahootsSocket implements WebSocket.OnTextMessage,
 		}
 	}
 
-	@Override
-	public void onMessage(final byte[] arg0, final int arg1, final int arg2) {
-		System.out.println(new String(arg0));
-	}
-
 	public void addUserLoginEventListener(final UserChangeEventListener listener) {
 		listeners.get(UserChangeEventListener.class).add(listener);
 	}
@@ -350,4 +305,71 @@ public class CahootsSocket implements WebSocket.OnTextMessage,
 		listeners.get(ShareDocumentEventListener.class).add(listener);
 	}
 
+	/**
+	 * TODO: Create a separation of concerns between the CahootsSocket class
+	 * (rename it to CahootsService) and this class.
+	 * 
+	 * For now, this class handles receiving of websocket requests
+	 */
+	private class CahootsSocketClient implements WebSocket,
+			WebSocket.OnTextMessage, WebSocket.OnBinaryMessage {
+
+		private final AtomicLong received = new AtomicLong(0);
+		private final Set<CahootsSocketClient> members = new CopyOnWriteArraySet<CahootsSocketClient>();
+
+		public CahootsSocketClient() {
+		}
+		
+		@Override
+		public void onClose(final int closeCode, final String message) {
+			members.remove(this);
+		}
+
+		@Override
+		public void onOpen(final Connection connection) {
+			members.add(this);
+		}
+
+		@Override
+		public void onMessage(final String message) {
+			received.incrementAndGet();
+			final Gson gson = new Gson();
+			final MessageBase base = gson.fromJson(message, MessageBase.class);
+			
+			logger.log(Level.FINEST, "Message received");
+			logger.log(Level.FINEST, message);
+			
+			if ("users".equals(base.service)) {
+				if ("all".equals(base.type)) {
+					UserListMessage msg = gson.fromJson(message,
+							UserListMessage.class);
+					for (Collaborator user : msg.users) {
+						fireEvents("all", UserChangeEventListener.class,
+								UserChangeMessage.class, base,
+								gson.toJson(new UserChangeMessage(user)), gson);
+					}
+				} else {
+					fireEvents("status", UserChangeEventListener.class,
+							UserChangeMessage.class, base, message, gson);
+				}
+			} else if ("op".equals(base.service)) {
+				fireEvents("shared", ShareDocumentEventListener.class,
+						ShareDocumentMessage.class, base, message, gson);
+				fireEvents("unshared", UnShareDocumentEventListener.class,
+						UnShareDocumentMessage.class, base, message, gson);
+				fireEvents("insert", OpInsertEventListener.class,
+						OpInsertMessage.class, base, message, gson);
+				fireEvents("replace", OpReplaceEventListener.class,
+						OpReplaceMessage.class, base, message, gson);
+				fireEvents("delete", OpDeleteEventListener.class,
+						OpDeleteMessage.class, base, message, gson);
+			}
+		}
+
+		@Override
+		public void onMessage(final byte[] arg0, final int arg1, final int arg2) {
+			System.out.println(new String(arg0));
+		}
+
+	}
 }

@@ -32,7 +32,7 @@ import org.eclipse.ui.texteditor.ITextEditor;
 
 import com.cahoots.connection.websocket.CahootsSocket;
 import com.cahoots.eclipse.Activator;
-import com.cahoots.eclipse.indigo.widget.UsersList;
+import com.cahoots.eclipse.indigo.widget.UserList;
 import com.cahoots.events.ShareDocumentEventListener;
 import com.cahoots.json.Collaborator;
 import com.cahoots.json.receive.ShareDocumentMessage;
@@ -60,25 +60,25 @@ public class ShareDocumentDialog extends Window implements
 	protected Control createContents(final Composite parent) {
 		this.getShell().setText("Share Document(s)");
 
+		parent.setLayout(new MigLayout("fill"));
+		
 		// Layout panel
-		final Composite c = parent;
+		final Composite c = new Composite(parent, SWT.NONE);
 		c.setLayout(new MigLayout("fill", "[growprio 100][growprio 0]",
-				"[growprio 0][growprio 0][growprio 0][growprio 100][growprio 0]"));
+				"[growprio 0][growprio 0][growprio 100][growprio 0]"));
+		c.setLayoutData("grow");
 
 		// Title
 		final Label titleLabel = new Label(c, SWT.None);
 		titleLabel.setLayoutData("wrap");
-		titleLabel.setText("Title: ");
-
-		final Text title = new Text(c, SWT.SINGLE | SWT.BORDER);
-		title.setLayoutData("growx, wrap");
+		titleLabel.setText("Documents: ");
 
 		// Collaborators
 		final Label collaboratorsLabel = new Label(c, SWT.None);
 		collaboratorsLabel.setLayoutData("wrap");
 		collaboratorsLabel.setText("Collaborators: ");
 
-		final UsersList usersList = new UsersList(c, SWT.BORDER);
+		final UserList usersList = new UserList(c, SWT.BORDER);
 		usersList.setLayoutData("grow, wrap");
 
 		// ok/cancel buttons
@@ -118,7 +118,7 @@ public class ShareDocumentDialog extends Window implements
 
 		getShell().setSize(640, 600);
 
-		return super.createContents(parent);
+		return c;
 	}
 
 	/**

@@ -1,8 +1,8 @@
 package services
 
+import play.api._
 import play.api.libs.json._
-import collection.mutable.{ListBuffer, HashMap, LinkedList, HashSet => MutableHashSet}
-import collection.mutable
+import collection.mutable.{HashMap, HashSet => MutableHashSet}
 
 /**
  * Operational transformations service
@@ -18,6 +18,9 @@ class OpService(
   val ops = new HashMap[String, OpSession]
 
   def processMessage(json: JsValue) {
+    Logger.debug("Message received: ")
+    Logger.debug(json.toString())
+
     val t = (json \ "type").as[String]
     t match {
       case "share" =>
@@ -56,7 +59,7 @@ class OpService(
         val end = (json \ "end").as[Int]
         val tickStamp = (json \ "tickStamp").as[Long]
 
-      // TODO: Replace
+        delete(user, opId, start, end, tickStamp)
       case _ =>
         throw new RuntimeException("Invalid message type for 'op': %s".format(t))
     }
@@ -215,7 +218,7 @@ class OpService(
 
       if (validUser) {
         /*
-         * Notify all clients of this operational transformation that an insert
+         * Notify all clients of this operational transformational session that an insert
          * operation has been performed
          */
         opSession.collaborators.foreach {

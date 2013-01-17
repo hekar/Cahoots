@@ -23,11 +23,11 @@ public class ShareDocument implements IObjectActionDelegate,
 	private IEditorPart targetEditor;
 
 	public ShareDocument() {
-		super();
 		Injector injector = Activator.getInjector();
 		cahootsSocket = injector.getInstance(CahootsSocket.class);
 	}
 
+	@Override
 	public void setActivePart(final IAction action,
 			final IWorkbenchPart targetPart) {
 		shell = targetPart.getSite().getShell();
@@ -36,9 +36,11 @@ public class ShareDocument implements IObjectActionDelegate,
 
 	@Override
 	public void setActiveEditor(IAction action, IEditorPart targetEditor) {
+		shell = targetEditor.getSite().getShell();
 		this.targetEditor = targetEditor;
 	}
 
+	@Override
 	public void run(final IAction action) {
 		if (!cahootsSocket.isConnected()) {
 			ConnectDialog connectDialog = new ConnectDialog(shell);
@@ -49,7 +51,9 @@ public class ShareDocument implements IObjectActionDelegate,
 		dialog.open();
 	}
 
+	@Override
 	public void selectionChanged(final IAction action,
 			final ISelection selection) {
+		System.out.println(selection);
 	}
 }
