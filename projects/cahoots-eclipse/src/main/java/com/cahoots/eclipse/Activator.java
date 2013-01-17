@@ -1,10 +1,8 @@
 package com.cahoots.eclipse;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.nio.channels.IllegalSelectorException;
 import java.util.Properties;
 import java.util.logging.LogManager;
 
@@ -19,7 +17,7 @@ import com.google.inject.Injector;
 
 public class Activator extends AbstractUIPlugin {
 
-	private static final String LOG_PROPERTIES = "/log.properties";
+	private static final String LOG_PROPERTIES = "/src/main/java/log.properties";
 
 	private static Activator activator;
 	private static Injector injector;

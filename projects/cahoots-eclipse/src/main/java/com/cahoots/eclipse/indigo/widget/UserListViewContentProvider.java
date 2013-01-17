@@ -21,14 +21,15 @@ import com.cahoots.json.receive.UserChangeMessage;
 
 @SuppressWarnings("restriction")
 public class UserListViewContentProvider extends ViewContentProvider {
-	
+
 	private Map<String, Collaborator> elements = new LinkedHashMap<String, Collaborator>();
 	private List<SourceContentChangedListener> listeners = new ArrayList<SourceContentChangedListener>();
 
 	@Inject
-	public UserListViewContentProvider(Activator activator, CahootsSocket cahootsServer) {
+	public UserListViewContentProvider(Activator activator,
+			CahootsSocket cahootsServer) {
 		final Display display = activator.getWorkbench().getDisplay();
-		
+
 		cahootsServer.addUserLoginEventListener(new UserChangeEventListener() {
 			@Override
 			public void onEvent(UserChangeMessage msg) {
@@ -36,7 +37,7 @@ public class UserListViewContentProvider extends ViewContentProvider {
 				display.asyncExec(new Runnable() {
 					@Override
 					public void run() {
-						fireRefreshListeners();
+						fireContentChangedListeners();
 					}
 				});
 			}
@@ -49,7 +50,7 @@ public class UserListViewContentProvider extends ViewContentProvider {
 				display.asyncExec(new Runnable() {
 					@Override
 					public void run() {
-						fireRefreshListeners();
+						fireContentChangedListeners();
 					}
 				});
 			}
@@ -68,22 +69,22 @@ public class UserListViewContentProvider extends ViewContentProvider {
 	}
 
 	public void add(final Collaborator element) {
-		elements.put(element.username, element);
+		elements.put(element.getUsername(), element);
 	}
 
 	public void clear() {
 		elements.clear();
 	}
-	
+
 	public void addContentChangedListener(SourceContentChangedListener listener) {
 		listeners.add(listener);
 	}
-	
-	public void removeRefreshListener(SourceContentChangedListener listener) {
+
+	public void removeContentChangedListener(SourceContentChangedListener listener) {
 		listeners.remove(listener);
 	}
-	
-	private void fireRefreshListeners() {
+
+	private void fireContentChangedListeners() {
 		for (SourceContentChangedListener listener : listeners) {
 			listener.onEvent(this);
 		}

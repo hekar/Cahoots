@@ -201,9 +201,13 @@ public class CahootsSocket {
 	public void disconnect() {
 		if (connection != null) {
 			connection.close();
+			
 			for (final DisconnectEventListener listener : disconnectListeners) {
 				listener.userDisconnected(new DisconnectEvent());
 			}
+			
+			// Remove all listeners
+			listeners.clear();
 		}
 		connection = null;
 	}
@@ -241,10 +245,13 @@ public class CahootsSocket {
 	}
 
 	/**
+	 * WARNING: For Testing purposes only
+	 * 
 	 * RESPONSES ARE NOT TYPE SAFE!! TODO: Add Guice and move this to a mock
 	 * 
 	 * @return
 	 */
+	@Deprecated
 	public <T extends GenericEventListener<? extends Object>, K> K sendAndWaitForResponse(
 			final Object sendMessage, final Class<K> messageClazz,
 			final Class<T> eventClazz) {

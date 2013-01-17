@@ -1,5 +1,8 @@
 package com.cahoots.eclipse.indigo.widget;
 
+import java.util.Arrays;
+import java.util.List;
+
 import net.miginfocom.swt.MigLayout;
 
 import org.eclipse.jface.viewers.TableViewer;
@@ -8,6 +11,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 
 import com.cahoots.eclipse.Activator;
+import com.cahoots.json.Collaborator;
 import com.google.inject.Injector;
 
 public class UserList extends Composite {
@@ -38,7 +42,14 @@ public class UserList extends Composite {
 			}
 		});
 
-		viewer.refresh();
 		viewer.getControl().setLayoutData("grow");
+	}
+
+	/**
+	 * TODO: Actually implement
+	 * @return 
+	 */
+	public List<Collaborator> getSelectedUsers() {
+		return Arrays.asList(new Collaborator("Test User 1", "user", "online", "test_1"));
 	}
 }

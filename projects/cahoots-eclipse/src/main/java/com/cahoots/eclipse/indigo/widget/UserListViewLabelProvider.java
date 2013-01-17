@@ -25,7 +25,7 @@ public class UserListViewLabelProvider extends LabelProvider implements
 	public Image getImage(final Object obj) {
 		if (obj instanceof Collaborator) {
 			final Collaborator collaborator = (Collaborator) obj;
-			if ("online".equals(collaborator.status)) {
+			if ("online".equals(collaborator.getStatus())) {
 				return PlatformUI.getWorkbench().getSharedImages()
 						.getImage(ISharedImages.IMG_OBJ_ELEMENT);
 			} else {

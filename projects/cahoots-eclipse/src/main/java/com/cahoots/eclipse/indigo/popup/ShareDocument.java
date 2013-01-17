@@ -11,7 +11,7 @@ import org.eclipse.ui.IWorkbenchPart;
 import com.cahoots.connection.websocket.CahootsSocket;
 import com.cahoots.eclipse.Activator;
 import com.cahoots.eclipse.collab.ConnectDialog;
-import com.cahoots.eclipse.collab.ShareDocumentDialog;
+import com.cahoots.eclipse.collab.share.ShareDocumentDialog;
 import com.google.inject.Injector;
 
 public class ShareDocument implements IObjectActionDelegate,
@@ -19,7 +19,11 @@ public class ShareDocument implements IObjectActionDelegate,
 
 	private Shell shell;
 	private CahootsSocket cahootsSocket;
+	
+	@SuppressWarnings("unused")
 	private IWorkbenchPart targetPart;
+	
+	@SuppressWarnings("unused")
 	private IEditorPart targetEditor;
 
 	public ShareDocument() {

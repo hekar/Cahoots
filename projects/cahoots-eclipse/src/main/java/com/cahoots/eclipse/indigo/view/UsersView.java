@@ -20,7 +20,6 @@ import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.internal.dialogs.ViewContentProvider;
 import org.eclipse.ui.part.ViewPart;
 
 import com.cahoots.eclipse.Activator;
