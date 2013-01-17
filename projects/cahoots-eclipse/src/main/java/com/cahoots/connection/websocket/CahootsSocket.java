@@ -52,13 +52,20 @@ import com.google.gson.Gson;
 public class CahootsSocket implements WebSocket.OnTextMessage,
 		WebSocket.OnBinaryMessage {
 
+	/**
+	 * Timeout is 30 minutes long.
+	 * 
+	 * Format is in milliseconds
+	 */
+	private static final int TIMEOUT = 1800000;
+
 	private final AtomicLong sent = new AtomicLong(0);
 	private final AtomicLong received = new AtomicLong(0);
 	private final Set<CahootsSocket> members = new CopyOnWriteArraySet<CahootsSocket>();
 
 	private Connection connection;
 	private WebSocketClient client;
-	
+
 	private final CahootsConnection cahootsConnection;
 	private final TextEditorTools editorTools;
 
@@ -88,19 +95,18 @@ public class CahootsSocket implements WebSocket.OnTextMessage,
 
 	@Inject
 	public CahootsSocket(final CahootsConnection cahootsConnection,
-			final WebSocketClientFactory factory, final TextEditorTools editorTools) {
-		
+			final WebSocketClientFactory factory,
+			final TextEditorTools editorTools) {
+
 		this.cahootsConnection = cahootsConnection;
 		this.editorTools = editorTools;
-		
+
 		try {
 			factory.setBufferSize(4096);
 			factory.start();
 
-			final WebSocketClient client = factory.newWebSocketClient();
-			client.setMaxIdleTime(30000);
-
-			setClient(client);
+			client = factory.newWebSocketClient();
+			client.setMaxIdleTime(TIMEOUT);
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new RuntimeException(e);
@@ -108,7 +114,7 @@ public class CahootsSocket implements WebSocket.OnTextMessage,
 	}
 
 	@Override
-	public void onClose(final int arg0, final String arg1) {
+	public void onClose(final int closeCode, final String message) {
 		members.remove(this);
 	}
 
@@ -187,8 +193,10 @@ public class CahootsSocket implements WebSocket.OnTextMessage,
 								final String authToken = method
 										.getResponseBodyAsString();
 
-								cahootsConnection.updateConnectionDetails(new ConnectionDetails(
-												username, password, authToken, server));
+								cahootsConnection
+										.updateConnectionDetails(new ConnectionDetails(
+												username, password, authToken,
+												server));
 
 								connect(server, authToken);
 							} else {
@@ -220,8 +228,8 @@ public class CahootsSocket implements WebSocket.OnTextMessage,
 					String contents = msg.getContents();
 					Long tickStamp = msg.getTickStamp();
 
-					IDocument document = (IDocument) editorTools.getTextEditor()
-							.getDocumentProvider();
+					IDocument document = (IDocument) editorTools
+							.getTextEditor().getDocumentProvider();
 					document.replace(start, 0, contents);
 				} catch (BadLocationException e) {
 					e.printStackTrace();
@@ -246,6 +254,7 @@ public class CahootsSocket implements WebSocket.OnTextMessage,
 			connection = client.open(
 					new URI("ws://" + server + "/app/message?auth_token="
 							+ authToken), this).get();
+
 			for (final ConnectEventListener listener : connectListeners) {
 				listener.connected(new ConnectEvent());
 			}
@@ -269,10 +278,6 @@ public class CahootsSocket implements WebSocket.OnTextMessage,
 			connection.sendMessage(message);
 			sent.incrementAndGet();
 		}
-	}
-
-	public void setClient(final WebSocketClient client) {
-		this.client = client;
 	}
 
 	/**

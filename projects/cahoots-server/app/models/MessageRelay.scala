@@ -20,9 +20,12 @@ import akka.pattern.ask
  * https://github.com/playframework/Play20/blob/master/samples/scala/websocket-chat/app/models/ChatRoom.scala
  */
 object MessageRelay {
-  
-  implicit val timeout = Timeout(500 second)
-  
+
+  /**
+   * Timeouts are 30 minutes long
+   */
+  implicit val timeout = Timeout(1800 second)
+
   lazy val default = {
     val messageActor = Akka.system.actorOf(Props[MessageRelay])
     messageActor
@@ -56,7 +59,7 @@ object MessageRelay {
 }
 
 class MessageRelay extends Actor {
-  
+
   var members = Map.empty[String, PushEnumerator[JsValue]]
 
   var services = Map[String, AsyncService](
@@ -82,7 +85,7 @@ class MessageRelay extends Actor {
     case NotifyJoin(username) => {
       this.services("users").asInstanceOf[UsersService].join(username)
     }
-    
+
     case Relay(username, json) => {
       /*
        * This method is the main message relay center to pass the puck to other
@@ -95,13 +98,13 @@ class MessageRelay extends Actor {
         service.processMessage(json)
       }
     }
-    
+
     case Quit(username) => {
       // this should call UsersService.leave somehow...
       members = members - username
       this.services("users").asInstanceOf[UsersService].leave(username)
     }
-    
+
   }
 
   def notifyAll(msg: JsValue) {

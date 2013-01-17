@@ -83,7 +83,7 @@ public class ShareDocumentDialog extends Window implements
 
 		// ok/cancel buttons
 		final Button ok = new Button(c, SWT.PUSH);
-		ok.setText("OK");
+		ok.setText("&OK");
 		ok.setLayoutData("tag ok, split 2");
 		ok.addSelectionListener(new SelectionListener() {
 			@Override
@@ -103,7 +103,7 @@ public class ShareDocumentDialog extends Window implements
 		});
 
 		final Button cancel = new Button(c, SWT.PUSH);
-		cancel.setText("Cancel");
+		cancel.setText("&Cancel");
 		cancel.setLayoutData("tag cancel");
 		cancel.addSelectionListener(new SelectionListener() {
 			@Override

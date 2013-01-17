@@ -2,6 +2,7 @@ package com.cahoots.eclipse.guice;
 
 import org.eclipse.jetty.websocket.WebSocketClientFactory;
 
+import com.cahoots.connection.CahootsConnection;
 import com.cahoots.connection.http.tools.CahootsHttpClient;
 import com.cahoots.connection.websocket.CahootsSocket;
 import com.cahoots.eclipse.Activator;
@@ -15,6 +16,7 @@ public class MainModule implements Module {
 	public void configure(Binder binder) {
 		binder.bind(Activator.class).in(Singleton.class);
 		binder.bind(CahootsSocket.class).in(Singleton.class);
+		binder.bind(CahootsConnection.class).in(Singleton.class);
 		
 		binder.bind(WebSocketClientFactory.class);
 		binder.bind(CahootsHttpClient.class);

@@ -35,7 +35,7 @@ class OpService(
       case "insert" =>
         val user = (json \ "user").as[String]
         val opId = (json \ "opId").as[String]
-        val content = (json \ "content").as[String]
+        val content = (json \ "contents").as[String]
         val start = (json \ "start").as[Int]
         val tickStamp = (json \ "tickStamp").as[Long]
 
@@ -43,7 +43,7 @@ class OpService(
       case "replace" =>
         val user = (json \ "user").as[String]
         val opId = (json \ "opId").as[String]
-        val content = (json \ "content").as[String]
+        val content = (json \ "contents").as[String]
         val start = (json \ "start").as[Int]
         val end = (json \ "end").as[Int]
         val tickStamp = (json \ "tickStamp").as[Long]
@@ -211,7 +211,7 @@ class OpService(
     if (ops.contains(opId)) {
       val opSession = ops(opId)
 
-      val validUser = opSession.collaborators.contains(user)
+      val validUser = opSession.userHost == user || opSession.collaborators.contains(user)
 
       if (validUser) {
         /*
