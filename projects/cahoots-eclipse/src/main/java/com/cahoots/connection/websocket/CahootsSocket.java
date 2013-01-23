@@ -79,7 +79,8 @@ public class CahootsSocket {
 	 * collection type safe
 	 */
 	@SuppressWarnings({ "serial", "rawtypes" })
-	private Map<Class<? extends GenericEventListener>, List> listeners = new HashMap<Class<? extends GenericEventListener>, List>() {
+	private final Map<Class<? extends GenericEventListener>, List> listeners = 
+		new HashMap<Class<? extends GenericEventListener>, List>() {
 		{
 			put(ShareDocumentEventListener.class,
 					new ArrayList<ShareDocumentEventListener>());
@@ -213,7 +214,9 @@ public class CahootsSocket {
 			}
 			
 			// Remove all listeners
-			listeners.clear();
+			for (List listenerList : listeners.values()) {
+				listenerList.clear();
+			}
 		}
 		connection = null;
 	}
