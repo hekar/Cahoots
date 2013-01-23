@@ -55,6 +55,7 @@
     <Compile Include="Contracts\IAuthenticationService.cs" />
     <Compile Include="Contracts\IAsyncService.cs" />
     <Compile Include="JsonHelper.cs" />
+    <Compile Include="MessageModels\Chat\SendChatMessage.cs" />
     <Compile Include="MessageModels\MessageBase.cs" />
     <Compile Include="MessageModels\Users\ReceiveAllUsersMessage.cs" />
     <Compile Include="MessageModels\Users\ReceiveUserStatusMessage.cs" />

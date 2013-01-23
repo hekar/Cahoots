@@ -8,8 +8,12 @@ import org.eclipse.ui.PlatformUI;
 
 import com.cahoots.json.Collaborator;
 
-class UserListViewLabelProvider extends LabelProvider implements
+public class UserListViewLabelProvider extends LabelProvider implements
 		ITableLabelProvider {
+	
+	public UserListViewLabelProvider() {
+	}
+	
 	public String getColumnText(final Object obj, final int index) {
 		return getText(obj);
 	}
@@ -20,17 +24,17 @@ class UserListViewLabelProvider extends LabelProvider implements
 
 	public Image getImage(final Object obj) {
 		if (obj instanceof Collaborator) {
-			final Collaborator c = (Collaborator) obj;
-			if ("online".equals(c.status)) {
+			final Collaborator collaborator = (Collaborator) obj;
+			if ("online".equals(collaborator.getStatus())) {
 				return PlatformUI.getWorkbench().getSharedImages()
 						.getImage(ISharedImages.IMG_OBJ_ELEMENT);
 			} else {
 				return PlatformUI.getWorkbench().getSharedImages()
 						.getImage(ISharedImages.IMG_ELCL_REMOVE);
 			}
+		} else {
+			return PlatformUI.getWorkbench().getSharedImages()
+					.getImage(ISharedImages.IMG_DEC_FIELD_ERROR);
 		}
-		return PlatformUI.getWorkbench().getSharedImages()
-				.getImage(ISharedImages.IMG_DEC_FIELD_ERROR);
-
 	}
 }

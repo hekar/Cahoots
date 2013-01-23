@@ -22,6 +22,8 @@ libraryDependencies += "commons-httpclient" % "commons-httpclient" % "3.1"
 
 libraryDependencies += "org.slf4j" % "slf4j-api" % "1.6.2"
 
+libraryDependencies += "com.googlecode.lambdaj" % "lambdaj" % "2.3.3"
+
 libraryDependencies += "com.google.inject" % "guice" % "3.0"
 
 libraryDependencies += "com.google.guava" % "guava" % "13.0.1"

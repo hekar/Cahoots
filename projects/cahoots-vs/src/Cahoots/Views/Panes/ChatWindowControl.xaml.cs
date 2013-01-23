@@ -12,9 +12,12 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Cahoots.Services.Models;
 
 namespace Cahoots
 {
+    public delegate void Send(string to, string message);
+
     /// <summary>
     /// Interaction logic for ChatWindowControl.xaml
     /// </summary>
@@ -31,6 +34,30 @@ namespace Cahoots
             MessageBox.Show(string.Format(System.Globalization.CultureInfo.CurrentUICulture, "We are inside {0}.button1_Click()", this.ToString()),
                             "ChatWindow");
 
+        }
+
+        /// <summary>
+        /// Gets or sets the send message.
+        /// </summary>
+        /// <value>
+        /// The send message.
+        /// </value>
+        public Send SendMessage { get; set; }
+
+        /// <summary>
+        /// Gets or sets the chatee.
+        /// </summary>
+        /// <value>
+        /// The chatee.
+        /// </value>
+        public Collaborator Chatee { get; set; }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            if (this.SendMessage != null)
+            {
+                this.SendMessage(Chatee.Name, txtMessage.Text);
+            }
         }
     }
 }

@@ -1,8 +1,5 @@
 package com.cahoots.eclipse.indigo.view;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
@@ -13,15 +10,10 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.ITableLabelProvider;
-import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IActionBars;
@@ -33,11 +25,9 @@ import org.eclipse.ui.part.ViewPart;
 import com.cahoots.chat.Chat;
 import com.cahoots.connection.websocket.CahootsSocket;
 import com.cahoots.eclipse.Activator;
-import com.cahoots.events.DisconnectEvent;
-import com.cahoots.events.DisconnectEventListener;
-import com.cahoots.events.UserChangeEventListener;
-import com.cahoots.json.Collaborator;
-import com.cahoots.json.receive.UserChangeMessage;
+import com.cahoots.eclipse.indigo.widget.SourceContentChangedListener;
+import com.cahoots.eclipse.indigo.widget.UserListViewContentProvider;
+import com.cahoots.eclipse.indigo.widget.UserListViewLabelProvider;
 import com.google.inject.Injector;
 
 public class UsersView extends ViewPart {
@@ -45,110 +35,33 @@ public class UsersView extends ViewPart {
 	public static final String ID = "com.cahoots.eclipse.indigo.view.UsersView";
 
 	private TableViewer viewer;
-	private ViewContentProvider source;
+	private UserListViewContentProvider source;
 	private Action action1;
 	private Action action2;
 	private Action doubleClickAction;
-
-	private CahootsSocket cahootsServer;
-
-	class ViewContentProvider implements IStructuredContentProvider {
-		Map<String, Collaborator> elements = new LinkedHashMap<String, Collaborator>();
-
-		public ViewContentProvider() {
-			super();
-		}
-
-		public void inputChanged(final Viewer v, final Object oldInput,
-				final Object newInput) {
-		}
-
-		public void dispose() {
-		}
-
-		public Object[] getElements(final Object parent) {
-			return elements.values().toArray(new Object[elements.size()]);
-		}
-
-		public void add(final Collaborator element) {
-			elements.put(element.username, element);
-		}
-
-		public void clear() {
-			elements.clear();
-		}
-
-	}
-
-	class ViewLabelProvider extends LabelProvider implements
-			ITableLabelProvider {
-		public String getColumnText(final Object obj, final int index) {
-			return getText(obj);
-		}
-
-		public Image getColumnImage(final Object obj, final int index) {
-			return getImage(obj);
-		}
-
-		public Image getImage(final Object obj) {
-			if (obj instanceof Collaborator) {
-				final Collaborator c = (Collaborator) obj;
-				if ("online".equals(c.status)) {
-					return PlatformUI.getWorkbench().getSharedImages()
-							.getImage(ISharedImages.IMG_OBJ_ELEMENT);
-				} else {
-					return PlatformUI.getWorkbench().getSharedImages()
-							.getImage(ISharedImages.IMG_ELCL_REMOVE);
-				}
-			}
-			return PlatformUI.getWorkbench().getSharedImages()
-					.getImage(ISharedImages.IMG_DEC_FIELD_ERROR);
-
-		}
-	}
 
 	class NameSorter extends ViewerSorter {
 	}
 
 	public UsersView() {
 		Injector injector = Activator.getInjector();
-		cahootsServer = injector.getInstance(CahootsSocket.class);
-
-		cahootsServer.addUserLoginEventListener(new UserChangeEventListener() {
-			@Override
-			public void onEvent(UserChangeMessage msg) {
-				source.add(msg.user);
-				getSite().getShell().getDisplay().asyncExec(new Runnable() {
-					@Override
-					public void run() {
-						viewer.refresh();
-					}
-				});
-			}
-		});
-
-		cahootsServer.addDisconnectEventListener(new DisconnectEventListener() {
-			@Override
-			public void userDisconnected(DisconnectEvent event) {
-				source.clear();
-				getSite().getShell().getDisplay().asyncExec(new Runnable() {
-					@Override
-					public void run() {
-						viewer.refresh();
-					}
-				});
-			}
-		});
+		source = injector.getInstance(UserListViewContentProvider.class);
 	}
 
 	public void createPartControl(final Composite parent) {
 		viewer = new TableViewer(parent, SWT.MULTI | SWT.H_SCROLL
 				| SWT.V_SCROLL);
-		source = new ViewContentProvider();
 		viewer.setContentProvider(source);
-		viewer.setLabelProvider(new ViewLabelProvider());
+		viewer.setLabelProvider(new UserListViewLabelProvider());
 		viewer.setSorter(new NameSorter());
 		viewer.setInput(getViewSite());
+		
+		source.addContentChangedListener(new SourceContentChangedListener() {
+			@Override
+			public void onEvent(Object msg) {
+				viewer.refresh();
+			}
+		});
 
 		// Create the help context id for the viewer's control
 		PlatformUI.getWorkbench().getHelpSystem()

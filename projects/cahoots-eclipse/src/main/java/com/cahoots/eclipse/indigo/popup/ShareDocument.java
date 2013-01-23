@@ -11,7 +11,7 @@ import org.eclipse.ui.IWorkbenchPart;
 import com.cahoots.connection.websocket.CahootsSocket;
 import com.cahoots.eclipse.Activator;
 import com.cahoots.eclipse.collab.ConnectDialog;
-import com.cahoots.eclipse.collab.ShareDocumentDialog;
+import com.cahoots.eclipse.collab.share.ShareDocumentDialog;
 import com.google.inject.Injector;
 
 public class ShareDocument implements IObjectActionDelegate,
@@ -19,15 +19,19 @@ public class ShareDocument implements IObjectActionDelegate,
 
 	private Shell shell;
 	private CahootsSocket cahootsSocket;
+	
+	@SuppressWarnings("unused")
 	private IWorkbenchPart targetPart;
+	
+	@SuppressWarnings("unused")
 	private IEditorPart targetEditor;
 
 	public ShareDocument() {
-		super();
 		Injector injector = Activator.getInjector();
 		cahootsSocket = injector.getInstance(CahootsSocket.class);
 	}
 
+	@Override
 	public void setActivePart(final IAction action,
 			final IWorkbenchPart targetPart) {
 		shell = targetPart.getSite().getShell();
@@ -36,9 +40,11 @@ public class ShareDocument implements IObjectActionDelegate,
 
 	@Override
 	public void setActiveEditor(IAction action, IEditorPart targetEditor) {
+		shell = targetEditor.getSite().getShell();
 		this.targetEditor = targetEditor;
 	}
 
+	@Override
 	public void run(final IAction action) {
 		if (!cahootsSocket.isConnected()) {
 			ConnectDialog connectDialog = new ConnectDialog(shell);
@@ -49,7 +55,9 @@ public class ShareDocument implements IObjectActionDelegate,
 		dialog.open();
 	}
 
+	@Override
 	public void selectionChanged(final IAction action,
 			final ISelection selection) {
+		System.out.println(selection);
 	}
 }
