@@ -51,12 +51,13 @@ import com.cahoots.json.receive.ShareDocumentMessage;
 import com.cahoots.json.receive.UnShareDocumentMessage;
 import com.cahoots.json.receive.UserChangeMessage;
 import com.cahoots.json.receive.UserListMessage;
+import com.cahoots.system.log.Log;
 import com.google.gson.Gson;
 
 @SuppressWarnings("unchecked")
 public class CahootsSocket {
 
-	private static final Logger logger = Logger.getLogger(CahootsSocket.class.getName());
+	private static final Log logger = Log.getLogger(CahootsSocket.class);
 	
 	/**
 	 * Timeout is 30 minutes long.
@@ -131,7 +132,7 @@ public class CahootsSocket {
 			final Class<K> eventListenerClazz, final Class<T> clazz,
 			final MessageBase base, final String message, final Gson gson) {
 
-		if (eventType.equals(base.type)) {
+		if (eventType.equals(base.getType())) {
 			final List<? extends GenericEventListener<T>> listeners = this.listeners
 					.get(eventListenerClazz);
 			final T msg = gson.fromJson(message, clazz);
@@ -353,14 +354,14 @@ public class CahootsSocket {
 			final Gson gson = new Gson();
 			final MessageBase base = gson.fromJson(message, MessageBase.class);
 			
-			logger.log(Level.FINEST, "Message received");
-			logger.log(Level.FINEST, message);
+			logger.debug("Message received");
+			logger.debug(message);
 			
-			if ("users".equals(base.service)) {
-				if ("all".equals(base.type)) {
+			if ("users".equals(base.getService())) {
+				if ("all".equals(base.getType())) {
 					UserListMessage msg = gson.fromJson(message,
 							UserListMessage.class);
-					for (Collaborator user : msg.users) {
+					for (Collaborator user : msg.getUsers()) {
 						fireEvents("all", UserChangeEventListener.class,
 								UserChangeMessage.class, base,
 								gson.toJson(new UserChangeMessage(user)), gson);
@@ -369,7 +370,7 @@ public class CahootsSocket {
 					fireEvents("status", UserChangeEventListener.class,
 							UserChangeMessage.class, base, message, gson);
 				}
-			} else if ("op".equals(base.service)) {
+			} else if ("op".equals(base.getService())) {
 				fireEvents("shared", ShareDocumentEventListener.class,
 						ShareDocumentMessage.class, base, message, gson);
 				fireEvents("unshared", UnShareDocumentEventListener.class,

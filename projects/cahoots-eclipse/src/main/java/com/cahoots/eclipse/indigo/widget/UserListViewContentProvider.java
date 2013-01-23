@@ -33,7 +33,7 @@ public class UserListViewContentProvider extends ViewContentProvider {
 		cahootsServer.addUserLoginEventListener(new UserChangeEventListener() {
 			@Override
 			public void onEvent(UserChangeMessage msg) {
-				add(msg.user);
+				add(msg.getUser());
 				display.asyncExec(new Runnable() {
 					@Override
 					public void run() {
