@@ -30,6 +30,7 @@ import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 
+import com.cahoots.chat.Chat;
 import com.cahoots.connection.websocket.CahootsSocket;
 import com.cahoots.eclipse.Activator;
 import com.cahoots.events.DisconnectEvent;
@@ -220,7 +221,8 @@ public class UsersView extends ViewPart {
 				final ISelection selection = viewer.getSelection();
 				final Object obj = ((IStructuredSelection) selection)
 						.getFirstElement();
-				showMessage("Double-click detected on " + obj.toString());
+				final Collaborator collab = (Collaborator)obj;
+				Activator.getInjector().getInstance(Chat.class).startChat(collab.username);
 			}
 		};
 	}

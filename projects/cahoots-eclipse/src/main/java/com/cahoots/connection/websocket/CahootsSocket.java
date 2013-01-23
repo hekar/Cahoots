@@ -26,6 +26,7 @@ import com.cahoots.connection.ConnectionDetails;
 import com.cahoots.connection.http.tools.CahootsHttpClient;
 import com.cahoots.connection.http.tools.CahootsHttpResponseReceivedListener;
 import com.cahoots.eclipse.indigo.widget.TextEditorTools;
+import com.cahoots.events.ChatReceivedEventListener;
 import com.cahoots.events.ConnectEvent;
 import com.cahoots.events.ConnectEventListener;
 import com.cahoots.events.DisconnectEvent;
@@ -39,6 +40,7 @@ import com.cahoots.events.UnShareDocumentEventListener;
 import com.cahoots.events.UserChangeEventListener;
 import com.cahoots.json.Collaborator;
 import com.cahoots.json.MessageBase;
+import com.cahoots.json.receive.ChatReceiveMessage;
 import com.cahoots.json.receive.OpDeleteMessage;
 import com.cahoots.json.receive.OpInsertMessage;
 import com.cahoots.json.receive.OpReplaceMessage;
@@ -81,6 +83,8 @@ public class CahootsSocket implements WebSocket.OnTextMessage,
 					new ArrayList<OpDeleteEventListener>());
 			put(UserChangeEventListener.class,
 					new ArrayList<UserChangeEventListener>());
+			put(ChatReceivedEventListener.class,
+					new ArrayList<ChatReceivedEventListener>());
 		}
 	};
 	private List<DisconnectEventListener> disconnectListeners = new ArrayList<DisconnectEventListener>();
@@ -120,6 +124,7 @@ public class CahootsSocket implements WebSocket.OnTextMessage,
 	/**
 	 * TODO: Replace with real check
 	 */
+	@SuppressWarnings("deprecation")
 	public boolean isConnected() {
 		return cahootsConnection.isAuthenticated();
 	}
@@ -153,6 +158,11 @@ public class CahootsSocket implements WebSocket.OnTextMessage,
 					OpReplaceMessage.class, base, message, gson);
 			fireEvents("delete", OpDeleteEventListener.class,
 					OpDeleteMessage.class, base, message, gson);
+		} 
+		else if ("chat".equals(base.service))
+		{
+			fireEvents("receive", ChatReceivedEventListener.class,
+					ChatReceiveMessage.class, base, message, gson);
 		}
 	}
 
@@ -344,5 +354,9 @@ public class CahootsSocket implements WebSocket.OnTextMessage,
 			final ShareDocumentEventListener listener) {
 		listeners.get(ShareDocumentEventListener.class).add(listener);
 	}
-
+	
+	public void addChatReceivedEventListener(
+			final ChatReceivedEventListener listener) {
+		listeners.get(ChatReceivedEventListener.class).add(listener);
+	}
 }
