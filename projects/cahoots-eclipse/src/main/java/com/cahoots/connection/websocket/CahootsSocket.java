@@ -127,43 +127,6 @@ public class CahootsSocket {
 		return cahootsConnection.isAuthenticated();
 	}
 
-	@Override
-	public void onMessage(final String message) {
-		received.incrementAndGet();
-		final Gson gson = new Gson();
-		final MessageBase base = gson.fromJson(message, MessageBase.class);
-		if ("users".equals(base.service)) {
-			if ("all".equals(base.type)) {
-				UserListMessage msg = gson.fromJson(message,
-						UserListMessage.class);
-				for (Collaborator user : msg.users) {
-					fireEvents("all", UserChangeEventListener.class,
-							UserChangeMessage.class, base,
-							gson.toJson(new UserChangeMessage(user)), gson);
-				}
-			} else {
-				fireEvents("status", UserChangeEventListener.class,
-						UserChangeMessage.class, base, message, gson);
-			}
-		} else if ("op".equals(base.service)) {
-			fireEvents("shared", ShareDocumentEventListener.class,
-					ShareDocumentMessage.class, base, message, gson);
-			fireEvents("unshared", UnShareDocumentEventListener.class,
-					UnShareDocumentMessage.class, base, message, gson);
-			fireEvents("insert", OpInsertEventListener.class,
-					OpInsertMessage.class, base, message, gson);
-			fireEvents("replace", OpReplaceEventListener.class,
-					OpReplaceMessage.class, base, message, gson);
-			fireEvents("delete", OpDeleteEventListener.class,
-					OpDeleteMessage.class, base, message, gson);
-		} 
-		else if ("chat".equals(base.service))
-		{
-			fireEvents("receive", ChatReceivedEventListener.class,
-					ChatReceiveMessage.class, base, message, gson);
-		}
-	}
-
 	private <K, T> void fireEvents(final String eventType,
 			final Class<K> eventListenerClazz, final Class<T> clazz,
 			final MessageBase base, final String message, final Gson gson) {
@@ -417,6 +380,11 @@ public class CahootsSocket {
 						OpReplaceMessage.class, base, message, gson);
 				fireEvents("delete", OpDeleteEventListener.class,
 						OpDeleteMessage.class, base, message, gson);
+			}
+			else if ("chat".equals(base.service))
+			{
+				fireEvents("receive", ChatReceivedEventListener.class,
+						ChatReceiveMessage.class, base, message, gson);
 			}
 		}
 

@@ -28,6 +28,7 @@ import com.cahoots.eclipse.Activator;
 import com.cahoots.eclipse.indigo.widget.SourceContentChangedListener;
 import com.cahoots.eclipse.indigo.widget.UserListViewContentProvider;
 import com.cahoots.eclipse.indigo.widget.UserListViewLabelProvider;
+import com.cahoots.json.Collaborator;
 import com.google.inject.Injector;
 
 public class UsersView extends ViewPart {
@@ -135,7 +136,7 @@ public class UsersView extends ViewPart {
 				final Object obj = ((IStructuredSelection) selection)
 						.getFirstElement();
 				final Collaborator collab = (Collaborator)obj;
-				Activator.getInjector().getInstance(Chat.class).startChat(collab.username);
+				Activator.getInjector().getInstance(Chat.class).startChat(collab.getUsername());
 			}
 		};
 	}
