@@ -11,14 +11,12 @@ public class ChatSendMessage extends MessageBase {
 	private String message;
 	
 	public ChatSendMessage(){
-		super.service = "chat";
-		super.type = "send";
+		super("chat", "send");
 	}
 	
 	public ChatSendMessage(String from, String to, Date date, String message)
 	{
-		super.service = "chat";
-		super.type = "send";
+		super("chat", "send");
 		this.from = from;
 		this.to = to;
 		this.date = date;

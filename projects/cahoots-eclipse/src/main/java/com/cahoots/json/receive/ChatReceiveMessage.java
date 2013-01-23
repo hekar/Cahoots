@@ -5,6 +5,16 @@ import java.util.Date;
 import com.cahoots.json.MessageBase;
 
 public class ChatReceiveMessage extends MessageBase {
+	
+	public ChatReceiveMessage()
+	{
+		super("chat", "receive");
+	}
+	
+	public ChatReceiveMessage(String service, String type) {
+		super(service, type);
+	}
+	
 	private String from;
 	private String message;
 	private Date date;

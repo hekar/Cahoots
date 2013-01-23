@@ -382,7 +382,7 @@ public class CahootsSocket {
 				fireEvents("delete", OpDeleteEventListener.class,
 						OpDeleteMessage.class, base, message, gson);
 			}
-			else if ("chat".equals(base.service))
+			else if ("chat".equals(base.getService()))
 			{
 				fireEvents("receive", ChatReceivedEventListener.class,
 						ChatReceiveMessage.class, base, message, gson);
