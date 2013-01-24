@@ -23,5 +23,6 @@
 	<classpathentry kind="lib" path="lib_managed/jars/org.hamcrest/hamcrest-core/hamcrest-core-1.1.jar"/>
 	<classpathentry kind="lib" path="lib_managed/jars/org.slf4j/slf4j-api/slf4j-api-1.6.2.jar"/>
 	<classpathentry kind="lib" path="lib_managed/jars/org.sonatype.sisu.inject/cglib/cglib-2.2.1-v20090111.jar"/>
+	<classpathentry kind="lib" path="swing2swt.jar"/>
 	<classpathentry kind="output" path="target/scala-2.9.1/classes"/>
 </classpath>

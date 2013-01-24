@@ -22,6 +22,7 @@ import com.cahoots.connection.websocket.CahootsSocket;
 import com.cahoots.eclipse.Activator;
 import com.cahoots.json.receive.ChatReceiveMessage;
 import com.cahoots.json.send.ChatSendMessage;
+import swing2swt.layout.BorderLayout;
 
 public class ChatDialog  extends Dialog{
 
@@ -54,13 +55,14 @@ public class ChatDialog  extends Dialog{
 	}
 
 	private void createContents() {
-		dialog = new Shell(getParent(), getStyle());
+		dialog = new Shell(getParent(), SWT.SHELL_TRIM | SWT.BORDER);
+		dialog.setText(to);
+		dialog.setLayout(new BorderLayout(0, 0));
 		
 		styledText = new StyledText(dialog, SWT.BORDER | SWT.READ_ONLY);
-		styledText.setBounds(0, 0, 444, 217);
 		
 		text = new Text(dialog, SWT.BORDER);
-		text.setBounds(0, 223, 363, 48);
+		text.setLayoutData(BorderLayout.SOUTH);
 		
 		text.addKeyListener(new KeyListener() {
 			
@@ -79,16 +81,6 @@ public class ChatDialog  extends Dialog{
 			}
 		});
 		
-		Button btnSend = new Button(dialog, SWT.NONE);
-		btnSend.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				sendMessage();
-			}
-		});
-		btnSend.setBounds(369, 223, 75, 48);
-		btnSend.setText("Send");
-		
 	}
 	
 	private void sendMessage()
@@ -101,7 +93,7 @@ public class ChatDialog  extends Dialog{
 		text.setText("");
 		DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mmZ");
 		String time = df.format(new Date());
-		styledText.append(time + " " + connection.getUsername() + " " + msg);
+		styledText.append(time + " " + connection.getUsername() + ": " + msg);
 		
 	}
 	
