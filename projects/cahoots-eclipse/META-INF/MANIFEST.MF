@@ -35,3 +35,5 @@ Bundle-ClassPath: target/scala-2.9.1/classes/,
  lib_managed/jars/aopalliance/aopalliance/aopalliance-1.0.jar,
  lib_managed/jars/org.sonatype.sisu.inject/cglib/cglib-2.2.1-v20090111.jar,
  swing2swt.jar
+ lib_managed/jars/com.ning/async-http-client/async-http-client-1.7.9.jar,
+ lib_managed/jars/io.netty/netty/netty-3.6.1.Final.jar

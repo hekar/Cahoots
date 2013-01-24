@@ -32,6 +32,10 @@ libraryDependencies += "org.eclipse.jetty" % "jetty-websocket" % "7.6.8.v2012110
 
 libraryDependencies += "com.google.code.gson" % "gson" % "2.2.2" withSources ()
 
+libraryDependencies += "com.ning" % "async-http-client" % "1.7.9" withSources ()
+
+libraryDependencies += "io.netty" % "netty" % "3.6.1.Final" withSources ()
+
 unmanagedJars in Compile <++= baseDirectory map { base =>
   val baseDirectories = (base / "lib") +++
     (file(System.getenv("ECLIPSE_HOME") + "/plugins"))
