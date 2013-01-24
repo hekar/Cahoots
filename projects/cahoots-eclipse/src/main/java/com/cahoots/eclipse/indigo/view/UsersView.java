@@ -23,7 +23,6 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 
 import com.cahoots.chat.Chat;
-import com.cahoots.connection.websocket.CahootsSocket;
 import com.cahoots.eclipse.Activator;
 import com.cahoots.eclipse.indigo.widget.SourceContentChangedListener;
 import com.cahoots.eclipse.indigo.widget.UserListViewContentProvider;
@@ -40,6 +39,13 @@ public class UsersView extends ViewPart {
 	private Action action1;
 	private Action action2;
 	private Action doubleClickAction;
+	
+	private final SourceContentChangedListener listener = new SourceContentChangedListener() {
+		@Override
+		public void onEvent(Object msg) {
+			viewer.refresh();
+		}
+	};
 
 	class NameSorter extends ViewerSorter {
 	}
@@ -57,12 +63,7 @@ public class UsersView extends ViewPart {
 		viewer.setSorter(new NameSorter());
 		viewer.setInput(getViewSite());
 		
-		source.addContentChangedListener(new SourceContentChangedListener() {
-			@Override
-			public void onEvent(Object msg) {
-				viewer.refresh();
-			}
-		});
+		source.addContentChangedListener(listener);
 
 		// Create the help context id for the viewer's control
 		PlatformUI.getWorkbench().getHelpSystem()
@@ -71,6 +72,12 @@ public class UsersView extends ViewPart {
 		hookContextMenu();
 		hookDoubleClickAction();
 		contributeToActionBars();
+	}
+
+	@Override
+	public void dispose() {
+		source.removeContentChangedListener(listener);
+		super.dispose();
 	}
 
 	private void hookContextMenu() {

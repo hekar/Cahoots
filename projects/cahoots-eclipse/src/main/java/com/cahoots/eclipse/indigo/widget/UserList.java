@@ -18,8 +18,14 @@ import com.cahoots.json.Collaborator;
 import com.google.inject.Injector;
 
 public class UserList extends Composite {
-	private TableViewer viewer;
-	private UserListViewContentProvider source;
+	private final TableViewer viewer;
+	private final UserListViewContentProvider source;
+	private final SourceContentChangedListener changedListener = new SourceContentChangedListener() {
+		@Override
+		public void onEvent(Object msg) {
+			viewer.refresh();
+		}
+	};
 
 	class NameSorter extends ViewerSorter {
 	}
@@ -38,12 +44,7 @@ public class UserList extends Composite {
 		viewer.setSorter(new NameSorter());
 		viewer.setInput(this);
 
-		source.addContentChangedListener(new SourceContentChangedListener() {
-			@Override
-			public void onEvent(Object msg) {
-				viewer.refresh();
-			}
-		});
+		source.addContentChangedListener(changedListener);
 		
 		viewer.addSelectionChangedListener(new ISelectionChangedListener() {
 			@Override
@@ -56,6 +57,12 @@ public class UserList extends Composite {
 		});
 
 		viewer.getControl().setLayoutData("grow");
+	}
+	
+	@Override
+	public void dispose() {
+		source.removeContentChangedListener(changedListener);
+		super.dispose();
 	}
 
 	/**

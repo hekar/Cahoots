@@ -19,6 +19,9 @@ import org.apache.commons.httpclient.NameValuePair;
 import org.eclipse.jetty.websocket.WebSocketClientFactory;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.texteditor.IDocumentProvider;
+import org.eclipse.ui.texteditor.ITextEditor;
 
 import com.cahoots.connection.CahootsConnection;
 import com.cahoots.connection.ConnectionDetails;
@@ -189,18 +192,24 @@ public class CahootsSocket {
 	private void addDefaultNotifications(CahootsSocket cahootsSocket) {
 		cahootsSocket.addOpInsertEventListener(new OpInsertEventListener() {
 			@Override
-			public void onEvent(OpInsertMessage msg) {
-				try {
-					int start = msg.getStart();
-					String contents = msg.getContents();
-					Long tickStamp = msg.getTickStamp();
-
-					IDocument document = (IDocument) editorTools
-							.getTextEditor().getDocumentProvider();
-					document.replace(start, 0, contents);
-				} catch (BadLocationException e) {
-					e.printStackTrace();
-				}
+			public void onEvent(final OpInsertMessage msg) {
+				Display.getDefault().asyncExec(new Runnable() {
+					@Override
+					public void run() {
+						try {
+							int start = msg.getStart();
+							String contents = msg.getContents();
+							Long tickStamp = msg.getTickStamp();
+							
+							ITextEditor textEditor = editorTools.getTextEditor();
+							IDocumentProvider documentProvider = textEditor.getDocumentProvider();
+							IDocument document = (IDocument) documentProvider.getDocument(textEditor.getEditorInput());
+							document.replace(start, 0, contents);
+						} catch (BadLocationException e) {
+							e.printStackTrace();
+						}
+					}
+				});
 			}
 		});
 	}
