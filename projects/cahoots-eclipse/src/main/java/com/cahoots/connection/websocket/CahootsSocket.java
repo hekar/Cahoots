@@ -26,6 +26,7 @@ import com.cahoots.connection.CahootsConnection;
 import com.cahoots.connection.ConnectionDetails;
 import com.cahoots.connection.http.tools.CahootsHttpClient;
 import com.cahoots.connection.http.tools.CahootsHttpResponseReceivedListener;
+import com.cahoots.eclipse.indigo.log.Log;
 import com.cahoots.eclipse.indigo.widget.TextEditorTools;
 import com.cahoots.events.ConnectEvent;
 import com.cahoots.events.ConnectEventListener;
@@ -47,7 +48,6 @@ import com.cahoots.json.receive.ShareDocumentMessage;
 import com.cahoots.json.receive.UnShareDocumentMessage;
 import com.cahoots.json.receive.UserChangeMessage;
 import com.cahoots.json.receive.UserListMessage;
-import com.cahoots.system.log.Log;
 import com.google.gson.Gson;
 
 @SuppressWarnings("unchecked")
