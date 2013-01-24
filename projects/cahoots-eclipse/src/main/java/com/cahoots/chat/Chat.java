@@ -31,6 +31,7 @@ public class Chat {
 				{
 					dia = chats.get(msg.getFrom());
 				}
+				dia.receiveMessage(msg);
 				dia.open();
 			}
 		});
@@ -47,6 +48,7 @@ public class Chat {
 		{
 			dia = chats.get(to);
 		}
+		chats.put(to, dia);
 		dia.open();
 	}
 }
