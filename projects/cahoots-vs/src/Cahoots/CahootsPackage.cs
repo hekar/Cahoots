@@ -17,7 +17,8 @@ namespace Cahoots
     using Cahoots.Services.Models;
     using Microsoft.VisualStudio.Shell;
     using WebSocketSharp;
-using Cahoots.Services.ViewModels;
+    using Cahoots.Services.ViewModels;
+    using System.Collections.Generic;
 
     /// <summary>
     /// Cahoots VSPackage Extension class.
@@ -61,7 +62,8 @@ using Cahoots.Services.ViewModels;
         private void InitializeMessagingSystem()
         {
             this.CommunicationRelay = new MessageRelay(
-                    new UsersService());
+                    new UsersService(),
+                    new ChatService());
         }
 
         /// <summary>
@@ -91,6 +93,14 @@ using Cahoots.Services.ViewModels;
         /// The communication relay.
         /// </value>
         public MessageRelay CommunicationRelay { get; private set; }
+
+        /// <summary>
+        /// Gets or sets me.
+        /// </summary>
+        /// <value>
+        /// Me.
+        /// </value>
+        public string Me { get; set; }
 
         #endregion
 
@@ -215,6 +225,8 @@ using Cahoots.Services.ViewModels;
                     this.DisconnectButton.Enabled = true;
                     //this.Host.Enabled = true;
 
+                    this.Me = this.AuthenticationService.UserName;
+
                     // TODO: make this based on something legit
                     this.Socket = new WebSocket(
                             "ws://localhost:9000/app/message?auth_token=" + this.AuthenticationService.Token);
@@ -287,10 +299,11 @@ using Cahoots.Services.ViewModels;
         /// <returns>The service view model.</returns>
         public BaseViewModel GetViewModel(string service, params object[] parameters)
         {
-            var serv = this.CommunicationRelay.Services[service];
+            var keys = new List<string>(this.CommunicationRelay.Services.Keys);
 
-            if (serv != null)
+            if (this.CommunicationRelay.Services.ContainsKey(service))
             {
+                var serv = this.CommunicationRelay.Services[service];
                 return serv.GetViewModel(parameters);
             }
 

@@ -102,7 +102,7 @@ namespace Cahoots
         /// <param name="message">The message.</param>
         public void SendMessage(string message)
         {
-            if (this.Socket != null && this.Socket.IsAlive)
+            if (this.Socket != null && this.Socket.ReadyState == WsState.OPEN)
             {
                 this.Socket.Send(message);
             }

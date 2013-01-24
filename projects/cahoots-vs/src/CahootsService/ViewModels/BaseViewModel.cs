@@ -14,9 +14,11 @@ namespace Cahoots.Services.ViewModels
     public abstract class BaseViewModel
     {
         /// <summary>
-        /// Relays the command.
+        /// Gets or sets the relay message.
         /// </summary>
-        /// <param name="command">The command.</param>
-        public abstract void RelayCommand(string command);
+        /// <value>
+        /// The relay message.
+        /// </value>
+        public Action<string> RelayMessage { get; set; }
     }
 }
