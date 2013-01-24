@@ -90,14 +90,20 @@ public class ChatDialog  extends Dialog{
 		text.setText("");
 		DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mmZ");
 		String time = df.format(new Date());
-		styledText.append(time + " " + connection.getUsername() + ": " + msg);
+		styledText.append(time + " " + connection.getUsername() + ": " + msg + System.getProperty("line.separator"));
 		
 	}
 	
-	public void receiveMessage(ChatReceiveMessage msg)
+	public void receiveMessage(final ChatReceiveMessage msg)
 	{
 		DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mmZ");
-		String time = df.format(msg.getDate());
-		styledText.append(time + " " + msg.getFrom() + " " + msg.getMessage());
+		final String time = df.format(new Date());
+		dialog.getDisplay().asyncExec(new Runnable() {
+			@Override
+			public void run() {
+				styledText.append(time + " " + msg.getFrom() + ": " + msg.getMessage() + System.getProperty("line.separator"));
+			
+			}
+		});
 	}
 }
