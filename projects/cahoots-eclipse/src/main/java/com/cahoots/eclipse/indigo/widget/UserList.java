@@ -5,6 +5,9 @@ import java.util.List;
 
 import net.miginfocom.swt.MigLayout;
 
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.SWT;
@@ -33,12 +36,22 @@ public class UserList extends Composite {
 		viewer.setContentProvider(source);
 		viewer.setLabelProvider(new UserListViewLabelProvider());
 		viewer.setSorter(new NameSorter());
-		viewer.setInput(null);
+		viewer.setInput(this);
 
 		source.addContentChangedListener(new SourceContentChangedListener() {
 			@Override
 			public void onEvent(Object msg) {
 				viewer.refresh();
+			}
+		});
+		
+		viewer.addSelectionChangedListener(new ISelectionChangedListener() {
+			@Override
+			public void selectionChanged(SelectionChangedEvent event) {
+				ISelection selection = viewer.getSelection();
+				if (selection != null) {
+					
+				}
 			}
 		});
 
