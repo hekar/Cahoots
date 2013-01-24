@@ -4,14 +4,23 @@ import com.cahoots.json.Collaborator;
 import com.cahoots.json.MessageBase;
 
 public class UserChangeMessage extends MessageBase {
-	public UserChangeMessage(){}
-	
-	public UserChangeMessage(Collaborator user)
-	{
-		this.user = user;
-		super.service = "users";
-		super.type = "status";
+	private Collaborator user;
+
+	public UserChangeMessage() {
+		this(null);
 	}
-	
-	public Collaborator user;
+
+	public UserChangeMessage(Collaborator user) {
+		super("users", "status");
+		this.user = user;
+	}
+
+	public Collaborator getUser() {
+		return user;
+	}
+
+	public void setUser(Collaborator user) {
+		this.user = user;
+	}
+
 }

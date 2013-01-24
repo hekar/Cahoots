@@ -5,6 +5,9 @@ import java.util.List;
 
 import net.miginfocom.swt.MigLayout;
 
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.SWT;
@@ -15,8 +18,14 @@ import com.cahoots.json.Collaborator;
 import com.google.inject.Injector;
 
 public class UserList extends Composite {
-	private TableViewer viewer;
-	private UserListViewContentProvider source;
+	private final TableViewer viewer;
+	private final UserListViewContentProvider source;
+	private final SourceContentChangedListener changedListener = new SourceContentChangedListener() {
+		@Override
+		public void onEvent(Object msg) {
+			viewer.refresh();
+		}
+	};
 
 	class NameSorter extends ViewerSorter {
 	}
@@ -33,16 +42,27 @@ public class UserList extends Composite {
 		viewer.setContentProvider(source);
 		viewer.setLabelProvider(new UserListViewLabelProvider());
 		viewer.setSorter(new NameSorter());
-		viewer.setInput(null);
+		viewer.setInput(this);
 
-		source.addContentChangedListener(new SourceContentChangedListener() {
+		source.addContentChangedListener(changedListener);
+		
+		viewer.addSelectionChangedListener(new ISelectionChangedListener() {
 			@Override
-			public void onEvent(Object msg) {
-				viewer.refresh();
+			public void selectionChanged(SelectionChangedEvent event) {
+				ISelection selection = viewer.getSelection();
+				if (selection != null) {
+					
+				}
 			}
 		});
 
 		viewer.getControl().setLayoutData("grow");
+	}
+	
+	@Override
+	public void dispose() {
+		source.removeContentChangedListener(changedListener);
+		super.dispose();
 	}
 
 	/**

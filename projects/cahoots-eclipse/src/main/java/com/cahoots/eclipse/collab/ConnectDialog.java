@@ -3,7 +3,6 @@ package com.cahoots.eclipse.collab;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -18,13 +17,16 @@ import org.eclipse.swt.widgets.Text;
 
 import com.cahoots.connection.websocket.CahootsSocket;
 import com.cahoots.eclipse.Activator;
+import com.cahoots.eclipse.indigo.job.BackgroundJob;
+import com.cahoots.eclipse.indigo.job.BackgroundJobScheduler;
 import com.google.inject.Injector;
 
 public class ConnectDialog extends Dialog {
 
 	private Object result;
 	private Shell dialog;
-	private CahootsSocket socket;
+	private final CahootsSocket socket;
+	private final BackgroundJobScheduler backgroundJobScheduler;
 
 	/**
 	 * Create the dialog.
@@ -38,6 +40,8 @@ public class ConnectDialog extends Dialog {
 
 		Injector injector = Activator.getInjector();
 		socket = injector.getInstance(CahootsSocket.class);
+		backgroundJobScheduler = injector
+				.getInstance(BackgroundJobScheduler.class);
 	}
 
 	/**
@@ -112,11 +116,10 @@ public class ConnectDialog extends Dialog {
 		connect.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				Job job = new Job("ConnectJob") {
-
+				final BackgroundJob backgroundJob = new BackgroundJob() {
 					@Override
-					protected IStatus run(IProgressMonitor monitor) {
-
+					public IStatus run(final IProgressMonitor monitor) {
+						monitor.beginTask("Connecting to Cahoots", 100);
 						Display.getDefault().asyncExec(new Runnable() {
 							@Override
 							public void run() {
@@ -132,14 +135,16 @@ public class ConnectDialog extends Dialog {
 											"Connect Error",
 											"Error connecting to server");
 								}
+
 							}
 						});
 
 						return Status.OK_STATUS;
 					}
 				};
-
-				job.schedule();
+				
+				backgroundJobScheduler.schedule("Connect to Cahoots",
+						backgroundJob);
 			}
 		});
 	}

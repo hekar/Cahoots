@@ -9,26 +9,27 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.inject.Inject;
 
 import org.apache.commons.httpclient.HttpMethodBase;
 import org.apache.commons.httpclient.NameValuePair;
-import org.eclipse.jetty.websocket.WebSocket;
-import org.eclipse.jetty.websocket.WebSocket.Connection;
-import org.eclipse.jetty.websocket.WebSocketClient;
 import org.eclipse.jetty.websocket.WebSocketClientFactory;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.texteditor.IDocumentProvider;
+import org.eclipse.ui.texteditor.ITextEditor;
 
 import com.cahoots.connection.CahootsConnection;
 import com.cahoots.connection.ConnectionDetails;
 import com.cahoots.connection.http.tools.CahootsHttpClient;
 import com.cahoots.connection.http.tools.CahootsHttpResponseReceivedListener;
+import com.cahoots.eclipse.indigo.log.Log;
 import com.cahoots.eclipse.indigo.widget.TextEditorTools;
+import com.cahoots.events.ChatReceivedEventListener;
 import com.cahoots.events.ConnectEvent;
 import com.cahoots.events.ConnectEventListener;
 import com.cahoots.events.DisconnectEvent;
@@ -42,6 +43,7 @@ import com.cahoots.events.UnShareDocumentEventListener;
 import com.cahoots.events.UserChangeEventListener;
 import com.cahoots.json.Collaborator;
 import com.cahoots.json.MessageBase;
+import com.cahoots.json.receive.ChatReceiveMessage;
 import com.cahoots.json.receive.OpDeleteMessage;
 import com.cahoots.json.receive.OpInsertMessage;
 import com.cahoots.json.receive.OpReplaceMessage;
@@ -50,12 +52,18 @@ import com.cahoots.json.receive.UnShareDocumentMessage;
 import com.cahoots.json.receive.UserChangeMessage;
 import com.cahoots.json.receive.UserListMessage;
 import com.google.gson.Gson;
+import com.ning.http.client.AsyncHttpClient;
+import com.ning.http.client.AsyncHttpClientConfig;
+import com.ning.http.client.ListenableFuture;
+import com.ning.http.client.websocket.WebSocket;
+import com.ning.http.client.websocket.WebSocketTextListener;
+import com.ning.http.client.websocket.WebSocketUpgradeHandler;
 
 @SuppressWarnings("unchecked")
 public class CahootsSocket {
 
-	private static final Logger logger = Logger.getLogger(CahootsSocket.class.getName());
-	
+	private static final Log logger = Log.getLogger(CahootsSocket.class);
+
 	/**
 	 * Timeout is 30 minutes long.
 	 * 
@@ -65,9 +73,6 @@ public class CahootsSocket {
 
 	private final AtomicLong sent = new AtomicLong(0);
 
-	private Connection connection;
-	private WebSocketClient client;
-
 	private final CahootsConnection cahootsConnection;
 	private final TextEditorTools editorTools;
 
@@ -76,7 +81,7 @@ public class CahootsSocket {
 	 * collection type safe
 	 */
 	@SuppressWarnings({ "serial", "rawtypes" })
-	private Map<Class<? extends GenericEventListener>, List> listeners = new HashMap<Class<? extends GenericEventListener>, List>() {
+	private final Map<Class<? extends GenericEventListener>, List> listeners = new HashMap<Class<? extends GenericEventListener>, List>() {
 		{
 			put(ShareDocumentEventListener.class,
 					new ArrayList<ShareDocumentEventListener>());
@@ -90,10 +95,14 @@ public class CahootsSocket {
 					new ArrayList<OpDeleteEventListener>());
 			put(UserChangeEventListener.class,
 					new ArrayList<UserChangeEventListener>());
+			put(ChatReceivedEventListener.class,
+					new ArrayList<ChatReceivedEventListener>());
 		}
 	};
 	private List<DisconnectEventListener> disconnectListeners = new ArrayList<DisconnectEventListener>();
 	private List<ConnectEventListener> connectListeners = new ArrayList<ConnectEventListener>();
+
+	private ListenableFuture<WebSocket> connection;
 
 	@Inject
 	public CahootsSocket(final CahootsConnection cahootsConnection,
@@ -107,8 +116,8 @@ public class CahootsSocket {
 			factory.setBufferSize(4096);
 			factory.start();
 
-			client = factory.newWebSocketClient();
-			client.setMaxIdleTime(TIMEOUT);
+			// client = factory.newWebSocketClient();
+			// client.setMaxIdleTime(TIMEOUT);
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new RuntimeException(e);
@@ -118,6 +127,7 @@ public class CahootsSocket {
 	/**
 	 * TODO: Replace with real check
 	 */
+	@SuppressWarnings("deprecation")
 	public boolean isConnected() {
 		return cahootsConnection.isAuthenticated();
 	}
@@ -126,7 +136,7 @@ public class CahootsSocket {
 			final Class<K> eventListenerClazz, final Class<T> clazz,
 			final MessageBase base, final String message, final Gson gson) {
 
-		if (eventType.equals(base.type)) {
+		if (eventType.equals(base.getType())) {
 			final List<? extends GenericEventListener<T>> listeners = this.listeners
 					.get(eventListenerClazz);
 			final T msg = gson.fromJson(message, clazz);
@@ -182,32 +192,35 @@ public class CahootsSocket {
 	private void addDefaultNotifications(CahootsSocket cahootsSocket) {
 		cahootsSocket.addOpInsertEventListener(new OpInsertEventListener() {
 			@Override
-			public void onEvent(OpInsertMessage msg) {
-				try {
-					int start = msg.getStart();
-					String contents = msg.getContents();
-					Long tickStamp = msg.getTickStamp();
-
-					IDocument document = (IDocument) editorTools
-							.getTextEditor().getDocumentProvider();
-					document.replace(start, 0, contents);
-				} catch (BadLocationException e) {
-					e.printStackTrace();
-				}
+			public void onEvent(final OpInsertMessage msg) {
+				Display.getDefault().asyncExec(new Runnable() {
+					@Override
+					public void run() {
+						try {
+							int start = msg.getStart();
+							String contents = msg.getContents();
+							Long tickStamp = msg.getTickStamp();
+							
+							ITextEditor textEditor = editorTools.getTextEditor();
+							IDocumentProvider documentProvider = textEditor.getDocumentProvider();
+							IDocument document = (IDocument) documentProvider.getDocument(textEditor.getEditorInput());
+							document.replace(start, 0, contents);
+						} catch (BadLocationException e) {
+							e.printStackTrace();
+						}
+					}
+				});
 			}
 		});
 	}
 
 	public void disconnect() {
 		if (connection != null) {
-			connection.close();
-			
+			connection.cancel(true);
+
 			for (final DisconnectEventListener listener : disconnectListeners) {
 				listener.userDisconnected(new DisconnectEvent());
 			}
-			
-			// Remove all listeners
-			listeners.clear();
 		}
 		connection = null;
 	}
@@ -215,9 +228,13 @@ public class CahootsSocket {
 	public void connect(final String server, final String authToken) {
 		try {
 			disconnect();
-			connection = client.open(
-					new URI("ws://" + server + "/app/message?auth_token="
-							+ authToken), new CahootsSocketClient()).get();
+			AsyncHttpClientConfig cf = new AsyncHttpClientConfig.Builder().build();
+			AsyncHttpClient c = new AsyncHttpClient(cf);
+		
+			String uriString = String.format("ws://%s/app/message?auth_token=%s", server, authToken);
+			CahootsSocketClient cahootsSocketClient = new CahootsSocketClient();
+			connection = c.prepareGet(uriString).execute(new WebSocketUpgradeHandler.Builder()
+				.addWebSocketListener(cahootsSocketClient).build());
 
 			for (final ConnectEventListener listener : connectListeners) {
 				listener.connected(new ConnectEvent());
@@ -239,8 +256,14 @@ public class CahootsSocket {
 
 	public void send(final String message) throws IOException {
 		if (connection != null) {
-			connection.sendMessage(message);
-			sent.incrementAndGet();
+			try {
+				connection.get().sendTextMessage(message);
+				sent.incrementAndGet();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			} catch (ExecutionException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -312,45 +335,39 @@ public class CahootsSocket {
 		listeners.get(ShareDocumentEventListener.class).add(listener);
 	}
 
+	public void addChatReceivedEventListener(
+			final ChatReceivedEventListener listener) {
+		listeners.get(ChatReceivedEventListener.class).add(listener);
+	}
+
 	/**
 	 * TODO: Create a separation of concerns between the CahootsSocket class
 	 * (rename it to CahootsService) and this class.
 	 * 
 	 * For now, this class handles receiving of websocket requests
 	 */
-	private class CahootsSocketClient implements WebSocket,
-			WebSocket.OnTextMessage, WebSocket.OnBinaryMessage {
+	private class CahootsSocketClient implements WebSocketTextListener {
 
 		private final AtomicLong received = new AtomicLong(0);
 		private final Set<CahootsSocketClient> members = new CopyOnWriteArraySet<CahootsSocketClient>();
 
 		public CahootsSocketClient() {
 		}
-		
-		@Override
-		public void onClose(final int closeCode, final String message) {
-			members.remove(this);
-		}
 
 		@Override
-		public void onOpen(final Connection connection) {
-			members.add(this);
-		}
-
-		@Override
-		public void onMessage(final String message) {
+		public void onMessage(String message) {
 			received.incrementAndGet();
 			final Gson gson = new Gson();
 			final MessageBase base = gson.fromJson(message, MessageBase.class);
-			
-			logger.log(Level.FINEST, "Message received");
-			logger.log(Level.FINEST, message);
-			
-			if ("users".equals(base.service)) {
-				if ("all".equals(base.type)) {
+
+			logger.debug("Message received");
+			logger.debug(message);
+
+			if ("users".equals(base.getService())) {
+				if ("all".equals(base.getType())) {
 					UserListMessage msg = gson.fromJson(message,
 							UserListMessage.class);
-					for (Collaborator user : msg.users) {
+					for (Collaborator user : msg.getUsers()) {
 						fireEvents("all", UserChangeEventListener.class,
 								UserChangeMessage.class, base,
 								gson.toJson(new UserChangeMessage(user)), gson);
@@ -359,7 +376,7 @@ public class CahootsSocket {
 					fireEvents("status", UserChangeEventListener.class,
 							UserChangeMessage.class, base, message, gson);
 				}
-			} else if ("op".equals(base.service)) {
+			} else if ("op".equals(base.getService())) {
 				fireEvents("shared", ShareDocumentEventListener.class,
 						ShareDocumentMessage.class, base, message, gson);
 				fireEvents("unshared", UnShareDocumentEventListener.class,
@@ -370,13 +387,29 @@ public class CahootsSocket {
 						OpReplaceMessage.class, base, message, gson);
 				fireEvents("delete", OpDeleteEventListener.class,
 						OpDeleteMessage.class, base, message, gson);
+			} else if ("chat".equals(base.getService())) {
+				fireEvents("receive", ChatReceivedEventListener.class,
+						ChatReceiveMessage.class, base, message, gson);
 			}
+
 		}
 
 		@Override
-		public void onMessage(final byte[] arg0, final int arg1, final int arg2) {
-			System.out.println(new String(arg0));
+		public void onOpen(WebSocket websocket) {
+			members.add(this);
 		}
 
+		@Override
+		public void onClose(WebSocket websocket) {
+			members.remove(this);
+		}
+
+		@Override
+		public void onError(Throwable t) {
+		}
+
+		@Override
+		public void onFragment(String arg0, boolean arg1) {
+		}
 	}
 }
