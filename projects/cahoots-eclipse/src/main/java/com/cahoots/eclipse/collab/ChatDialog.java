@@ -67,6 +67,8 @@ public class ChatDialog extends Window {
 	@Override
 	protected Control createContents(final Composite parent) {
 		getShell().setText(collaborator);
+		// TODO: Memorize previous size
+		getShell().setSize(640, 480);
 
 		final Composite c = parent;
 
@@ -76,7 +78,7 @@ public class ChatDialog extends Window {
 		styledText.setLayoutData("grow, wrap");
 
 		message = new StyledText(c, SWT.BORDER | SWT.MULTI);
-		message.setLayoutData("split 2");
+		message.setLayoutData("growx, split 2");
 
 		message.addKeyListener(new KeyListener() {
 			@Override
