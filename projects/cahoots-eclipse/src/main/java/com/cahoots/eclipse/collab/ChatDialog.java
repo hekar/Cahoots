@@ -5,6 +5,8 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import net.miginfocom.swt.MigLayout;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.KeyEvent;
@@ -22,7 +24,6 @@ import com.cahoots.connection.websocket.CahootsSocket;
 import com.cahoots.eclipse.Activator;
 import com.cahoots.json.receive.ChatReceiveMessage;
 import com.cahoots.json.send.ChatSendMessage;
-import swing2swt.layout.BorderLayout;
 
 public class ChatDialog  extends Dialog{
 
@@ -57,15 +58,15 @@ public class ChatDialog  extends Dialog{
 	private void createContents() {
 		dialog = new Shell(getParent(), SWT.SHELL_TRIM | SWT.BORDER);
 		dialog.setText(to);
-		dialog.setLayout(new BorderLayout(0, 0));
+		dialog.setLayout(new MigLayout("fill"));
 		
 		styledText = new StyledText(dialog, SWT.BORDER | SWT.READ_ONLY);
+		styledText.setLayoutData("grow, wrap");
 		
 		text = new Text(dialog, SWT.BORDER);
-		text.setLayoutData(BorderLayout.SOUTH);
+		text.setLayoutData("growx");
 		
 		text.addKeyListener(new KeyListener() {
-			
 			@Override
 			public void keyReleased(KeyEvent e) {
 				
