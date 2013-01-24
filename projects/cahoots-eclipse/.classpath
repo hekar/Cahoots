@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry including="**/*.java" kind="src" path="src/main/java"/>
+	<classpathentry exported="true" kind="lib" path="lib_managed/jars/io.netty/netty/netty-3.6.1.Final.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib_managed/jars/com.googlecode.lambdaj/lambdaj/lambdaj-2.3.3.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib_managed/jars/commons-codec/commons-codec/commons-codec-1.2.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib_managed/jars/commons-httpclient/commons-httpclient/commons-httpclient-3.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib_managed/jars/commons-logging/commons-logging/commons-logging-1.0.4.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib_managed/jars/com.miglayout/miglayout-core/miglayout-core-4.2.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib_managed/jars/com.miglayout/miglayout-swt/miglayout-swt-4.2.jar"/>
+	<classpathentry kind="lib" path="lib_managed/jars/com.ning/async-http-client/async-http-client-1.7.9.jar"/>
+	<classpathentry kind="lib" path="lib_managed/srcs/com.ning/async-http-client/async-http-client-1.7.9-sources.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="lib" path="lib_managed/jars/asm/asm/asm-3.1.jar"/>
