@@ -1,5 +1,6 @@
 package com.cahoots.eclipse.collab;
 
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -36,6 +37,7 @@ public class ChatDialog  extends Dialog{
 		super(parent, SWT.DIALOG_TRIM);
 		socket = Activator.getInjector().getInstance(CahootsSocket.class);
 		connection = Activator.getInjector().getInstance(CahootsConnection.class);
+		this.to = to;
 	}
 	
 	public Object open() {
