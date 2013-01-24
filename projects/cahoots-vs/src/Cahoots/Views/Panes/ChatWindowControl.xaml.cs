@@ -1,21 +1,14 @@
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using Cahoots.Services.Models;
+/// Chat Window
+/// Codeora 2013
+///
 
 namespace Cahoots
 {
+    using System.Windows;
+    using System.Windows.Controls;
+    using Cahoots.Services.Models;
+using Cahoots.Services.ViewModels;
+
     public delegate void Send(string to, string message);
 
     /// <summary>
@@ -23,41 +16,65 @@ namespace Cahoots
     /// </summary>
     public partial class ChatWindowControl : UserControl
     {
+        /// <summary>
+        /// Initializes a new instance of the
+        /// <see cref="ChatWindowControl" /> class.
+        /// </summary>
         public ChatWindowControl()
         {
             InitializeComponent();
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1300:SpecifyMessageBoxOptions")]
-        private void button1_Click(object sender, RoutedEventArgs e)
+        /// <summary>
+        /// Gets or sets the view model.
+        /// </summary>
+        /// <value>
+        /// The view model.
+        /// </value>
+        private ChatViewModel viewModel { get; set; }
+        public ChatViewModel ViewModel
         {
-            MessageBox.Show(string.Format(System.Globalization.CultureInfo.CurrentUICulture, "We are inside {0}.button1_Click()", this.ToString()),
-                            "ChatWindow");
+            get
+            {
+                return this.viewModel;
+            }
+            set
+            {
+                this.viewModel = value;
 
+                if (value != null)
+                {
+                    lstHistory.ItemsSource = this.viewModel.Messages;
+                }
+            }
         }
 
         /// <summary>
-        /// Gets or sets the send message.
+        /// Handles the Click event of the Button control.
         /// </summary>
-        /// <value>
-        /// The send message.
-        /// </value>
-        public Send SendMessage { get; set; }
-
-        /// <summary>
-        /// Gets or sets the chatee.
-        /// </summary>
-        /// <value>
-        /// The chatee.
-        /// </value>
-        public Collaborator Chatee { get; set; }
-
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">
+        ///   The <see cref="RoutedEventArgs" />
+        ///   instance containing the event data.
+        /// </param>
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            if (this.SendMessage != null)
-            {
-                this.SendMessage(Chatee.Name, txtMessage.Text);
-            }
+            this.ViewModel.SendMessage(txtMessage.Text);
+            txtMessage.Text = "";
+            txtMessage.Focus();
+        }
+
+        /// <summary>
+        /// Handles the TextChanged event of the txtMessage control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">
+        ///   The <see cref="TextChangedEventArgs" />
+        ///   instance containing the event data.
+        /// </param>
+        private void txtMessage_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            btnSend.IsEnabled = txtMessage.Text.Length != 0;
         }
     }
 }

@@ -6,16 +6,12 @@
 
 namespace Cahoots
 {
-    using System.Windows.Controls;
-    using Cahoots.Services.ViewModels;
-    using System.Windows;
     using System.Collections.Generic;
+    using System.Windows.Controls;
     using Cahoots.Services.Models;
-    using System.Runtime.InteropServices;
-    using System;
+    using Cahoots.Services.ViewModels;
     using Microsoft.VisualStudio.Shell;
     using Microsoft.VisualStudio.Shell.Interop;
-    using Cahoots.Services.MessageModels;
     using Cahoots.Services;
 
     /// <summary>
@@ -73,22 +69,8 @@ namespace Cahoots
                 Chats.Add(user.Name, pane);
                 ((IVsWindowFrame)pane.Frame).Show();
                 var win = (pane as ChatWindowToolWindow).Content as ChatWindowControl;
-                win.Chatee = user;
-                win.SendMessage =
-                    (to, msg) =>
-                    {
-                        var q = new SendChatMessage()
-                        {
-                            MessageType = "send",
-                            Service = "chat",
-                            Message = msg,
-                            To = to,
-                            From = ""
-                        };
-
-                        var str = JsonHelper.Serialize(q);
-                        CahootsPackage.Instance.SendToSocket(str);
-                    };
+                var vm = CahootsPackage.Instance.GetViewModel("chat", user, CahootsPackage.Instance.Me) as ChatViewModel;
+                win.ViewModel = vm;
             }
             else
             {

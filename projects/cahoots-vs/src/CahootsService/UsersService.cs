@@ -103,12 +103,7 @@ namespace Cahoots.Services
             }
             else
             {
-                this.ViewModel.Users.Add(new Collaborator()
-                {
-                    Name = collaborator.Name,
-                    Role = collaborator.Role,
-                    Status = collaborator.Status
-                });
+                this.ViewModel.Users.Add(collaborator);
             }
         }
 

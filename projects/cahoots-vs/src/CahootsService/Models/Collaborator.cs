@@ -12,6 +12,9 @@ namespace Cahoots.Services.Models
     [DataContract]
     public class Collaborator : ModelBase
     {
+        [DataMember(Name = "username")]
+        public string UserName { get; set; }
+
         [DataMember(Name = "name")]
         public string Name { get; set; }
 

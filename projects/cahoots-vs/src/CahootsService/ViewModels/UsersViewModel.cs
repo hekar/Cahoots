@@ -23,11 +23,6 @@ namespace Cahoots.Services.ViewModels
         public UsersViewModel()
         {
             this.Users = new ViewModelCollection<Collaborator>();
-            this.InviteCommand = new SimpleCommand()
-            {
-                ExecuteDelegate = () => MessageBox.Show("asdf"),
-                CanExecuteDelegate = () => { return true; }
-            };
         }
 
         /// <summary>
@@ -37,16 +32,5 @@ namespace Cahoots.Services.ViewModels
         /// The users.
         /// </value>
         public ViewModelCollection<Collaborator> Users { get; private set; }
-
-        public ICommand InviteCommand { get; private set; }
-
-        /// <summary>
-        /// Relays the command.
-        /// </summary>
-        /// <param name="command">The command.</param>
-        public override void RelayCommand(string command)
-        {
-            throw new NotImplementedException();
-        }
     }
 }
