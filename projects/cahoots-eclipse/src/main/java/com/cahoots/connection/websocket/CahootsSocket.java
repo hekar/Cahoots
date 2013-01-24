@@ -28,6 +28,7 @@ import com.cahoots.connection.http.tools.CahootsHttpClient;
 import com.cahoots.connection.http.tools.CahootsHttpResponseReceivedListener;
 import com.cahoots.eclipse.indigo.log.Log;
 import com.cahoots.eclipse.indigo.widget.TextEditorTools;
+import com.cahoots.events.ChatReceivedEventListener;
 import com.cahoots.events.ConnectEvent;
 import com.cahoots.events.ConnectEventListener;
 import com.cahoots.events.DisconnectEvent;
@@ -41,6 +42,7 @@ import com.cahoots.events.UnShareDocumentEventListener;
 import com.cahoots.events.UserChangeEventListener;
 import com.cahoots.json.Collaborator;
 import com.cahoots.json.MessageBase;
+import com.cahoots.json.receive.ChatReceiveMessage;
 import com.cahoots.json.receive.OpDeleteMessage;
 import com.cahoots.json.receive.OpInsertMessage;
 import com.cahoots.json.receive.OpReplaceMessage;
@@ -90,6 +92,8 @@ public class CahootsSocket {
 					new ArrayList<OpDeleteEventListener>());
 			put(UserChangeEventListener.class,
 					new ArrayList<UserChangeEventListener>());
+			put(ChatReceivedEventListener.class,
+					new ArrayList<ChatReceivedEventListener>());
 		}
 	};
 	private List<DisconnectEventListener> disconnectListeners = new ArrayList<DisconnectEventListener>();
@@ -118,6 +122,7 @@ public class CahootsSocket {
 	/**
 	 * TODO: Replace with real check
 	 */
+	@SuppressWarnings("deprecation")
 	public boolean isConnected() {
 		return cahootsConnection.isAuthenticated();
 	}
@@ -308,6 +313,11 @@ public class CahootsSocket {
 			final ShareDocumentEventListener listener) {
 		listeners.get(ShareDocumentEventListener.class).add(listener);
 	}
+	
+	public void addChatReceivedEventListener(
+			final ChatReceivedEventListener listener) {
+		listeners.get(ChatReceivedEventListener.class).add(listener);
+    }
 
 	/**
 	 * TODO: Create a separation of concerns between the CahootsSocket class
@@ -368,12 +378,16 @@ public class CahootsSocket {
 				fireEvents("delete", OpDeleteEventListener.class,
 						OpDeleteMessage.class, base, message, gson);
 			}
+			else if ("chat".equals(base.getService()))
+			{
+				fireEvents("receive", ChatReceivedEventListener.class,
+						ChatReceiveMessage.class, base, message, gson);
+			}
 		}
 
 		@Override
 		public void onMessage(final byte[] arg0, final int arg1, final int arg2) {
 			System.out.println(new String(arg0));
 		}
-
 	}
 }
