@@ -10,8 +10,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.inject.Inject;
 
@@ -206,11 +204,6 @@ public class CahootsSocket {
 			
 			for (final DisconnectEventListener listener : disconnectListeners) {
 				listener.userDisconnected(new DisconnectEvent());
-			}
-			
-			// Remove all listeners
-			for (List listenerList : listeners.values()) {
-				listenerList.clear();
 			}
 		}
 		connection = null;
