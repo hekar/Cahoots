@@ -18,6 +18,7 @@ import org.eclipse.ui.texteditor.ITextEditor;
 
 import com.cahoots.connection.CahootsConnection;
 import com.cahoots.connection.websocket.CahootsSocket;
+import com.cahoots.eclipse.indigo.job.BackgroundJobScheduler;
 import com.cahoots.eclipse.op.OpSessionManager;
 import com.cahoots.events.ShareDocumentEventListener;
 import com.cahoots.json.Collaborator;
@@ -30,6 +31,7 @@ public class ShareDocumentManager {
 	private final CahootsSocket cahootsSocket;
 	private final OpSessionManager opSessionManager;
 	private final CahootsConnection connection;
+	private final BackgroundJobScheduler backgroundJobScheduler;
 
 	/**
 	 * TODO: Move into session manager
@@ -38,10 +40,12 @@ public class ShareDocumentManager {
 
 	@Inject
 	public ShareDocumentManager(CahootsConnection connection,
-			CahootsSocket cahootsSocket, OpSessionManager opSessionManager) {
+			CahootsSocket cahootsSocket, OpSessionManager opSessionManager,
+			BackgroundJobScheduler backgroundJobScheduler) {
 		this.connection = connection;
 		this.cahootsSocket = cahootsSocket;
 		this.opSessionManager = opSessionManager;
+		this.backgroundJobScheduler = backgroundJobScheduler;
 	}
 
 	public void shareDocument(ITextEditor textEditor,
