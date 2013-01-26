@@ -1,6 +1,7 @@
 package com.cahoots.eclipse.indigo.popup;
 
 import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.text.TextSelection;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorActionDelegate;
@@ -27,7 +28,7 @@ public class ShareDocument implements IObjectActionDelegate,
 	private IEditorPart targetEditor;
 
 	public ShareDocument() {
-		Injector injector = Activator.getInjector();
+		final Injector injector = Activator.getInjector();
 		cahootsSocket = injector.getInstance(CahootsSocket.class);
 	}
 
@@ -39,7 +40,7 @@ public class ShareDocument implements IObjectActionDelegate,
 	}
 
 	@Override
-	public void setActiveEditor(IAction action, IEditorPart targetEditor) {
+	public void setActiveEditor(final IAction action, final IEditorPart targetEditor) {
 		shell = targetEditor.getSite().getShell();
 		this.targetEditor = targetEditor;
 	}
@@ -47,7 +48,7 @@ public class ShareDocument implements IObjectActionDelegate,
 	@Override
 	public void run(final IAction action) {
 		if (!cahootsSocket.isConnected()) {
-			ConnectDialog connectDialog = new ConnectDialog(shell);
+			final ConnectDialog connectDialog = new ConnectDialog(shell);
 			connectDialog.open();
 		}
 
@@ -58,6 +59,12 @@ public class ShareDocument implements IObjectActionDelegate,
 	@Override
 	public void selectionChanged(final IAction action,
 			final ISelection selection) {
-		System.out.println(selection);
+		
+		if (selection instanceof TextSelection) {
+			// TODO: Handle text selection and cursor movement changes here
+			@SuppressWarnings("unused")
+			final
+			TextSelection textSelection = (TextSelection) selection;
+		}
 	}
 }

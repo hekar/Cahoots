@@ -65,14 +65,14 @@ public class TestOpService {
 	public void testOpReplace() {
 		final ShareDocumentMessage document = shareDocument();
 
-		final String contents = "Testing replace 123";
+		final String content = "Testing replace 123";
 
 		final SendOpReplaceMessage op = new SendOpReplaceMessage();
 		op.setOpId(document.getOpId());
 		op.setStart(0);
-		op.setEnd(contents.length());
+		op.setEnd(content.length());
 		op.setTickStamp(0L);
-		op.setContents(contents);
+		op.setContent(content);
 
 		socket.sendAndWaitForResponse(op, OpReplaceMessage.class,
 				OpReplaceEventListener.class);
