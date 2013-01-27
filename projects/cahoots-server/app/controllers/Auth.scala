@@ -59,7 +59,7 @@ trait Secured {
     MessageDigest.getInstance("MD5").digest(text.getBytes).map("%02x" format _).mkString
   }
 
-  def check(username: String, password: String) = {
+  def check(username: String, password: String):Boolean = {
     val c = DB.getConnection()
     val f = new Factory(c, SQLDialect.POSTGRES)
     val pass = hash(password)
