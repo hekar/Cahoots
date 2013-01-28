@@ -3,13 +3,25 @@ package com.cahoots.json.receive;
 import com.cahoots.eclipse.op.OpTransformation;
 
 public class OpReplaceMessage extends OpTransformation {
+	private final String service = "op";
+	private final String type = "insert";
+
 	private String user;
 	private String opId;
-	private String contents;
+	private String documentId;
+	private String content;
 	private Integer start;
 	private Integer end;
 
 	public OpReplaceMessage() {
+	}
+
+	public String getService() {
+		return service;
+	}
+
+	public String getType() {
+		return type;
 	}
 
 	public String getUser() {
@@ -28,12 +40,12 @@ public class OpReplaceMessage extends OpTransformation {
 		this.opId = opId;
 	}
 
-	public String getContents() {
-		return contents;
+	public String getContent() {
+		return content;
 	}
 
-	public void setContents(final String content) {
-		this.contents = content;
+	public void setContent(final String content) {
+		this.content = content;
 	}
 
 	public Integer getStart() {
@@ -50,6 +62,14 @@ public class OpReplaceMessage extends OpTransformation {
 
 	public void setEnd(final Integer end) {
 		this.end = end;
+	}
+
+	public String getDocumentId() {
+		return documentId;
+	}
+
+	public void setDocumentId(final String documentId) {
+		this.documentId = documentId;
 	}
 
 }

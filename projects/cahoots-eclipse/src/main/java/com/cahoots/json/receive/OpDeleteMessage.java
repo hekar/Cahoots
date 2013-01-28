@@ -3,8 +3,9 @@ package com.cahoots.json.receive;
 import com.cahoots.eclipse.op.OpTransformation;
 
 public class OpDeleteMessage extends OpTransformation {
-	private String service;
-	private String type;
+	private final String service = "op";
+	private final String type = "delete";
+
 	private String user;
 	private String opId;
 	private String documentId;
@@ -15,16 +16,8 @@ public class OpDeleteMessage extends OpTransformation {
 		return service;
 	}
 
-	public void setService(final String service) {
-		this.service = service;
-	}
-
 	public String getType() {
 		return type;
-	}
-
-	public void setType(final String type) {
-		this.type = type;
 	}
 
 	public String getUser() {

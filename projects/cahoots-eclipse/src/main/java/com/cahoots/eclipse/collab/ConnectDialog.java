@@ -1,15 +1,19 @@
 package com.cahoots.eclipse.collab;
 
+import net.miginfocom.swt.MigLayout;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
-import org.eclipse.swt.widgets.Dialog;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
@@ -19,14 +23,16 @@ import com.cahoots.connection.websocket.CahootsSocket;
 import com.cahoots.eclipse.Activator;
 import com.cahoots.eclipse.indigo.job.BackgroundJob;
 import com.cahoots.eclipse.indigo.job.BackgroundJobScheduler;
+import com.cahoots.eclipse.indigo.widget.MessageDialog;
+import com.cahoots.eclipse.swt.SwtButtonUtils;
+import com.cahoots.eclipse.swt.SwtKeyUtils;
 import com.google.inject.Injector;
 
-public class ConnectDialog extends Dialog {
+public class ConnectDialog extends Window {
 
-	private Object result;
-	private Shell dialog;
 	private final CahootsSocket socket;
 	private final BackgroundJobScheduler backgroundJobScheduler;
+	private final MessageDialog messageDialog;
 
 	/**
 	 * Create the dialog.
@@ -34,106 +40,124 @@ public class ConnectDialog extends Dialog {
 	 * @param parent
 	 * @param style
 	 */
-	public ConnectDialog(Shell parent) {
-		super(parent, SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL);
-		setText("SWT Dialog");
+	public ConnectDialog(final Shell parent) {
+		super(parent);
 
-		Injector injector = Activator.getInjector();
+		final Injector injector = Activator.getInjector();
 		socket = injector.getInstance(CahootsSocket.class);
 		backgroundJobScheduler = injector
 				.getInstance(BackgroundJobScheduler.class);
-	}
-
-	/**
-	 * Open the dialog.
-	 * 
-	 * @return the result
-	 */
-	public Object open() {
-		createContents();
-		dialog.open();
-		dialog.layout();
-		Display display = getParent().getDisplay();
-		while (!dialog.isDisposed()) {
-			if (!display.readAndDispatch()) {
-				display.sleep();
-			}
-		}
-		return result;
+		messageDialog = injector.getInstance(MessageDialog.class);
 	}
 
 	/**
 	 * Create contents of the dialog.
 	 */
-	private void createContents() {
-		dialog = new Shell(getParent(), getStyle());
-		dialog.setSize(450, 145);
-		dialog.setText("Connect to Cahoots");
+	protected Composite createContents(final Composite parent) {
+		final Shell shell = getShell();
+		shell.setText("Connect to Cahoots");
+		shell.setSize(420, 160);
+		shell.setLayout(new MigLayout("fill"));
+		
+		final Composite content = parent;
+		content.setLayout(new MigLayout("fill", "[growprio 0][growprio 100, fill]"));
+		content.setLayoutData("grow");
 
-		Label usernameLabel = new Label(dialog, SWT.NONE);
-		usernameLabel.setAlignment(SWT.RIGHT);
-		usernameLabel.setBounds(20, 7, 68, 15);
+		// Create the controls
+
+		final Label usernameLabel = new Label(content, SWT.NONE);
 		usernameLabel.setText("User Name:");
 
-		Label passwordLabel = new Label(dialog, SWT.NONE);
-		passwordLabel.setAlignment(SWT.RIGHT);
-		passwordLabel.setBounds(10, 34, 78, 15);
+		final Text usernameEdit = new Text(content, SWT.BORDER);
+		usernameEdit.setLayoutData("spanx, growx, wrap");
+
+		final Label passwordLabel = new Label(content, SWT.NONE);
 		passwordLabel.setText("Password:");
 
-		final Text usernameEdit = new Text(dialog, SWT.BORDER);
-		usernameEdit.setBounds(94, 4, 259, 21);
+		final Text passwordEdit = new Text(content, SWT.BORDER | SWT.PASSWORD);
+		passwordEdit.setLayoutData("spanx, growx, wrap");
 
-		final Text passwordEdit = new Text(dialog, SWT.BORDER | SWT.PASSWORD);
-		passwordEdit.setBounds(94, 31, 259, 21);
-
-		Label serverLabel = new Label(dialog, SWT.NONE);
-		serverLabel.setAlignment(SWT.RIGHT);
-		serverLabel.setBounds(33, 55, 55, 15);
+		final Label serverLabel = new Label(content, SWT.NONE);
 		serverLabel.setText("Server:");
 
-		final Combo servers = new Combo(dialog, SWT.NONE);
+		final Combo servers = new Combo(content, SWT.NONE);
 		servers.setItems(new String[] { "localhost:9000" });
-		servers.setBounds(94, 58, 259, 23);
 		servers.select(0);
+		servers.setLayoutData("spanx, growx, split 2");
 
-		Button serverEdit = new Button(dialog, SWT.NONE);
-		serverEdit.setBounds(359, 56, 40, 25);
+		final Button serverEdit = new Button(content, SWT.NONE);
 		serverEdit.setText("...");
+		serverEdit.setLayoutData("wrap");
 
-		Button cancel = new Button(dialog, SWT.NONE);
-		cancel.addSelectionListener(new SelectionAdapter() {
+		final Button connect = new Button(content, SWT.NONE);
+		connect.setText("&Connect");
+		connect.setLayoutData("skip 1, split 2, tag ok");
+
+		final Button cancel = new Button(content, SWT.NONE);
+		cancel.setText("C&ancel");
+		cancel.setLayoutData("tag cancel");
+
+		// Add the listeners
+
+		usernameEdit.addKeyListener(new KeyListener() {
 			@Override
-			public void widgetSelected(SelectionEvent e) {
-				dialog.close();
+			public void keyReleased(final KeyEvent e) {
+			}
+
+			@Override
+			public void keyPressed(final KeyEvent e) {
+				if (SwtKeyUtils.enterPressed(e)) {
+					SwtButtonUtils.doClick(connect);
+				}
 			}
 		});
-		cancel.setBounds(359, 87, 75, 25);
-		cancel.setText("C&ancel");
 
-		Button connect = new Button(dialog, SWT.NONE);
-		connect.setBounds(278, 87, 75, 25);
-		connect.setText("&Connect");
+		passwordEdit.addKeyListener(new KeyListener() {
+			@Override
+			public void keyReleased(final KeyEvent e) {
+			}
+
+			@Override
+			public void keyPressed(final KeyEvent e) {
+				if (SwtKeyUtils.enterPressed(e)) {
+					SwtButtonUtils.doClick(connect);
+				}
+			}
+		});
+
+		cancel.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(final SelectionEvent e) {
+				close();
+			}
+		});
+
 		connect.addSelectionListener(new SelectionAdapter() {
 			@Override
-			public void widgetSelected(SelectionEvent e) {
+			public void widgetSelected(final SelectionEvent e) {
 				final BackgroundJob backgroundJob = new BackgroundJob() {
 					@Override
 					public IStatus run(final IProgressMonitor monitor) {
-						monitor.beginTask("Connecting to Cahoots", 100);
 						Display.getDefault().asyncExec(new Runnable() {
 							@Override
 							public void run() {
+								monitor.beginTask("Connecting to Cahoots", 100);
+								final String username = usernameEdit.getText();
+								final String password = passwordEdit.getText();
+								final String server = servers.getText();
 								try {
-									String username = usernameEdit.getText();
-									String password = passwordEdit.getText();
-									String server = servers.getText();
+									monitor.worked(20);
 									socket.connect(username, password, server);
-									dialog.close();
-								} catch (Exception e1) {
+									monitor.worked(100);
+									close();
+								} catch (final Exception e1) {
 									e1.printStackTrace();
-									MessageDialog.openInformation(null,
-											"Connect Error",
-											"Error connecting to server");
+									monitor.setCanceled(true);
+									final String message = String.format(
+											"Error connecting to server %s@%s",
+											username, server);
+									messageDialog.info(null,
+											"Connection Error", message);
 								}
 
 							}
@@ -142,10 +166,12 @@ public class ConnectDialog extends Dialog {
 						return Status.OK_STATUS;
 					}
 				};
-				
+
 				backgroundJobScheduler.schedule("Connect to Cahoots",
 						backgroundJob);
 			}
 		});
+
+		return content;
 	}
 }

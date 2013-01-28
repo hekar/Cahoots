@@ -28,37 +28,39 @@ object Application extends Controller with Secured {
     {
       Unauthorized("Invalid username/password")
     }
-
-    var users:ListBuffer[ActiveUser] = Cache.get("users").asInstanceOf[ListBuffer[ActiveUser]]
-    
-    if(users == null)
-    {
-      users = new ListBuffer[ActiveUser]
-      val connection = DB.getConnection
-      val create = new Factory(connection, SQLDialect.POSTGRES)
-      for(r <- (create.select(USERS.USERNAME, USERS.NAME, ROLES.NAME).from(USERS).join(ROLES).on(ROLES.ID equal USERS.ROLE).fetch))
-      {
-        users.append(new ActiveUser(r.getValue(USERS.USERNAME), r.getValue(USERS.NAME), r.getValue(ROLES.NAME), null, "offline"))
-      }
-      Cache.set("users", users)
-    }
-    
-    val stored_user = users.findIndexOf(x => x.username == user)
-
-    val token = java.util.UUID.randomUUID().toString
-    if(stored_user != -1)
-    {
-      users(stored_user).token = token
-      Cache.set("users", users)
-      Logger.info("User logged in with %s:%s".format(user, token))
-      Ok(token)
-    }
     else
     {
-      users.append(new ActiveUser(user, user, "user", token, "offline"))
-      Cache.set("users", users)
-      Logger.info("User logged in with %s:%s".format(user, token))
-      Ok(token)
+      var users:ListBuffer[ActiveUser] = Cache.get("users").asInstanceOf[ListBuffer[ActiveUser]]
+
+      if(users == null)
+      {
+        users = new ListBuffer[ActiveUser]
+        val connection = DB.getConnection
+        val create = new Factory(connection, SQLDialect.POSTGRES)
+        for(r <- (create.select(USERS.USERNAME, USERS.NAME, ROLES.NAME).from(USERS).join(ROLES).on(ROLES.ID equal USERS.ROLE).fetch))
+        {
+          users.append(new ActiveUser(r.getValue(USERS.USERNAME), r.getValue(USERS.NAME), r.getValue(ROLES.NAME), null, "offline"))
+        }
+        Cache.set("users", users)
+      }
+
+      val stored_user = users.findIndexOf(x => x.username == user)
+
+      val token = java.util.UUID.randomUUID().toString
+      if(stored_user != -1)
+      {
+        users(stored_user).token = token
+        Cache.set("users", users)
+        Logger.info("User logged in with %s:%s".format(user, token))
+        Ok(token)
+      }
+      else
+      {
+        users.append(new ActiveUser(user, user, "user", token, "offline"))
+        Cache.set("users", users)
+        Logger.info("User logged in with %s:%s".format(user, token))
+        Ok(token)
+      }
     }
     
   }
