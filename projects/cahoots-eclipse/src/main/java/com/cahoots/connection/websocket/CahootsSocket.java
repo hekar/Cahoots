@@ -1,7 +1,6 @@
 package com.cahoots.connection.websocket;
 
 import java.io.IOException;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;

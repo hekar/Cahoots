@@ -22,21 +22,20 @@ public class Chat {
 		socket.addChatReceivedEventListener(new ChatReceivedEventListener() {
 
 			@Override
-			public void onEvent(ChatReceiveMessage msg) {
-				final ChatDialog dia;
-				if (!chats.containsKey(msg.getFrom())) {
-					dia = new ChatDialog(PlatformUI.getWorkbench()
-							.getActiveWorkbenchWindow().getShell(), Arrays.asList(new String[]{msg.getFrom()}));
-
-					chats.put(msg.getFrom(), dia);
-				} else {
-					dia = chats.get(msg.getFrom());
-				}
-				dia.receiveMessage(msg);
+			public void onEvent(final ChatReceiveMessage msg) {
 				SwtDisplayUtils.async(new Runnable() {
-					
 					@Override
 					public void run() {
+						final ChatDialog dia;
+						if (!chats.containsKey(msg.getFrom())) {
+							dia = new ChatDialog(PlatformUI.getWorkbench()
+									.getActiveWorkbenchWindow().getShell(), Arrays.asList(new String[]{msg.getFrom()}));
+
+							chats.put(msg.getFrom(), dia);
+						} else {
+							dia = chats.get(msg.getFrom());
+						}
+						dia.receiveMessage(msg);
 						dia.open();
 					}
 				});
