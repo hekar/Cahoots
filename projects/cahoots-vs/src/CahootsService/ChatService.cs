@@ -1,23 +1,28 @@
-﻿///
-///
+﻿/// Service for sending and receiving chat messages
+/// Codeora 2013
 ///
 
 namespace Cahoots.Services
 {
     using System;
     using System.Collections.Generic;
+
+    using Cahoots.Ext;
+    using Cahoots.Services.Contracts;
+    using Cahoots.Services.MessageModels.Chat;
     using Cahoots.Services.Models;
     using Cahoots.Services.ViewModels;
-    using Cahoots.Services.MessageModels.Chat;
+    using Cahoots.Services.MessageModels;
 
     public class ChatService : AsyncService, IAsyncService
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ChatService" /> class.
         /// </summary>
-        public ChatService() : base("chat")
+        public ChatService(IWindowService windowService) : base("chat")
         {
             this.ViewModels = new Dictionary<string, ChatViewModel>();
+            this.WindowService = windowService;
         }
 
         /// <summary>
@@ -27,6 +32,14 @@ namespace Cahoots.Services
         /// The view models.
         /// </value>
         private Dictionary<string, ChatViewModel> ViewModels { get; set; }
+
+        /// <summary>
+        /// Gets or sets the window service.
+        /// </summary>
+        /// <value>
+        /// The window service.
+        /// </value>
+        private IWindowService WindowService { get; set; }
 
         /// <summary>
         /// Processes the JSON message.
@@ -50,9 +63,19 @@ namespace Cahoots.Services
         /// <param name="model">The model.</param>
         private void ReceiveMessage(ReceiveMessage model)
         {
+            if (!this.ViewModels.ContainsKey(model.From))
+            {
+                this.WindowService.OpenChatWindow(model.From);
+            }
+
             if (this.ViewModels.ContainsKey(model.From))
             {
+                while (!this.ViewModels.ContainsKey(model.From))
+                {
+                };
+
                 var vm = this.ViewModels[model.From];
+
                 vm.Messages.Add(
                     new ChatMessageModel(
                         vm.Chatee.Name,
@@ -81,7 +104,7 @@ namespace Cahoots.Services
                 {
                     Chatee = user,
                     Me = parameters[1] as string,
-                    RelayMessage = this.SendMessage
+                    Send = this.Send
                 };
 
                 this.ViewModels.Add(user.UserName, vm);
@@ -90,6 +113,16 @@ namespace Cahoots.Services
             }
 
             return null;
+        }
+
+        /// <summary>
+        /// Sends the specified message.
+        /// </summary>
+        /// <param name="message">The message.</param>
+        public void Send(SendChatMessage message)
+        {
+            var str = JsonHelper.Serialize(message);
+            this.SendMessage(str);
         }
 
         /// <summary>

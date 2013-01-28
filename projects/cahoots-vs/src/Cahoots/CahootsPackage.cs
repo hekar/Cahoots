@@ -1,30 +1,32 @@
-﻿// ----------------------------------------------------------------------
-// <copyright file="CahootsPackage.cs" company="Codeora">
-//     Copyright 2012. All rights reserved
-// </copyright>
-// ------------------------------------------------------------------------
+﻿/// Package class
+/// Codeora 2013
+///
 
 namespace Cahoots
 {
     using System;
-    using System.Collections.ObjectModel;
+    using System.Collections.Generic;
     using System.ComponentModel;
     using System.ComponentModel.Design;
+    using System.Linq;
     using System.Runtime.InteropServices;
+    using System.Threading;
     using System.Windows.Forms;
 
     using Cahoots.Services;
+    using Cahoots.Services.Contracts;
     using Cahoots.Services.Models;
-    using Microsoft.VisualStudio.Shell;
-    using WebSocketSharp;
     using Cahoots.Services.ViewModels;
-    using System.Collections.Generic;
+    using Microsoft.VisualStudio.Shell;
+    using Microsoft.VisualStudio.Shell.Interop;
+    using WebSocketSharp;
+    using System.Collections.ObjectModel;
 
     /// <summary>
     /// Cahoots VSPackage Extension class.
     /// </summary>
     [Guid(GuidList.guidCahootsPkgString)]
-    public class CahootsPackage : CahootsPackageBase
+    public class CahootsPackage : CahootsPackageBase, IWindowService
     {
         #region Initialization
 
@@ -39,6 +41,10 @@ namespace Cahoots
                         as OleMenuCommandService;
 
             Instance = this;
+            this.Chats = new Dictionary<string, ToolWindowPane>();
+
+            this.UIContext = SynchronizationContext.Current;
+            this.WindowFrames = new Collection<IVsWindowFrame>();
         }
 
         /// <summary>
@@ -63,7 +69,7 @@ namespace Cahoots
         {
             this.CommunicationRelay = new MessageRelay(
                     new UsersService(),
-                    new ChatService());
+                    new ChatService(this));
         }
 
         /// <summary>
@@ -101,6 +107,27 @@ namespace Cahoots
         /// Me.
         /// </value>
         public string Me { get; set; }
+        
+        /// <summary>
+        /// Gets or sets the chats.
+        /// </summary>
+        /// <value>
+        /// The chats.
+        /// </value>
+        private Dictionary<string, ToolWindowPane> Chats { get; set; }
+
+        /// <summary>
+        /// Gets or sets the UI context.
+        /// </summary>
+        /// <value>
+        /// The UI context.
+        /// </value>
+        private SynchronizationContext UIContext { get; set; }
+
+        /// <summary>
+        /// The window id index.
+        /// </summary>
+        private int WindowIndex = 0;
 
         #endregion
 
@@ -155,6 +182,14 @@ namespace Cahoots
         private MenuCommand StopButton { get; set; }
 
         /// <summary>
+        /// Gets or sets the window frames.
+        /// </summary>
+        /// <value>
+        /// The window frames.
+        /// </value>
+        private Collection<IVsWindowFrame> WindowFrames { get; set; }
+
+        /// <summary>
         /// Finds the toolbar buttons.
         /// </summary>
         private void FindToolbarButtons()
@@ -168,8 +203,6 @@ namespace Cahoots
             // we have to set this stuff again, 
             // otherwise it all gets reset to true.
             this.DisconnectButton.Enabled = false;
-            //this.Stop.Enabled = false;
-            //this.Host.Enabled = false;
         }
 
         /// <summary>
@@ -278,8 +311,11 @@ namespace Cahoots
                 bg.RunWorkerAsync();
                 this.ConnectButton.Enabled = true;
                 this.DisconnectButton.Enabled = false;
-                //this.Host.Enabled = false;
-                //this.Stop.Enabled = false;
+
+                foreach (var frame in this.WindowFrames)
+                {
+                    frame.CloseFrame((int)__FRAMECLOSE.FRAMECLOSE_NoSave);
+                }
 
                 this.Socket.Send(new byte[] { 0x1A });
                 this.Socket.Close();
@@ -290,6 +326,15 @@ namespace Cahoots
         }
 
         #endregion
+
+        /// <summary>
+        /// Invokes an action on the UI thread.
+        /// </summary>
+        /// <param name="action">The action.</param>
+        private void InvokeOnUI(Action action)
+        {
+            UIContext.Send(_ => action(), null);
+        }
 
         /// <summary>
         /// Gets the view model.
@@ -317,6 +362,45 @@ namespace Cahoots
         public void SendToSocket(string message)
         {
             Socket.Send(message);
+        }
+
+        /// <summary>
+        /// Opens a chat window.
+        /// </summary>
+        /// <param name="user">The user.</param>
+        public void OpenChatWindow(Collaborator user)
+        {
+            if (!Chats.ContainsKey(user.Name))
+            {
+                var pane = CahootsPackage.Instance.FindToolWindow(typeof(ChatWindowToolWindow), this.WindowIndex++, true);
+                pane.Caption = "Chat — " + user.Name;
+                Chats.Add(user.Name, pane);
+                var frame = (IVsWindowFrame)pane.Frame;
+                frame.Show();
+                this.WindowFrames.Add(frame);
+                var win = (pane as ChatWindowToolWindow).Content as ChatWindowControl;
+                var vm = this.GetViewModel("chat", user, this.Me) as ChatViewModel;
+                win.ViewModel = vm;
+            }
+            else
+            {
+                ((IVsWindowFrame)Chats[user.Name].Frame).Show();
+            }
+        }
+
+        /// <summary>
+        /// Opens a chat window.
+        /// </summary>
+        /// <param name="username">The username.</param>
+        public void OpenChatWindow(string username)
+        {
+            var service = this.CommunicationRelay.Services["users"] as UsersService;
+            var user = service.GetCollaborators().FirstOrDefault(c => c.UserName == username);
+
+            if (user != null)
+            {
+                this.InvokeOnUI(() => this.OpenChatWindow(user));
+            }
         }
 
         /// <summary>

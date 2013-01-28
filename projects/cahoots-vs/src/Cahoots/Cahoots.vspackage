@@ -28,6 +28,9 @@
               <groupBaseReferencesButtons Id="4846d26a-94ae-46d1-ac4a-6d37e8aa056a">
                 <buttonMoniker Id="0de0fc79-649c-4424-aec7-6a47b36fcb26" />
               </groupBaseReferencesButtons>
+              <groupBaseReferencesButtons Id="f9d05b4e-2dd1-4baf-a137-151514097257">
+                <buttonMoniker Id="edea4f5d-cf56-4dac-9dbd-6d8450043902" />
+              </groupBaseReferencesButtons>
             </buttons>
           </externalGroup>
         </groups>
@@ -46,6 +49,9 @@
                 </buttonReferencesToolWindows>
               </toolWindows>
             </button>
+          </commandTableHasButtons>
+          <commandTableHasButtons Id="7a6e604b-e1cb-49a7-9012-001d2b7c9447">
+            <button Id="edea4f5d-cf56-4dac-9dbd-6d8450043902" name="PreferenceButton" idNumeric="17" buttonText="Preferences" menuText="Preferences" commandName="cmdidPreferenceButton" toolTipText="Preferences" mod1="0" mod2="0" visibilityConstraints="0" icon="msotcidToolbox" commandFlags="0" />
           </commandTableHasButtons>
         </buttons>
         <menuBases>

@@ -72,6 +72,16 @@
             <buttonShapeMoniker Id="7d4414ff-a69b-4ba3-8400-9aeb65b3eafc" />
           </nodes>
         </containsConnector>
+        <buttonShape Id="197508b2-d589-4d1a-9c63-b4e292d20962" absoluteBounds="5.875, 3.75, 1.5, 0.625">
+          <buttonMoniker Id="edea4f5d-cf56-4dac-9dbd-6d8450043902" />
+        </buttonShape>
+        <containsConnector Id="15a13a3c-557a-430f-9a90-2863e9367330" edgePoints="[(5 : 4.0625); (5.875 : 4.0625)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+          <groupBaseReferencesButtonsMoniker Id="f9d05b4e-2dd1-4baf-a137-151514097257" />
+          <nodes>
+            <externalGroupShapeMoniker Id="34956bee-d455-4058-bc70-3eb0d9a1416a" />
+            <buttonShapeMoniker Id="197508b2-d589-4d1a-9c63-b4e292d20962" />
+          </nodes>
+        </containsConnector>
       </nestedChildShapes>
     </commandTableSwimlane>
     <toolwindowSwimlane Id="4f8ea066-fca6-41f8-8a77-c4ab4550634b" absoluteBounds="8.0333333333333332, 0, 6.3416666666666668, 8.5">
@@ -80,7 +90,7 @@
         <wpfToolWindowShape Id="df4a25e1-076a-4e22-9d5e-f0e187581bed" absoluteBounds="8.7833333333333332, 2.5, 1.5, 0.625">
           <toolWindowMoniker Id="3519dca9-6f4a-4f39-896b-b16667665260" />
         </wpfToolWindowShape>
-        <wpfToolWindowShape Id="6dc3bd5f-1eba-40a6-8676-5d9d447bce26" absoluteBounds="8.6583333333333332, 1.25, 1.5, 0.625">
+        <wpfToolWindowShape Id="6dc3bd5f-1eba-40a6-8676-5d9d447bce26" absoluteBounds="8.6583333333333332, 1.375, 1.5, 0.625">
           <toolWindowMoniker Id="2bc45ccf-5461-4cc7-8996-8e2de22c717a" />
         </wpfToolWindowShape>
       </nestedChildShapes>

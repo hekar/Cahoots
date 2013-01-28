@@ -29,7 +29,6 @@ namespace Cahoots
             this.ViewModel = CahootsPackage.Instance.GetViewModel("users") as UsersViewModel;
             this.DataContext = this.ViewModel;
             this.dataGrid1.ItemsSource = this.ViewModel.Users;
-            this.Chats = new Dictionary<string, ToolWindowPane>();
         }
 
         /// <summary>
@@ -39,16 +38,6 @@ namespace Cahoots
         /// The view model.
         /// </value>
         private UsersViewModel ViewModel { get; set; }
-
-        /// <summary>
-        /// Gets or sets the chats.
-        /// </summary>
-        /// <value>
-        /// The chats.
-        /// </value>
-        private Dictionary<string, ToolWindowPane> Chats { get; set; }
-
-        private int i;
 
         /// <summary>
         /// Handles the Click event of the MenuItem control.
@@ -61,21 +50,7 @@ namespace Cahoots
         private void MenuItem_Click(object sender, System.Windows.RoutedEventArgs e)
         {
             var user = this.dataGrid1.CurrentItem as Collaborator;
-
-            if (!Chats.ContainsKey(user.Name))
-            {
-                var pane = CahootsPackage.Instance.FindToolWindow(typeof(ChatWindowToolWindow), i++, true);
-                pane.Caption = "Chat — " + user.Name;
-                Chats.Add(user.Name, pane);
-                ((IVsWindowFrame)pane.Frame).Show();
-                var win = (pane as ChatWindowToolWindow).Content as ChatWindowControl;
-                var vm = CahootsPackage.Instance.GetViewModel("chat", user, CahootsPackage.Instance.Me) as ChatViewModel;
-                win.ViewModel = vm;
-            }
-            else
-            {
-                ((IVsWindowFrame)Chats[user.Name].Frame).Show();
-            }
+            CahootsPackage.Instance.OpenChatWindow(user);
         }
     }
 }

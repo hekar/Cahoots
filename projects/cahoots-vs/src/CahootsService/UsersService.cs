@@ -6,6 +6,7 @@ using System.Collections.ObjectModel;
 using Cahoots.Services.Models;
 using Cahoots.Services.MessageModels;
 using Cahoots.Services.ViewModels;
+using Cahoots.Ext;
 
 namespace Cahoots.Services
 {
@@ -77,6 +78,15 @@ namespace Cahoots.Services
                     this.UpdateCollaborator(user);
                 }
             }
+        }
+
+        /// <summary>
+        /// Gets the collaborators.
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<Collaborator> GetCollaborators()
+        {
+            return this.ViewModel.Users.ToArray();
         }
 
         /// <summary>

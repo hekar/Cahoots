@@ -64,6 +64,15 @@
             <ToolTipText>View Collaborators</ToolTipText>
 		    </Strings>
 	  </Button>
+	  <Button guid="guidCahootsCommandSet" id="PreferenceButton" priority="0x0100">
+				<Icon guid="guidOfficeIcon" id="msotcidToolbox" />
+				<Strings>
+            <CommandName>cmdidPreferenceButton</CommandName>
+            <ButtonText>Preferences</ButtonText>
+            <MenuText>Preferences</MenuText>
+            <ToolTipText>Preferences</ToolTipText>
+		    </Strings>
+	  </Button>
 	</Buttons>
 
   <Menus>
@@ -101,6 +110,9 @@
 	     <CommandPlacement guid="guidCahootsCommandSet" id="UsersToolbarButton" priority="0x0100"> 
 	         <Parent guid="guidSHLMainMenu" id="IDG_VS_TOOLS_CMDLINE" />
 		   </CommandPlacement> 
+	     <CommandPlacement guid="guidCahootsCommandSet" id="PreferenceButton" priority="0x0100"> 
+	         <Parent guid="guidSHLMainMenu" id="IDG_VS_TOOLS_CMDLINE" />
+		   </CommandPlacement> 
 	     <CommandPlacement guid="guidCahootsCommandSet" id="Group" priority="0x0100">
 	         <Parent guid="guidCahootsCommandSet" id="Cahoots" />
 		   </CommandPlacement> 
@@ -117,6 +129,7 @@
      <IDSymbol name="ConnectToolbarButton" value="0x0002" />
 	     <IDSymbol name="DisconnectToolbarButton" value="0x000B" />
 	     <IDSymbol name="UsersToolbarButton" value="0x000E" />
+	     <IDSymbol name="PreferenceButton" value="0x0011" />
 	     <IDSymbol name="Cahoots" value="0x0004" />
 	  </GuidSymbol>
 	</Symbols>

@@ -1,0 +1,8 @@
+﻿<Window x:Class="Cahoots.Views.Custom.PreferencesWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="PreferencesWindow" Height="300" Width="300">
+    <Grid>
+        
+    </Grid>
+</Window>
