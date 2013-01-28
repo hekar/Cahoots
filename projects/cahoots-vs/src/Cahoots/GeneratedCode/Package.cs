@@ -78,6 +78,10 @@ namespace Cahoots
                 commandId = new CommandID(GuidList.guidCahootsCmdSet, (int)PkgCmdIDList.UsersToolbarButton);
                 menuItem = new OleMenuCommand(UsersToolbarButtonExecuteHandler, UsersToolbarButtonChangeHandler, UsersToolbarButtonQueryStatusHandler, commandId);
                 mcs.AddCommand(menuItem);
+				// Create the command for button PreferenceButton
+                commandId = new CommandID(GuidList.guidCahootsCmdSet, (int)PkgCmdIDList.PreferenceButton);
+                menuItem = new OleMenuCommand(PreferenceButtonExecuteHandler, PreferenceButtonChangeHandler, PreferenceButtonQueryStatusHandler, commandId);
+                mcs.AddCommand(menuItem);
 
 			}
 		}
@@ -130,6 +134,23 @@ namespace Cahoots
 		}
 		
 		protected virtual void UsersToolbarButtonQueryStatusHandler(object sender, EventArgs e)
+		{
+		}
+
+		#endregion
+
+		#region Handlers for Button: PreferenceButton
+
+		protected virtual void PreferenceButtonExecuteHandler(object sender, EventArgs e)
+		{
+			ShowMessage("PreferenceButton clicked!");
+		}
+		
+		protected virtual void PreferenceButtonChangeHandler(object sender, EventArgs e)
+		{
+		}
+		
+		protected virtual void PreferenceButtonQueryStatusHandler(object sender, EventArgs e)
 		{
 		}
 

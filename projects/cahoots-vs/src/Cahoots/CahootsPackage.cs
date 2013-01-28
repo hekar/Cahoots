@@ -1,8 +1,6 @@
-﻿// ----------------------------------------------------------------------
-// <copyright file="CahootsPackage.cs" company="Codeora">
-//     Copyright 2012. All rights reserved
-// </copyright>
-// ------------------------------------------------------------------------
+﻿/// Package class
+/// Codeora 2013
+///
 
 namespace Cahoots
 {
@@ -12,16 +10,17 @@ namespace Cahoots
     using System.ComponentModel.Design;
     using System.Linq;
     using System.Runtime.InteropServices;
+    using System.Threading;
     using System.Windows.Forms;
+
     using Cahoots.Services;
     using Cahoots.Services.Contracts;
+    using Cahoots.Services.Models;
     using Cahoots.Services.ViewModels;
     using Microsoft.VisualStudio.Shell;
-    using WebSocketSharp;
-    using Cahoots.Services.Models;
     using Microsoft.VisualStudio.Shell.Interop;
-    using System.Threading.Tasks;
-    using System.Threading;
+    using WebSocketSharp;
+    using System.Collections.ObjectModel;
 
     /// <summary>
     /// Cahoots VSPackage Extension class.
@@ -45,6 +44,7 @@ namespace Cahoots
             this.Chats = new Dictionary<string, ToolWindowPane>();
 
             this.UIContext = SynchronizationContext.Current;
+            this.WindowFrames = new Collection<IVsWindowFrame>();
         }
 
         /// <summary>
@@ -182,6 +182,14 @@ namespace Cahoots
         private MenuCommand StopButton { get; set; }
 
         /// <summary>
+        /// Gets or sets the window frames.
+        /// </summary>
+        /// <value>
+        /// The window frames.
+        /// </value>
+        private Collection<IVsWindowFrame> WindowFrames { get; set; }
+
+        /// <summary>
         /// Finds the toolbar buttons.
         /// </summary>
         private void FindToolbarButtons()
@@ -195,8 +203,6 @@ namespace Cahoots
             // we have to set this stuff again, 
             // otherwise it all gets reset to true.
             this.DisconnectButton.Enabled = false;
-            //this.Stop.Enabled = false;
-            //this.Host.Enabled = false;
         }
 
         /// <summary>
@@ -305,8 +311,11 @@ namespace Cahoots
                 bg.RunWorkerAsync();
                 this.ConnectButton.Enabled = true;
                 this.DisconnectButton.Enabled = false;
-                //this.Host.Enabled = false;
-                //this.Stop.Enabled = false;
+
+                foreach (var frame in this.WindowFrames)
+                {
+                    frame.CloseFrame((int)__FRAMECLOSE.FRAMECLOSE_NoSave);
+                }
 
                 this.Socket.Send(new byte[] { 0x1A });
                 this.Socket.Close();
@@ -366,7 +375,9 @@ namespace Cahoots
                 var pane = CahootsPackage.Instance.FindToolWindow(typeof(ChatWindowToolWindow), this.WindowIndex++, true);
                 pane.Caption = "Chat — " + user.Name;
                 Chats.Add(user.Name, pane);
-                ((IVsWindowFrame)pane.Frame).Show();
+                var frame = (IVsWindowFrame)pane.Frame;
+                frame.Show();
+                this.WindowFrames.Add(frame);
                 var win = (pane as ChatWindowToolWindow).Content as ChatWindowControl;
                 var vm = this.GetViewModel("chat", user, this.Me) as ChatViewModel;
                 win.ViewModel = vm;
