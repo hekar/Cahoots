@@ -7,24 +7,27 @@
 namespace Cahoots
 {
     using System;
-    using System.Collections.ObjectModel;
+    using System.Collections.Generic;
     using System.ComponentModel;
     using System.ComponentModel.Design;
+    using System.Linq;
     using System.Runtime.InteropServices;
     using System.Windows.Forms;
-
     using Cahoots.Services;
-    using Cahoots.Services.Models;
+    using Cahoots.Services.Contracts;
+    using Cahoots.Services.ViewModels;
     using Microsoft.VisualStudio.Shell;
     using WebSocketSharp;
-    using Cahoots.Services.ViewModels;
-    using System.Collections.Generic;
+    using Cahoots.Services.Models;
+    using Microsoft.VisualStudio.Shell.Interop;
+    using System.Threading.Tasks;
+    using System.Threading;
 
     /// <summary>
     /// Cahoots VSPackage Extension class.
     /// </summary>
     [Guid(GuidList.guidCahootsPkgString)]
-    public class CahootsPackage : CahootsPackageBase
+    public class CahootsPackage : CahootsPackageBase, IWindowService
     {
         #region Initialization
 
@@ -39,6 +42,9 @@ namespace Cahoots
                         as OleMenuCommandService;
 
             Instance = this;
+            this.Chats = new Dictionary<string, ToolWindowPane>();
+
+            this.UIContext = SynchronizationContext.Current;
         }
 
         /// <summary>
@@ -63,7 +69,7 @@ namespace Cahoots
         {
             this.CommunicationRelay = new MessageRelay(
                     new UsersService(),
-                    new ChatService());
+                    new ChatService(this));
         }
 
         /// <summary>
@@ -101,6 +107,27 @@ namespace Cahoots
         /// Me.
         /// </value>
         public string Me { get; set; }
+        
+        /// <summary>
+        /// Gets or sets the chats.
+        /// </summary>
+        /// <value>
+        /// The chats.
+        /// </value>
+        private Dictionary<string, ToolWindowPane> Chats { get; set; }
+
+        /// <summary>
+        /// Gets or sets the UI context.
+        /// </summary>
+        /// <value>
+        /// The UI context.
+        /// </value>
+        private SynchronizationContext UIContext { get; set; }
+
+        /// <summary>
+        /// The window id index.
+        /// </summary>
+        private int WindowIndex = 0;
 
         #endregion
 
@@ -292,6 +319,15 @@ namespace Cahoots
         #endregion
 
         /// <summary>
+        /// Invokes an action on the UI thread.
+        /// </summary>
+        /// <param name="action">The action.</param>
+        private void InvokeOnUI(Action action)
+        {
+            UIContext.Send(_ => action(), null);
+        }
+
+        /// <summary>
         /// Gets the view model.
         /// </summary>
         /// <param name="service">The service.</param>
@@ -317,6 +353,43 @@ namespace Cahoots
         public void SendToSocket(string message)
         {
             Socket.Send(message);
+        }
+
+        /// <summary>
+        /// Opens a chat window.
+        /// </summary>
+        /// <param name="user">The user.</param>
+        public void OpenChatWindow(Collaborator user)
+        {
+            if (!Chats.ContainsKey(user.Name))
+            {
+                var pane = CahootsPackage.Instance.FindToolWindow(typeof(ChatWindowToolWindow), this.WindowIndex++, true);
+                pane.Caption = "Chat — " + user.Name;
+                Chats.Add(user.Name, pane);
+                ((IVsWindowFrame)pane.Frame).Show();
+                var win = (pane as ChatWindowToolWindow).Content as ChatWindowControl;
+                var vm = this.GetViewModel("chat", user, this.Me) as ChatViewModel;
+                win.ViewModel = vm;
+            }
+            else
+            {
+                ((IVsWindowFrame)Chats[user.Name].Frame).Show();
+            }
+        }
+
+        /// <summary>
+        /// Opens a chat window.
+        /// </summary>
+        /// <param name="username">The username.</param>
+        public void OpenChatWindow(string username)
+        {
+            var service = this.CommunicationRelay.Services["users"] as UsersService;
+            var user = service.GetCollaborators().FirstOrDefault(c => c.UserName == username);
+
+            if (user != null)
+            {
+                this.InvokeOnUI(() => this.OpenChatWindow(user));
+            }
         }
 
         /// <summary>

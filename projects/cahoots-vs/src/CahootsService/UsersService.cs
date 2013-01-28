@@ -80,6 +80,15 @@ namespace Cahoots.Services
         }
 
         /// <summary>
+        /// Gets the collaborators.
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<Collaborator> GetCollaborators()
+        {
+            return this.ViewModel.Users.ToArray();
+        }
+
+        /// <summary>
         /// Updates the user status.
         /// </summary>
         /// <param name="message">The message.</param>

@@ -6,8 +6,7 @@ namespace Cahoots
 {
     using System.Windows;
     using System.Windows.Controls;
-    using Cahoots.Services.Models;
-using Cahoots.Services.ViewModels;
+    using Cahoots.Services.ViewModels;
 
     public delegate void Send(string to, string message);
 
@@ -60,7 +59,7 @@ using Cahoots.Services.ViewModels;
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             this.ViewModel.SendMessage(txtMessage.Text);
-            txtMessage.Text = "";
+            txtMessage.Clear();
             txtMessage.Focus();
         }
 

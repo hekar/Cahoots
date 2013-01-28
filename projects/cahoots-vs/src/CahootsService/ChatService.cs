@@ -9,15 +9,19 @@ namespace Cahoots.Services
     using Cahoots.Services.Models;
     using Cahoots.Services.ViewModels;
     using Cahoots.Services.MessageModels.Chat;
+using Cahoots.Services.Contracts;
+    using System.Threading;
+    using System.ComponentModel;
 
     public class ChatService : AsyncService, IAsyncService
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ChatService" /> class.
         /// </summary>
-        public ChatService() : base("chat")
+        public ChatService(IWindowService windowService) : base("chat")
         {
             this.ViewModels = new Dictionary<string, ChatViewModel>();
+            this.WindowService = windowService;
         }
 
         /// <summary>
@@ -27,6 +31,14 @@ namespace Cahoots.Services
         /// The view models.
         /// </value>
         private Dictionary<string, ChatViewModel> ViewModels { get; set; }
+
+        /// <summary>
+        /// Gets or sets the window service.
+        /// </summary>
+        /// <value>
+        /// The window service.
+        /// </value>
+        private IWindowService WindowService { get; set; }
 
         /// <summary>
         /// Processes the JSON message.
@@ -50,9 +62,21 @@ namespace Cahoots.Services
         /// <param name="model">The model.</param>
         private void ReceiveMessage(ReceiveMessage model)
         {
-            if (this.ViewModels.ContainsKey(model.From))
+            if (!this.ViewModels.ContainsKey(model.From))
             {
+                var bg = new BackgroundWorker();
+                bg.DoWork += (s, e) => this.WindowService.OpenChatWindow(model.From);
+                bg.RunWorkerAsync();
+            }
+
+            if (!this.ViewModels.ContainsKey(model.From))
+            {
+                while (!this.ViewModels.ContainsKey(model.From))
+                {
+                };
+
                 var vm = this.ViewModels[model.From];
+
                 vm.Messages.Add(
                     new ChatMessageModel(
                         vm.Chatee.Name,
