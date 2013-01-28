@@ -32,7 +32,7 @@ public class ShareDocumentDialog extends Window {
 	public ShareDocumentDialog(final Shell parentShell) {
 		super(parentShell);
 
-		Injector injector = Activator.getInjector();
+		final Injector injector = Activator.getInjector();
 		shareDocumentManager = injector.getInstance(ShareDocumentManager.class);
 		textEditorTools = injector.getInstance(TextEditorTools.class);
 	}
@@ -72,9 +72,9 @@ public class ShareDocumentDialog extends Window {
 			public void widgetSelected(final SelectionEvent se) {
 				try {
 					// TODO: Share documents with collaborators
-					ITextEditor textEditor = textEditorTools.getTextEditor();
+					final ITextEditor textEditor = textEditorTools.getTextEditor();
 					shareDocumentManager.shareDocument(textEditor, collaborators);
-					ShareDocumentDialog.this.getShell().dispose();
+					close();
 				} catch (final Exception e) {
 					e.printStackTrace();
 				}
@@ -91,7 +91,7 @@ public class ShareDocumentDialog extends Window {
 		cancel.addSelectionListener(new SelectionListener() {
 			@Override
 			public void widgetSelected(final SelectionEvent arg0) {
-				ShareDocumentDialog.this.getShell().dispose();
+				close();
 			}
 
 			@Override

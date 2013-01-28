@@ -25,6 +25,7 @@ import com.cahoots.eclipse.indigo.job.BackgroundJob;
 import com.cahoots.eclipse.indigo.job.BackgroundJobScheduler;
 import com.cahoots.eclipse.indigo.widget.MessageDialog;
 import com.cahoots.eclipse.swt.SwtButtonUtils;
+import com.cahoots.eclipse.swt.SwtDisplayUtils;
 import com.cahoots.eclipse.swt.SwtKeyUtils;
 import com.google.inject.Injector;
 
@@ -58,9 +59,10 @@ public class ConnectDialog extends Window {
 		shell.setText("Connect to Cahoots");
 		shell.setSize(420, 160);
 		shell.setLayout(new MigLayout("fill"));
-		
+
 		final Composite content = parent;
-		content.setLayout(new MigLayout("fill", "[growprio 0][growprio 100, fill]"));
+		content.setLayout(new MigLayout("fill",
+				"[growprio 0][growprio 100, fill]"));
 		content.setLayoutData("grow");
 
 		// Create the controls
@@ -128,6 +130,7 @@ public class ConnectDialog extends Window {
 		cancel.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(final SelectionEvent e) {
+				setReturnCode(SWT.CANCEL);
 				close();
 			}
 		});
@@ -135,39 +138,42 @@ public class ConnectDialog extends Window {
 		connect.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(final SelectionEvent e) {
+				
+				final String username = usernameEdit.getText();
+				final String password = passwordEdit.getText();
+				final String server = servers.getText();
+				
 				final BackgroundJob backgroundJob = new BackgroundJob() {
 					@Override
 					public IStatus run(final IProgressMonitor monitor) {
-						Display.getDefault().asyncExec(new Runnable() {
+						socket.connect(username, password, server);
+						
+						final Runnable runnable = new Runnable() {
 							@Override
 							public void run() {
-								monitor.beginTask("Connecting to Cahoots", 100);
-								final String username = usernameEdit.getText();
-								final String password = passwordEdit.getText();
-								final String server = servers.getText();
 								try {
-									monitor.worked(20);
-									socket.connect(username, password, server);
+									monitor.beginTask("Connecting...", 100);
 									monitor.worked(100);
+									setReturnCode(SWT.OK);
 									close();
 								} catch (final Exception e1) {
 									e1.printStackTrace();
-									monitor.setCanceled(true);
 									final String message = String.format(
 											"Error connecting to server %s@%s",
 											username, server);
-									messageDialog.info(null,
+									messageDialog.info(getShell(),
 											"Connection Error", message);
 								}
-
 							}
-						});
+						};
+
+						SwtDisplayUtils.async(runnable);
 
 						return Status.OK_STATUS;
 					}
 				};
 
-				backgroundJobScheduler.schedule("Connect to Cahoots",
+				backgroundJobScheduler.schedule("Establish Connection to Cahoots",
 						backgroundJob);
 			}
 		});

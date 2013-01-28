@@ -45,7 +45,7 @@ public class UserListViewContentProvider extends ViewContentProvider {
 
 		cahootsServer.addDisconnectEventListener(new DisconnectEventListener() {
 			@Override
-			public void userDisconnected(final DisconnectEvent event) {
+			public void onEvent(final DisconnectEvent msg) {
 				clear();
 				display.asyncExec(new Runnable() {
 					@Override

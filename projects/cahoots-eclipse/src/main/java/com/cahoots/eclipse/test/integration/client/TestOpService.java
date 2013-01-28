@@ -55,7 +55,7 @@ public class TestOpService {
 		op.setDocumentId(document.getDocumentId());
 		op.setStart(0);
 		op.setTickStamp(0L);
-		op.setContents("Testing insert 123");
+		op.setContent("Testing insert 123");
 
 		socket.sendAndWaitForResponse(op, OpInsertMessage.class,
 				OpInsertEventListener.class);
