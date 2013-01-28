@@ -6,7 +6,6 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.text.DateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -23,6 +22,8 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
+import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.format.ISODateTimeFormat;
 
 import com.cahoots.connection.CahootsConnection;
 import com.cahoots.connection.websocket.CahootsSocket;
@@ -50,14 +51,10 @@ public class ChatDialog extends Window {
 	private File logDir;
 
 	private static String lineSeparator = System.getProperty("line.separator");
-
-	private final DateFormat timeStampFormat = DateFormat.getDateTimeInstance(
-			DateFormat.MEDIUM, DateFormat.MEDIUM);
-	// Old format: DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mmZ");
+	private final DateTimeFormatter timeStampFormat = ISODateTimeFormat.dateTimeNoMillis();
 
 	public ChatDialog(final Shell parent, final List<String> collaborators) {
 		super(parent);
-
 		if (collaborators.size() == 0) {
 			throw new IllegalArgumentException(
 					"Must have at least one collaborator");
@@ -82,19 +79,6 @@ public class ChatDialog extends Window {
 
 		final Composite content = parent;
 		
-		StringBuilder sb = new StringBuilder();
-
-		sb
-			.append(System.getProperty( "user.home" ))
-			.append(File.separator)
-			.append(".cahoots")
-			.append(File.separator)
-			.append("chat")
-			.append(File.separator);
-		
-		logDir = new File(sb.toString());
-		logDir.mkdir();
-
 		content.setLayout(new MigLayout("fill", "", "[growprio 100][growprio 0]"));
 
 		log = new StyledText(content, SWT.BORDER | SWT.READ_ONLY);
@@ -134,10 +118,30 @@ public class ChatDialog extends Window {
 		});
 
 		log.append(readLog(collaborator));
-		
+		log.setTopIndex(log.getLineCount() - 1);
 		return content;
 	}
 
+	private File getLogDir()
+	{
+		if(logDir == null)
+		{
+			StringBuilder sb = new StringBuilder();
+
+			sb
+				.append(System.getProperty( "user.home" ))
+				.append(File.separator)
+				.append(".cahoots")
+				.append(File.separator)
+				.append("chat")
+				.append(File.separator);
+			
+			logDir = new File(sb.toString());
+			logDir.mkdir();
+		}
+		return logDir;
+	}
+	
 	private void sendMessage() {
 		final String msg = message.getText().trim();
 		if (!msg.isEmpty()) {
@@ -146,8 +150,8 @@ public class ChatDialog extends Window {
 		}
 
 		message.setText("");
-
-		final String time = timeStampFormat.format(new Date());
+		
+		final String time = timeStampFormat.print(new Date().getTime());
 		// TODO: Handle multiple timezones, send everything UTC and convert to
 		// local timezone
 		String text = time + " " + connection.getUsername() + ": " + msg
@@ -161,7 +165,7 @@ public class ChatDialog extends Window {
 	private String readLog(String from)
 	{
 		StringBuilder msg = new StringBuilder();
-		File logFile = new File( logDir, collaborator);
+		File logFile = new File( getLogDir(), collaborator);
 		try {
 			FileReader fr = new FileReader(logFile);
 			BufferedReader br = new BufferedReader(fr);
@@ -178,7 +182,7 @@ public class ChatDialog extends Window {
 	
 	private void writeToLog(String from, String line)
 	{
-		File logFile = new File( logDir, from);
+		File logFile = new File( getLogDir(), from);
 		if(!logFile.exists())
 		{
 			try {
@@ -208,7 +212,7 @@ public class ChatDialog extends Window {
 	}
 	
 	public void receiveMessage(final ChatReceiveMessage msg) {
-		final String time = timeStampFormat.format(new Date());
+		final String time = timeStampFormat.print(new Date().getTime());
 		SwtDisplayUtils.async(new Runnable() {
 			@Override
 			public void run() {
