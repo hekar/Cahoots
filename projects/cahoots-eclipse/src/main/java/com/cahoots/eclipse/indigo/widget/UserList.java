@@ -22,7 +22,7 @@ public class UserList extends Composite {
 	private final UserListViewContentProvider source;
 	private final SourceContentChangedListener changedListener = new SourceContentChangedListener() {
 		@Override
-		public void onEvent(Object msg) {
+		public void onEvent(final Object msg) {
 			viewer.refresh();
 		}
 	};
@@ -33,7 +33,7 @@ public class UserList extends Composite {
 	public UserList(final Composite parent, final int style) {
 		super(parent, style);
 
-		Injector injector = Activator.getInjector();
+		final Injector injector = Activator.getInjector();
 		source = injector.getInstance(UserListViewContentProvider.class);
 
 		setLayout(new MigLayout("fill"));
@@ -48,8 +48,8 @@ public class UserList extends Composite {
 		
 		viewer.addSelectionChangedListener(new ISelectionChangedListener() {
 			@Override
-			public void selectionChanged(SelectionChangedEvent event) {
-				ISelection selection = viewer.getSelection();
+			public void selectionChanged(final SelectionChangedEvent event) {
+				final ISelection selection = viewer.getSelection();
 				if (selection != null) {
 					
 				}

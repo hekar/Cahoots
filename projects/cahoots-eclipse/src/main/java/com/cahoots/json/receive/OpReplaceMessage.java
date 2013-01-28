@@ -4,7 +4,7 @@ import com.cahoots.eclipse.op.OpTransformation;
 
 public class OpReplaceMessage extends OpTransformation {
 	private final String service = "op";
-	private final String type = "insert";
+	private final String type = "replace";
 
 	private String user;
 	private String opId;
