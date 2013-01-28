@@ -64,12 +64,10 @@ using Cahoots.Services.Contracts;
         {
             if (!this.ViewModels.ContainsKey(model.From))
             {
-                var bg = new BackgroundWorker();
-                bg.DoWork += (s, e) => this.WindowService.OpenChatWindow(model.From);
-                bg.RunWorkerAsync();
+                this.WindowService.OpenChatWindow(model.From);
             }
 
-            if (!this.ViewModels.ContainsKey(model.From))
+            if (this.ViewModels.ContainsKey(model.From))
             {
                 while (!this.ViewModels.ContainsKey(model.From))
                 {

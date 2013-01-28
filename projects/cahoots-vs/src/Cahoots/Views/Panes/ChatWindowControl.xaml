@@ -30,8 +30,8 @@
                         </Grid.ColumnDefinitions>
                         <TextBlock Text="{Binding TimeStamp, StringFormat={}{0:t}}" Grid.Column="0"></TextBlock>
                         <TextBlock Text=" " Grid.Column="1"></TextBlock>
-                        <TextBlock Text="{Binding Name}" Grid.Column="2"></TextBlock>
-                        <TextBlock Text=": " Grid.Column="3"></TextBlock>
+                        <TextBlock Text="{Binding Name}" FontWeight="Bold" Grid.Column="2"></TextBlock>
+                        <TextBlock Text=": " FontWeight="Bold" Grid.Column="3"></TextBlock>
                         <TextBlock Text="{Binding Message}" Grid.Column="4"></TextBlock>
                     </Grid>
                 </DataTemplate>
