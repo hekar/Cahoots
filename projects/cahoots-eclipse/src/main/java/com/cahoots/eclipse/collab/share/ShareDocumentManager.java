@@ -12,9 +12,7 @@ import javax.inject.Inject;
 import org.eclipse.jface.text.DocumentEvent;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IDocumentListener;
-import org.eclipse.jface.text.TextSelection;
 import org.eclipse.ui.texteditor.IDocumentProvider;
-import org.eclipse.ui.texteditor.IElementStateListener;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 import com.cahoots.connection.CahootsConnection;
@@ -131,7 +129,7 @@ public class ShareDocumentManager {
 		final SendOpInsertMessage insert = new SendOpInsertMessage();
 		insert.setOpId(opId);
 		insert.setUser(username);
-		insert.setContents(content);
+		insert.setContent(content);
 		insert.setStart(start);
 		insert.setDocumentId(documentId);
 		insert.setTickStamp(nextTickStamp);

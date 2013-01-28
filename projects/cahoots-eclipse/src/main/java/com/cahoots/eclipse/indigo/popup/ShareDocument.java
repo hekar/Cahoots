@@ -3,6 +3,7 @@ package com.cahoots.eclipse.indigo.popup;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.text.TextSelection;
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorActionDelegate;
 import org.eclipse.ui.IEditorPart;
@@ -49,9 +50,15 @@ public class ShareDocument implements IObjectActionDelegate,
 	public void run(final IAction action) {
 		if (!cahootsSocket.isConnected()) {
 			final ConnectDialog connectDialog = new ConnectDialog(shell);
+			connectDialog.setBlockOnOpen(true);
 			connectDialog.open();
+			
+			if (connectDialog.getReturnCode() == SWT.CANCEL) {
+				return;
+			}
 		}
 
+		// TODO: Cahoots connection dialog, should double check if connected?
 		final ShareDocumentDialog dialog = new ShareDocumentDialog(shell);
 		dialog.open();
 	}

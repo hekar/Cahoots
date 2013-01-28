@@ -58,9 +58,12 @@ namespace Cahoots
         /// </param>
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            this.ViewModel.SendMessage(txtMessage.Text);
-            txtMessage.Clear();
-            txtMessage.Focus();
+            if (this.viewModel != null)
+            {
+                this.ViewModel.SendMessage(txtMessage.Text);
+                txtMessage.Clear();
+                txtMessage.Focus();
+            }
         }
 
         /// <summary>

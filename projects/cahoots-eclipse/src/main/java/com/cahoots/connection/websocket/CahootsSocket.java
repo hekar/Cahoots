@@ -16,11 +16,6 @@ import javax.inject.Inject;
 import org.apache.commons.httpclient.HttpMethodBase;
 import org.apache.commons.httpclient.NameValuePair;
 import org.eclipse.jetty.websocket.WebSocketClientFactory;
-import org.eclipse.jface.text.BadLocationException;
-import org.eclipse.jface.text.IDocument;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.texteditor.IDocumentProvider;
-import org.eclipse.ui.texteditor.ITextEditor;
 
 import com.cahoots.connection.CahootsConnection;
 import com.cahoots.connection.ConnectionDetails;
@@ -83,6 +78,8 @@ public class CahootsSocket {
 	@SuppressWarnings({ "serial", "rawtypes" })
 	private final Map<Class<? extends GenericEventListener>, List> listeners = new HashMap<Class<? extends GenericEventListener>, List>() {
 		{
+			put(DisconnectEventListener.class,
+					new ArrayList<DisconnectEventListener>());
 			put(ShareDocumentEventListener.class,
 					new ArrayList<ShareDocumentEventListener>());
 			put(UnShareDocumentEventListener.class,
@@ -99,7 +96,6 @@ public class CahootsSocket {
 					new ArrayList<ChatReceivedEventListener>());
 		}
 	};
-	private List<DisconnectEventListener> disconnectListeners = new ArrayList<DisconnectEventListener>();
 	private List<ConnectEventListener> connectListeners = new ArrayList<ConnectEventListener>();
 
 	private ListenableFuture<WebSocket> connection;
@@ -118,7 +114,7 @@ public class CahootsSocket {
 
 			// client = factory.newWebSocketClient();
 			// client.setMaxIdleTime(TIMEOUT);
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			e.printStackTrace();
 			throw new RuntimeException(e);
 		}
@@ -153,73 +149,46 @@ public class CahootsSocket {
 		data.add(new NameValuePair("password", password));
 
 		final CahootsHttpClient client = new CahootsHttpClient();
-		client.post(server, "/app/login", data,
-				new CahootsHttpResponseReceivedListener() {
-					@Override
-					public void onReceive(final int statusCode,
-							final HttpMethodBase method) {
-						try {
-							if (statusCode == 200) {
-								final String authToken = method
-										.getResponseBodyAsString();
-
-								cahootsConnection
-										.updateConnectionDetails(new ConnectionDetails(
-												username, password, authToken,
-												server));
-
-								connect(server, authToken);
-							} else {
-								throw new RuntimeException(
-										"Error connecting to server: "
-												+ method.getResponseBodyAsString());
-							}
-						} catch (final IOException e) {
-							throw new RuntimeException(
-									"Error connecting to server", e);
-						}
-					}
-				});
-
-		addDefaultNotifications(this);
-	}
-
-	/**
-	 * TODO: Move to another class
-	 * 
-	 * @param cahootsSocket
-	 */
-	private void addDefaultNotifications(CahootsSocket cahootsSocket) {
-		cahootsSocket.addOpInsertEventListener(new OpInsertEventListener() {
+		final CahootsHttpResponseReceivedListener received = new CahootsHttpResponseReceivedListener() {
 			@Override
-			public void onEvent(final OpInsertMessage msg) {
-				Display.getDefault().asyncExec(new Runnable() {
-					@Override
-					public void run() {
-						try {
-							int start = msg.getStart();
-							String contents = msg.getContents();
-							Long tickStamp = msg.getTickStamp();
-							
-							ITextEditor textEditor = editorTools.getTextEditor();
-							IDocumentProvider documentProvider = textEditor.getDocumentProvider();
-							IDocument document = (IDocument) documentProvider.getDocument(textEditor.getEditorInput());
-							document.replace(start, 0, contents);
-						} catch (BadLocationException e) {
-							e.printStackTrace();
-						}
+			public void onReceive(final int statusCode,
+					final HttpMethodBase method) {
+				try {
+					if (statusCode == 200) {
+						final String authToken = method
+								.getResponseBodyAsString();
+
+						cahootsConnection
+								.updateConnectionDetails(new ConnectionDetails(
+										username, password, authToken, server));
+
+						connect(server, authToken);
+					} else {
+						throw new RuntimeException(
+								"Error connecting to server: "
+										+ method.getResponseBodyAsString());
 					}
-				});
+				} catch (final IOException e) {
+					throw new RuntimeException("Error connecting to server", e);
+				}
 			}
-		});
+		};
+
+		client.post(server, "/app/login", data, received);
 	}
 
 	public void disconnect() {
 		if (connection != null) {
 			connection.cancel(true);
 
-			for (final DisconnectEventListener listener : disconnectListeners) {
-				listener.userDisconnected(new DisconnectEvent());
+			for (final Object listener : listeners
+					.get(DisconnectEventListener.class)) {
+				if (listener instanceof DisconnectEventListener) {
+					final DisconnectEventListener disconnectEventListener = (DisconnectEventListener) listener;
+					disconnectEventListener.onEvent(new DisconnectEvent());
+				} else {
+					throw new IllegalStateException("Non DisconnectEventListener in listeners");
+				}
 			}
 		}
 		connection = null;
@@ -228,13 +197,16 @@ public class CahootsSocket {
 	public void connect(final String server, final String authToken) {
 		try {
 			disconnect();
-			AsyncHttpClientConfig cf = new AsyncHttpClientConfig.Builder().build();
-			AsyncHttpClient c = new AsyncHttpClient(cf);
-		
-			String uriString = String.format("ws://%s/app/message?auth_token=%s", server, authToken);
-			CahootsSocketClient cahootsSocketClient = new CahootsSocketClient();
-			connection = c.prepareGet(uriString).execute(new WebSocketUpgradeHandler.Builder()
-				.addWebSocketListener(cahootsSocketClient).build());
+			final AsyncHttpClientConfig cf = new AsyncHttpClientConfig.Builder()
+					.build();
+			final AsyncHttpClient c = new AsyncHttpClient(cf);
+
+			final String uriString = String.format(
+					"ws://%s/app/message?auth_token=%s", server, authToken);
+			final CahootsSocketClient cahootsSocketClient = new CahootsSocketClient();
+			connection = c.prepareGet(uriString).execute(
+					new WebSocketUpgradeHandler.Builder().addWebSocketListener(
+							cahootsSocketClient).build());
 
 			for (final ConnectEventListener listener : connectListeners) {
 				listener.connected(new ConnectEvent());
@@ -259,9 +231,9 @@ public class CahootsSocket {
 			try {
 				connection.get().sendTextMessage(message);
 				sent.incrementAndGet();
-			} catch (InterruptedException e) {
+			} catch (final InterruptedException e) {
 				e.printStackTrace();
-			} catch (ExecutionException e) {
+			} catch (final ExecutionException e) {
 				e.printStackTrace();
 			}
 		}
@@ -319,7 +291,7 @@ public class CahootsSocket {
 
 	public void addDisconnectEventListener(
 			final DisconnectEventListener listener) {
-		disconnectListeners.add(listener);
+		listeners.get(DisconnectEventListener.class).add(listener);
 	}
 
 	public void addConnectEventListener(final ConnectEventListener listener) {
@@ -328,6 +300,14 @@ public class CahootsSocket {
 
 	public void addOpInsertEventListener(final OpInsertEventListener listener) {
 		listeners.get(OpInsertEventListener.class).add(listener);
+	}
+
+	public void addOpReplaceEventListener(final OpReplaceEventListener listener) {
+		listeners.get(OpReplaceEventListener.class).add(listener);
+	}
+
+	public void addOpDeleteEventListener(final OpDeleteEventListener listener) {
+		listeners.get(OpDeleteEventListener.class).add(listener);
 	}
 
 	public void addShareDocumentEventListener(
@@ -355,7 +335,7 @@ public class CahootsSocket {
 		}
 
 		@Override
-		public void onMessage(String message) {
+		public void onMessage(final String message) {
 			received.incrementAndGet();
 			final Gson gson = new Gson();
 			final MessageBase base = gson.fromJson(message, MessageBase.class);
@@ -365,9 +345,9 @@ public class CahootsSocket {
 
 			if ("users".equals(base.getService())) {
 				if ("all".equals(base.getType())) {
-					UserListMessage msg = gson.fromJson(message,
+					final UserListMessage msg = gson.fromJson(message,
 							UserListMessage.class);
-					for (Collaborator user : msg.getUsers()) {
+					for (final Collaborator user : msg.getUsers()) {
 						fireEvents("all", UserChangeEventListener.class,
 								UserChangeMessage.class, base,
 								gson.toJson(new UserChangeMessage(user)), gson);
@@ -395,21 +375,21 @@ public class CahootsSocket {
 		}
 
 		@Override
-		public void onOpen(WebSocket websocket) {
+		public void onOpen(final WebSocket websocket) {
 			members.add(this);
 		}
 
 		@Override
-		public void onClose(WebSocket websocket) {
+		public void onClose(final WebSocket websocket) {
 			members.remove(this);
 		}
 
 		@Override
-		public void onError(Throwable t) {
+		public void onError(final Throwable t) {
 		}
 
 		@Override
-		public void onFragment(String arg0, boolean arg1) {
+		public void onFragment(final String arg0, final boolean arg1) {
 		}
 	}
 }

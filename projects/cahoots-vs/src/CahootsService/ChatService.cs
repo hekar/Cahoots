@@ -1,17 +1,18 @@
-﻿///
-///
+﻿/// Service for sending and receiving chat messages
+/// Codeora 2013
 ///
 
 namespace Cahoots.Services
 {
     using System;
     using System.Collections.Generic;
+
+    using Cahoots.Ext;
+    using Cahoots.Services.Contracts;
+    using Cahoots.Services.MessageModels.Chat;
     using Cahoots.Services.Models;
     using Cahoots.Services.ViewModels;
-    using Cahoots.Services.MessageModels.Chat;
-using Cahoots.Services.Contracts;
-    using System.Threading;
-    using System.ComponentModel;
+    using Cahoots.Services.MessageModels;
 
     public class ChatService : AsyncService, IAsyncService
     {
@@ -103,7 +104,7 @@ using Cahoots.Services.Contracts;
                 {
                     Chatee = user,
                     Me = parameters[1] as string,
-                    RelayMessage = this.SendMessage
+                    Send = this.Send
                 };
 
                 this.ViewModels.Add(user.UserName, vm);
@@ -112,6 +113,16 @@ using Cahoots.Services.Contracts;
             }
 
             return null;
+        }
+
+        /// <summary>
+        /// Sends the specified message.
+        /// </summary>
+        /// <param name="message">The message.</param>
+        public void Send(SendChatMessage message)
+        {
+            var str = JsonHelper.Serialize(message);
+            this.SendMessage(str);
         }
 
         /// <summary>

@@ -1,5 +1,7 @@
 package com.cahoots.json;
 
+import com.cahoots.chat.CollaboratorStatus;
+
 public class Collaborator {
 
 	private String name;
@@ -14,7 +16,7 @@ public class Collaborator {
 		this.name = name;
 	}
 
-	public Collaborator(String name, String role, String status, String username) {
+	public Collaborator(final String name, final String role, final String status, final String username) {
 		this.name = name;
 		this.role = role;
 		this.status = status;
@@ -25,7 +27,7 @@ public class Collaborator {
 		return name;
 	}
 
-	public void setName(String name) {
+	public void setName(final String name) {
 		this.name = name;
 	}
 
@@ -33,7 +35,7 @@ public class Collaborator {
 		return role;
 	}
 
-	public void setRole(String role) {
+	public void setRole(final String role) {
 		this.role = role;
 	}
 
@@ -41,7 +43,7 @@ public class Collaborator {
 		return status;
 	}
 
-	public void setStatus(String status) {
+	public void setStatus(final String status) {
 		this.status = status;
 	}
 
@@ -49,8 +51,12 @@ public class Collaborator {
 		return username;
 	}
 
-	public void setUsername(String username) {
+	public void setUsername(final String username) {
 		this.username = username;
+	}
+	
+	public CollaboratorStatus getCollaboratorStatus() {
+		return CollaboratorStatus.fromString(status);
 	}
 
 	@Override

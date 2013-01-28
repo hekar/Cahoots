@@ -38,7 +38,7 @@ class OpService(
       case "insert" =>
         val user = (json \ "user").as[String]
         val opId = (json \ "opId").as[String]
-        val content = (json \ "contents").as[String]
+        val content = (json \ "content").as[String]
         val start = (json \ "start").as[Int]
         val tickStamp = (json \ "tickStamp").as[Long]
 
@@ -46,7 +46,7 @@ class OpService(
       case "replace" =>
         val user = (json \ "user").as[String]
         val opId = (json \ "opId").as[String]
-        val content = (json \ "contents").as[String]
+        val content = (json \ "content").as[String]
         val start = (json \ "start").as[Int]
         val end = (json \ "end").as[Int]
         val tickStamp = (json \ "tickStamp").as[Long]
@@ -151,7 +151,7 @@ class OpService(
           "user" -> JsString(user),
           "opId" -> JsString(opId),
           "documentId" -> JsString(opSession.documentId),
-          "contents" -> JsString(content),
+          "content" -> JsString(content),
           "start" -> JsNumber(start),
           "tickStamp" -> JsNumber(tickStamp)
         )))
@@ -169,7 +169,7 @@ class OpService(
           "user" -> JsString(user),
           "opId" -> JsString(opId),
           "documentId" -> JsString(opSession.documentId),
-          "contents" -> JsString(content),
+          "content" -> JsString(content),
           "start" -> JsNumber(start),
           "end" -> JsNumber(end),
           "tickStamp" -> JsNumber(tickStamp)

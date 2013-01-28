@@ -17,7 +17,7 @@ public class OpInsertMessage extends OpTransformation {
 	/**
 	 * The contents of the message
 	 */
-	private String contents;
+	private String content;
 
 	/**
 	 * Document id
@@ -40,12 +40,12 @@ public class OpInsertMessage extends OpTransformation {
 		this.start = start;
 	}
 
-	public String getContents() {
-		return contents;
+	public String getContent() {
+		return content;
 	}
 
-	public void setContents(final String contents) {
-		this.contents = contents;
+	public void setContent(final String contents) {
+		this.content = contents;
 	}
 
 	public String getDocumentId() {

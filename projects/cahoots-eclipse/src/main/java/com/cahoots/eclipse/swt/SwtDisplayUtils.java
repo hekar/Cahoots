@@ -10,4 +10,8 @@ public class SwtDisplayUtils {
 	public static void async(final Runnable runnable) {
 		Display.getDefault().asyncExec(runnable);
 	}
+	
+	public static void sync(final Runnable runnable) {
+		Display.getDefault().syncExec(runnable);
+	}
 }

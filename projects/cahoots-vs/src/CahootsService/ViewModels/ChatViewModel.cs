@@ -5,6 +5,7 @@ using System.Text;
 using Cahoots.Services.Models;
 using Cahoots.Services.MessageModels;
 using Cahoots.Ext.View;
+using Cahoots.Ext;
 
 namespace Cahoots.Services.ViewModels
 {
@@ -43,15 +44,23 @@ namespace Cahoots.Services.ViewModels
         public ViewModelCollection<ChatMessageModel> Messages { get; set; }
 
         /// <summary>
+        /// Gets or sets the send.
+        /// </summary>
+        /// <value>
+        /// The send.
+        /// </value>
+        public Action<SendChatMessage> Send { get; set; }
+
+        /// <summary>
         /// Sends the message.
         /// </summary>
         /// <param name="message">The message.</param>
         public void SendMessage(string message)
         {
             this.Messages.Add(
-                new ChatMessageModel(this.Me, message, DateTime.Now));
+                new ChatMessageModel("You", message, DateTime.Now));
 
-            var q = new SendChatMessage()
+            var model = new SendChatMessage()
             {
                 MessageType = "send",
                 Service = "chat",
@@ -60,8 +69,10 @@ namespace Cahoots.Services.ViewModels
                 From = Me
             };
 
-            var str = JsonHelper.Serialize(q);
-            this.RelayMessage(str);
+            if (this.Send != null)
+            {
+                this.Send(model);
+            }
         }
     }
 }

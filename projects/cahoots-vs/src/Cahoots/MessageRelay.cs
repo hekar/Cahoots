@@ -13,6 +13,7 @@ namespace Cahoots
     using WebSocketSharp;
     using Cahoots.Services;
     using Cahoots.Services.MessageModels;
+    using Cahoots.Ext;
 
     /// <summary>
     /// Class for relaying JSON messages to other services.

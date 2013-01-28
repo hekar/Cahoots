@@ -6,6 +6,7 @@ using System.Collections.ObjectModel;
 using Cahoots.Services.Models;
 using Cahoots.Services.MessageModels;
 using Cahoots.Services.ViewModels;
+using Cahoots.Ext;
 
 namespace Cahoots.Services
 {
