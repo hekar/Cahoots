@@ -5,9 +5,12 @@ import java.util.List;
 
 import net.miginfocom.swt.MigLayout;
 
+import org.eclipse.jface.viewers.DoubleClickEvent;
+import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.SWT;
@@ -18,6 +21,7 @@ import com.cahoots.json.Collaborator;
 import com.google.inject.Injector;
 
 public class UserList extends Composite {
+
 	private final TableViewer viewer;
 	private final UserListViewContentProvider source;
 	private final SourceContentChangedListener changedListener = new SourceContentChangedListener() {
@@ -45,31 +49,35 @@ public class UserList extends Composite {
 		viewer.setInput(this);
 
 		source.addContentChangedListener(changedListener);
-		
-		viewer.addSelectionChangedListener(new ISelectionChangedListener() {
-			@Override
-			public void selectionChanged(final SelectionChangedEvent event) {
-				final ISelection selection = viewer.getSelection();
-				if (selection != null) {
-					
-				}
-			}
-		});
 
 		viewer.getControl().setLayoutData("grow");
 	}
-	
+
 	@Override
 	public void dispose() {
 		source.removeContentChangedListener(changedListener);
 		super.dispose();
 	}
 
-	/**
-	 * TODO: Actually implement
-	 * @return 
-	 */
+	@SuppressWarnings("unchecked")
 	public List<Collaborator> getSelectedUsers() {
-		return Arrays.asList(new Collaborator("Test User 1", "user", "online", "test_1"));
+		if (viewer.getSelection() instanceof StructuredSelection) {
+			final StructuredSelection structuredSelection = (StructuredSelection) viewer
+					.getSelection();
+			return structuredSelection.toList();
+		} else {
+			throw new IllegalStateException(
+					"viewer selection is not StructuredSelection");
+		}
 	}
+
+	public void addSelectionChangedListener(
+			final ISelectionChangedListener listener) {
+		viewer.addSelectionChangedListener(listener);
+	}
+
+	public void addDoubleClickListener(final IDoubleClickListener listener) {
+		viewer.addDoubleClickListener(listener);
+	}
+
 }

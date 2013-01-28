@@ -1,6 +1,13 @@
 package com.cahoots.eclipse.indigo.widget;
 
+import static ch.lambdaj.Lambda.filter;
+import static ch.lambdaj.Lambda.having;
+import static ch.lambdaj.Lambda.on;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.not;
+
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -8,11 +15,12 @@ import java.util.concurrent.ConcurrentHashMap;
 import javax.inject.Inject;
 
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.internal.dialogs.ViewContentProvider;
 
+import com.cahoots.connection.CahootsConnection;
 import com.cahoots.connection.websocket.CahootsSocket;
 import com.cahoots.eclipse.Activator;
+import com.cahoots.eclipse.swt.SwtDisplayUtils;
 import com.cahoots.events.DisconnectEvent;
 import com.cahoots.events.DisconnectEventListener;
 import com.cahoots.events.UserChangeEventListener;
@@ -24,17 +32,19 @@ public class UserListViewContentProvider extends ViewContentProvider {
 
 	private Map<String, Collaborator> elements = new ConcurrentHashMap<String, Collaborator>();
 	private List<SourceContentChangedListener> listeners = new ArrayList<SourceContentChangedListener>();
+	private final CahootsConnection cahootsConnection;
 
 	@Inject
 	public UserListViewContentProvider(final Activator activator,
-			final CahootsSocket cahootsServer) {
-		final Display display = activator.getWorkbench().getDisplay();
+			final CahootsSocket cahootsServer,
+			final CahootsConnection cahootsConnection) {
+		this.cahootsConnection = cahootsConnection;
 
 		cahootsServer.addUserLoginEventListener(new UserChangeEventListener() {
 			@Override
 			public void onEvent(final UserChangeMessage msg) {
 				add(msg.getUser());
-				display.asyncExec(new Runnable() {
+				SwtDisplayUtils.sync(new Runnable() {
 					@Override
 					public void run() {
 						fireContentChangedListeners();
@@ -47,7 +57,7 @@ public class UserListViewContentProvider extends ViewContentProvider {
 			@Override
 			public void onEvent(final DisconnectEvent msg) {
 				clear();
-				display.asyncExec(new Runnable() {
+				SwtDisplayUtils.sync(new Runnable() {
 					@Override
 					public void run() {
 						fireContentChangedListeners();
@@ -65,7 +75,11 @@ public class UserListViewContentProvider extends ViewContentProvider {
 	}
 
 	public Object[] getElements(final Object parent) {
-		return elements.values().toArray();
+		final Collection<Collaborator> elements = this.elements.values();
+		
+		// Do not return the currently logged in username
+		return filter(
+				having(on(Collaborator.class).getUsername(), not(equalTo(cahootsConnection.getUsername()))), elements).toArray();
 	}
 
 	public void add(final Collaborator element) {
