@@ -11,7 +11,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace Cahoots.Views.Custom
+namespace Cahoots
 {
     /// <summary>
     /// Interaction logic for PreferencesWindow.xaml

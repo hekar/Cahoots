@@ -6,6 +6,7 @@ namespace Cahoots
 {
     using System.Windows;
     using System.Windows.Controls;
+    using System.Windows.Input;
     using Cahoots.Services.ViewModels;
 
     public delegate void Send(string to, string message);
@@ -74,9 +75,29 @@ namespace Cahoots
         ///   The <see cref="TextChangedEventArgs" />
         ///   instance containing the event data.
         /// </param>
-        private void txtMessage_TextChanged(object sender, TextChangedEventArgs e)
+        private void txtMessage_TextChanged(
+                object sender,
+                TextChangedEventArgs e)
         {
             btnSend.IsEnabled = txtMessage.Text.Length != 0;
+        }
+
+        /// <summary>
+        /// Handles the KeyDown event of the txtMessage control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">
+        ///   The <see cref="System.Windows.Input.KeyEventArgs" />
+        ///   instance containing the event data.
+        /// </param>
+        private void txtMessage_KeyDown(
+                object sender,
+                KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter && txtMessage.Text.Length > 0)
+            {
+                this.Button_Click(sender, new RoutedEventArgs());
+            }
         }
     }
 }

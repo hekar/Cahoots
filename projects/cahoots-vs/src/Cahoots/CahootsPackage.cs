@@ -6,6 +6,7 @@ namespace Cahoots
 {
     using System;
     using System.Collections.Generic;
+    using System.Collections.ObjectModel;
     using System.ComponentModel;
     using System.ComponentModel.Design;
     using System.Linq;
@@ -20,7 +21,6 @@ namespace Cahoots
     using Microsoft.VisualStudio.Shell;
     using Microsoft.VisualStudio.Shell.Interop;
     using WebSocketSharp;
-    using System.Collections.ObjectModel;
 
     /// <summary>
     /// Cahoots VSPackage Extension class.
@@ -107,7 +107,7 @@ namespace Cahoots
         /// Me.
         /// </value>
         public string Me { get; set; }
-        
+
         /// <summary>
         /// Gets or sets the chats.
         /// </summary>
@@ -271,7 +271,7 @@ namespace Cahoots
                 else
                 {
                     // display error message.
-                    var  retry = MessageBox.Show(
+                    var retry = MessageBox.Show(
                             "An error occured authenticating with Cahoots:\r\n"
                             + this.AuthenticationService.ErrorMessage,
                             "Failed to authenticate with Cahoots.",
@@ -306,7 +306,7 @@ namespace Cahoots
             if (result == DialogResult.Yes)
             {
                 var bg = new BackgroundWorker();
-                bg.DoWork +=new DoWorkEventHandler(
+                bg.DoWork += new DoWorkEventHandler(
                     (s, ev) => this.AuthenticationService.Deauthenticate());
                 bg.RunWorkerAsync();
                 this.ConnectButton.Enabled = true;
@@ -317,7 +317,6 @@ namespace Cahoots
                     frame.CloseFrame((int)__FRAMECLOSE.FRAMECLOSE_NoSave);
                 }
 
-                this.Socket.Send(new byte[] { 0x1A });
                 this.Socket.Close();
                 this.Socket.Dispose();
                 this.Socket = null;
@@ -326,6 +325,21 @@ namespace Cahoots
         }
 
         #endregion
+
+        /// <summary>
+        /// Preferences the button execute handler.
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">
+        ///   The <see cref="EventArgs" /> instance containing the event data.
+        /// </param>
+        protected override void PreferenceButtonExecuteHandler(
+                object sender,
+                EventArgs e)
+        {
+            var window = new PreferencesWindow();
+            window.ShowDialog();
+        }
 
         /// <summary>
         /// Invokes an action on the UI thread.
@@ -356,15 +370,6 @@ namespace Cahoots
         }
 
         /// <summary>
-        /// Sends to socket.
-        /// </summary>
-        /// <param name="message">The message.</param>
-        public void SendToSocket(string message)
-        {
-            Socket.Send(message);
-        }
-
-        /// <summary>
         /// Opens a chat window.
         /// </summary>
         /// <param name="user">The user.</param>
@@ -376,11 +381,11 @@ namespace Cahoots
                 pane.Caption = "Chat — " + user.Name;
                 Chats.Add(user.Name, pane);
                 var frame = (IVsWindowFrame)pane.Frame;
-                frame.Show();
                 this.WindowFrames.Add(frame);
                 var win = (pane as ChatWindowToolWindow).Content as ChatWindowControl;
                 var vm = this.GetViewModel("chat", user, this.Me) as ChatViewModel;
                 win.ViewModel = vm;
+                frame.Show();
             }
             else
             {
@@ -414,13 +419,17 @@ namespace Cahoots
         {
             if (this.Socket != null)
             {
-                if (this.Socket.IsAlive)
+                if (this.Socket.ReadyState == WsState.OPEN)
                 {
-                    this.Socket.Send(new byte[] { 0x1A });
                     this.Socket.Close();
                 }
 
                 this.Socket.Dispose();
+            }
+
+            foreach (var frame in this.WindowFrames)
+            {
+                frame.CloseFrame((int)__FRAMECLOSE.FRAMECLOSE_NoSave);
             }
 
             base.Dispose(disposing);
