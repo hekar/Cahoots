@@ -36,6 +36,10 @@ libraryDependencies += "com.ning" % "async-http-client" % "1.7.9" withSources ()
 
 libraryDependencies += "io.netty" % "netty" % "3.6.1.Final" withSources ()
 
+libraryDependencies += "joda-time" % "joda-time" % "2.1" withSources ()
+
+libraryDependencies += "org.hamcrest" % "hamcrest-library" % "1.3"
+
 unmanagedJars in Compile <++= baseDirectory map { base =>
   val baseDirectories = (base / "lib") +++
     (file(System.getenv("ECLIPSE_HOME") + "/plugins"))

@@ -15,9 +15,13 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.dialogs.PreferencesUtil;
 
 import com.cahoots.connection.websocket.CahootsSocket;
 import com.cahoots.eclipse.Activator;
@@ -25,6 +29,7 @@ import com.cahoots.eclipse.indigo.job.BackgroundJob;
 import com.cahoots.eclipse.indigo.job.BackgroundJobScheduler;
 import com.cahoots.eclipse.indigo.widget.MessageDialog;
 import com.cahoots.eclipse.swt.SwtButtonUtils;
+import com.cahoots.eclipse.swt.SwtDisplayUtils;
 import com.cahoots.eclipse.swt.SwtKeyUtils;
 import com.google.inject.Injector;
 
@@ -58,9 +63,10 @@ public class ConnectDialog extends Window {
 		shell.setText("Connect to Cahoots");
 		shell.setSize(420, 160);
 		shell.setLayout(new MigLayout("fill"));
-		
+
 		final Composite content = parent;
-		content.setLayout(new MigLayout("fill", "[growprio 0][growprio 100, fill]"));
+		content.setLayout(new MigLayout("fill",
+				"[growprio 0][growprio 100, fill]"));
 		content.setLayoutData("grow");
 
 		// Create the controls
@@ -88,6 +94,24 @@ public class ConnectDialog extends Window {
 		final Button serverEdit = new Button(content, SWT.NONE);
 		serverEdit.setText("...");
 		serverEdit.setLayoutData("wrap");
+
+		serverEdit.addListener(SWT.Selection, new Listener() {
+
+			@Override
+			public void handleEvent(Event arg0) {
+				SwtDisplayUtils.async(new Runnable() {
+
+					@Override
+					public void run() {
+						PreferencesUtil.createPreferenceDialogOn(PlatformUI
+								.getWorkbench().getActiveWorkbenchWindow()
+								.getShell(), "com.cahoots.preferences.CahootsPreferencePage", null, null).open();
+
+					}
+				});
+
+			}
+		});
 
 		final Button connect = new Button(content, SWT.NONE);
 		connect.setText("&Connect");
@@ -128,6 +152,7 @@ public class ConnectDialog extends Window {
 		cancel.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(final SelectionEvent e) {
+				setReturnCode(SWT.CANCEL);
 				close();
 			}
 		});
@@ -135,39 +160,42 @@ public class ConnectDialog extends Window {
 		connect.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(final SelectionEvent e) {
+				
+				final String username = usernameEdit.getText();
+				final String password = passwordEdit.getText();
+				final String server = servers.getText();
+				
 				final BackgroundJob backgroundJob = new BackgroundJob() {
 					@Override
 					public IStatus run(final IProgressMonitor monitor) {
-						Display.getDefault().asyncExec(new Runnable() {
+						socket.connect(username, password, server);
+						
+						final Runnable runnable = new Runnable() {
 							@Override
 							public void run() {
-								monitor.beginTask("Connecting to Cahoots", 100);
-								final String username = usernameEdit.getText();
-								final String password = passwordEdit.getText();
-								final String server = servers.getText();
 								try {
-									monitor.worked(20);
-									socket.connect(username, password, server);
+									monitor.beginTask("Connecting...", 100);
 									monitor.worked(100);
+									setReturnCode(SWT.OK);
 									close();
 								} catch (final Exception e1) {
 									e1.printStackTrace();
-									monitor.setCanceled(true);
 									final String message = String.format(
 											"Error connecting to server %s@%s",
 											username, server);
-									messageDialog.info(null,
+									messageDialog.info(getShell(),
 											"Connection Error", message);
 								}
-
 							}
-						});
+						};
+
+						SwtDisplayUtils.async(runnable);
 
 						return Status.OK_STATUS;
 					}
 				};
 
-				backgroundJobScheduler.schedule("Connect to Cahoots",
+				backgroundJobScheduler.schedule("Establish Connection to Cahoots",
 						backgroundJob);
 			}
 		});
