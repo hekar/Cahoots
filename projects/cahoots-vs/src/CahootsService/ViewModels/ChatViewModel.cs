@@ -66,7 +66,8 @@ namespace Cahoots.Services.ViewModels
                 Service = "chat",
                 Message = message,
                 To = Chatee.UserName,
-                From = Me
+                From = Me,
+                TimeStamp = DateTime.Now
             };
 
             if (this.Send != null)

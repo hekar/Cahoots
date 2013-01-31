@@ -30,12 +30,14 @@ class ChatService(
     val to = (json \ "to").as[String];
     val from = (json \ "from").as[String];
     val message = (json \ "message").as[String];
+    val time = (json \ "timestamp").as[String];
 
     notifyOne(to,
       JsObject(
         Seq(
           "from" -> JsString(from),
           "message" -> JsString(message),
+          "timestamp" -> JsString(time),
           "type" -> JsString("receive"),
           "service" -> JsString("chat")
         ))

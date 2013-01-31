@@ -80,7 +80,7 @@ namespace Cahoots.Services
                     new ChatMessageModel(
                         vm.Chatee.Name,
                         model.Message,
-                        DateTime.Now));
+                        model.TimeStamp));
             }
         }
 

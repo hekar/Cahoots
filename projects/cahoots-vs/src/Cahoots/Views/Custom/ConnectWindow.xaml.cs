@@ -1,5 +1,5 @@
 ﻿/// Cahoots Package.cs
-/// 23 October 2012
+/// Codeora 2013
 ///
 /// The class for the Connect window.
 ///
@@ -9,6 +9,7 @@ namespace Cahoots
     using System;
     using System.Windows;
     using System.Windows.Controls;
+    using System.Windows.Input;
 
     /// <summary>
     /// Interaction logic for ConnectWindow.xaml
@@ -101,6 +102,38 @@ namespace Cahoots
                 btnConnect.IsEnabled = (!string.IsNullOrEmpty(txtUsername.Text)
                     && !string.IsNullOrEmpty(pwPassword.Password)
                     && cbServer.SelectedIndex != -1);
+            }
+        }
+
+        /// <summary>
+        /// Handles the KeyDown event of the txtUsername control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">
+        ///   The <see cref="KeyEventArgs" />
+        ///   instance containing the event data.
+        /// </param>
+        private void txtUsername_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter && btnConnect.IsEnabled)
+            {
+                Connect_Click(sender, new RoutedEventArgs());
+            }
+        }
+
+        /// <summary>
+        /// Handles the KeyDown event of the pwPassword control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">
+        ///   The <see cref="KeyEventArgs" />
+        ///   instance containing the event data.
+        /// </param>
+        private void pwPassword_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter && btnConnect.IsEnabled)
+            {
+                Connect_Click(sender, new RoutedEventArgs());
             }
         }
     }

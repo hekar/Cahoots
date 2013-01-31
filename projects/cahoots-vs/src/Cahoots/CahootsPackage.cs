@@ -317,6 +317,8 @@ namespace Cahoots
                     frame.CloseFrame((int)__FRAMECLOSE.FRAMECLOSE_NoSave);
                 }
 
+                this.WindowFrames.Clear();
+
                 this.Socket.Close();
                 this.Socket.Dispose();
                 this.Socket = null;
