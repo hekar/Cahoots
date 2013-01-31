@@ -46,6 +46,6 @@ namespace Cahoots.Services.MessageModels
         /// The time stamp.
         /// </value>
         [DataMember(Name = "timestamp", IsRequired = true)]
-        public DateTime TimeStamp { get; set; }
+        public string TimeStamp { get; set; }
     }
 }

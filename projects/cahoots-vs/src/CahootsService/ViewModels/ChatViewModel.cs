@@ -67,7 +67,7 @@ namespace Cahoots.Services.ViewModels
                 Message = message,
                 To = Chatee.UserName,
                 From = Me,
-                TimeStamp = DateTime.Now
+                TimeStamp = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss") + DateTime.Now.ToString("zzz")
             };
 
             if (this.Send != null)

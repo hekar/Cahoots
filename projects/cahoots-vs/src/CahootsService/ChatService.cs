@@ -75,12 +75,13 @@ namespace Cahoots.Services
                 };
 
                 var vm = this.ViewModels[model.From];
+                var dt = DateTime.Parse(model.TimeStamp);
 
                 vm.Messages.Add(
                     new ChatMessageModel(
                         vm.Chatee.Name,
                         model.Message,
-                        model.TimeStamp));
+                        dt));
             }
         }
 
