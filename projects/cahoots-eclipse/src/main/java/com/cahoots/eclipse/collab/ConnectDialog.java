@@ -5,6 +5,8 @@ import net.miginfocom.swt.MigLayout;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.jface.util.IPropertyChangeListener;
+import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyEvent;
@@ -14,7 +16,6 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
@@ -31,6 +32,7 @@ import com.cahoots.eclipse.indigo.widget.MessageDialog;
 import com.cahoots.eclipse.swt.SwtButtonUtils;
 import com.cahoots.eclipse.swt.SwtDisplayUtils;
 import com.cahoots.eclipse.swt.SwtKeyUtils;
+import com.cahoots.preferences.PreferenceConstants;
 import com.google.inject.Injector;
 
 public class ConnectDialog extends Window {
@@ -38,7 +40,7 @@ public class ConnectDialog extends Window {
 	private final CahootsSocket socket;
 	private final BackgroundJobScheduler backgroundJobScheduler;
 	private final MessageDialog messageDialog;
-
+	private Combo servers;
 	/**
 	 * Create the dialog.
 	 * 
@@ -53,6 +55,18 @@ public class ConnectDialog extends Window {
 		backgroundJobScheduler = injector
 				.getInstance(BackgroundJobScheduler.class);
 		messageDialog = injector.getInstance(MessageDialog.class);
+		Activator.getActivator().getPreferenceStore().addPropertyChangeListener(new IPropertyChangeListener() {
+			
+			@Override
+			public void propertyChange(PropertyChangeEvent arg0) {
+				if(arg0.getProperty().equals(PreferenceConstants.P_SERVERS) && servers != null)
+				{
+					servers.removeAll();
+					servers.setItems(((String)arg0.getNewValue()).split(","));
+					servers.select(0);
+				}
+			}
+		});
 	}
 
 	/**
@@ -86,8 +100,8 @@ public class ConnectDialog extends Window {
 		final Label serverLabel = new Label(content, SWT.NONE);
 		serverLabel.setText("Server:");
 
-		final Combo servers = new Combo(content, SWT.NONE);
-		servers.setItems(new String[] { "localhost:9000" });
+		servers = new Combo(content, SWT.NONE);
+		servers.setItems(Activator.getActivator().getPreferenceStore().getString(PreferenceConstants.P_SERVERS).split(","));
 		servers.select(0);
 		servers.setLayoutData("spanx, growx, split 2");
 
