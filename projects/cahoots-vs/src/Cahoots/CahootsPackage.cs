@@ -102,7 +102,7 @@ namespace Cahoots
             }
             else
             {
-                // need to create a preferences file...
+                // need to create default preferences...
                 this.Preferences = new Preferences()
                 {
                     ChatLogsDirectory = root + @"chat logs\"
@@ -114,6 +114,7 @@ namespace Cahoots
                     Address = "http://localhost:9000/"
                 });
 
+                // write to file
                 using (var stream = File.Create(prefs))
                 using (var writer = new StreamWriter(stream))
                 {

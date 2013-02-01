@@ -16,12 +16,29 @@
         <TabControl Name="tabControl1" Grid.Row="0" Grid.ColumnSpan="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
             <TabItem Header="Servers" Name="tabItem1">
                 <Grid>
-                    
+                    <ListView>
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel>
+                                    
+                                </StackPanel>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
                 </Grid>
             </TabItem>
             <TabItem Header="Chat" Name="tabItem2">
                 <StackPanel Margin="2">
                     <CheckBox Name="chkSaveChat">Save Chat Logs</CheckBox>
+                    <Label>Chat Logs Directory</Label>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBox Name="txtChatLogsDirectory" Margin="2 -2 2 2"></TextBox>
+                        <Button Grid.Column="1" Width="30" Margin="2 -2 2 2" Click="Button_Click">...</Button>
+                    </Grid>
                 </StackPanel>
             </TabItem>
         </TabControl>

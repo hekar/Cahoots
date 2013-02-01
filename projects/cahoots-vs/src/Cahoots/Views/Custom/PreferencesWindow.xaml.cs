@@ -20,9 +20,10 @@ namespace Cahoots
         /// </summary>
         public PreferencesWindow(Preferences preferences)
         {
-            InitializeComponent();
+            this.InitializeComponent();
             this.Preferences = preferences;
-            var pref = new Preferences();
+            this.txtChatLogsDirectory.Text =
+                        this.Preferences.ChatLogsDirectory;
         }
 
         /// <summary>
@@ -57,6 +58,24 @@ namespace Cahoots
         private void btnCancel_Click(object sender, RoutedEventArgs e)
         {
             this.DialogResult = false;
+        }
+
+        /// <summary>
+        /// Handles the Click event of the Button control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">
+        ///   The <see cref="RoutedEventArgs" />
+        ///   instance containing the event data.
+        /// </param>
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            var form = new System.Windows.Forms.FolderBrowserDialog();
+            form.SelectedPath = this.txtChatLogsDirectory.Text;
+            if (form.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                this.txtChatLogsDirectory.Text = form.SelectedPath;
+            }
         }
     }
 }
