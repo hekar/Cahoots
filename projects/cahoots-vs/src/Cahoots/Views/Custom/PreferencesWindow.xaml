@@ -25,7 +25,7 @@
                 </StackPanel>
             </TabItem>
         </TabControl>
-        <Button Grid.Row="1" Grid.Column="1" Margin="2" Width="50">Save</Button>
-        <Button Grid.Row="1" Grid.Column="2" Margin="2" Width="50">Cancel</Button>
+        <Button Name="btnSave" Grid.Row="1" Grid.Column="1" Margin="2" Width="50" Click="btnSave_Click">Save</Button>
+        <Button Name="btnCancel" Grid.Row="1" Grid.Column="2" Margin="2" Width="50" Click="btnCancel_Click">Cancel</Button>
     </Grid>
 </Window>

@@ -72,7 +72,7 @@ namespace Cahoots
         {
             this.CommunicationRelay = new MessageRelay(
                     new UsersService(),
-                    new ChatService(this, ""));
+                    new ChatService(this, this.Preferences));
         }
 
         /// <summary>
@@ -105,7 +105,7 @@ namespace Cahoots
                 // need to create a preferences file...
                 this.Preferences = new Preferences()
                 {
-                    ChatLogsDirectory = root + @"chat logs"
+                    ChatLogsDirectory = root + @"chat logs\"
                 };
 
                 this.Preferences.Servers.Add(new Server()
@@ -403,7 +403,7 @@ namespace Cahoots
                 object sender,
                 EventArgs e)
         {
-            var window = new PreferencesWindow();
+            var window = new PreferencesWindow(this.Preferences);
             window.ShowDialog();
         }
 

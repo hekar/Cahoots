@@ -21,10 +21,14 @@ namespace Cahoots.Services
         /// <summary>
         /// Initializes a new instance of the <see cref="ChatService" /> class.
         /// </summary>
-        public ChatService(IWindowService windowService, string path) : base("chat")
+        public ChatService(
+                IWindowService windowService,
+                Preferences preferences)
+                        : base("chat")
         {
             this.ViewModels = new Dictionary<string, ChatViewModel>();
             this.WindowService = windowService;
+            this.Preferences = preferences;
         }
 
         /// <summary>
@@ -42,6 +46,14 @@ namespace Cahoots.Services
         /// The window service.
         /// </value>
         private IWindowService WindowService { get; set; }
+
+        /// <summary>
+        /// Gets or sets the preferences.
+        /// </summary>
+        /// <value>
+        /// The preferences.
+        /// </value>
+        private Preferences Preferences { get; set; }
 
         /// <summary>
         /// Processes the JSON message.
@@ -72,10 +84,6 @@ namespace Cahoots.Services
 
             if (this.ViewModels.ContainsKey(model.From))
             {
-                while (!this.ViewModels.ContainsKey(model.From))
-                {
-                };
-
                 var vm = this.ViewModels[model.From];
                 var dt = DateTime.Parse(model.TimeStamp);
 
@@ -135,5 +143,7 @@ namespace Cahoots.Services
         {
             this.ViewModels.Clear();
         }
+
+
     }
 }
