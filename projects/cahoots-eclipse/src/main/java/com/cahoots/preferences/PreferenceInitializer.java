@@ -18,6 +18,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 	public void initializeDefaultPreferences() {
 		IPreferenceStore store = Activator.getActivator().getPreferenceStore();
 		store.setDefault(PreferenceConstants.P_SAVE_CHAT, true);
+		store.setDefault(PreferenceConstants.P_SERVERS, "localhost:9000");
 	}
 
 }

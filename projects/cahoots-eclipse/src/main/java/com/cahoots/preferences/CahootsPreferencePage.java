@@ -1,8 +1,10 @@
 package com.cahoots.preferences;
 
-import org.eclipse.jface.preference.*;
-import org.eclipse.ui.IWorkbenchPreferencePage;
+import org.eclipse.jface.preference.BooleanFieldEditor;
+import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchPreferencePage;
+
 import com.cahoots.eclipse.Activator;
 
 /**
@@ -37,9 +39,15 @@ public class CahootsPreferencePage
 	 */
 	public void createFieldEditors() {
 		addField(
-			new BooleanFieldEditor(
-				PreferenceConstants.P_SAVE_CHAT,
-				"&Save chat log",
+				new BooleanFieldEditor(
+					PreferenceConstants.P_SAVE_CHAT,
+					"&Save chat log",
+					getFieldEditorParent()));
+
+		addField(
+			new StringListEditor(
+				PreferenceConstants.P_SERVERS,
+				"&Connections",
 				getFieldEditorParent()));
 	}
 

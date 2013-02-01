@@ -33,6 +33,7 @@ import com.cahoots.eclipse.swt.SwtDisplayUtils;
 import com.cahoots.eclipse.swt.SwtKeyUtils;
 import com.cahoots.json.receive.ChatReceiveMessage;
 import com.cahoots.json.send.ChatSendMessage;
+import com.cahoots.preferences.PreferenceConstants;
 import com.google.inject.Injector;
 
 public class ChatDialog extends Window {
@@ -182,30 +183,33 @@ public class ChatDialog extends Window {
 	
 	private void writeToLog(String from, String line)
 	{
-		File logFile = new File( getLogDir(), from);
-		if(!logFile.exists())
+		if(Activator.getActivator().getPreferenceStore().getBoolean(PreferenceConstants.P_SAVE_CHAT))
 		{
-			try {
-				logFile.createNewFile();
-			} catch (IOException ignore) {
-				ignore.printStackTrace();
-			}
-		}
-		BufferedWriter bw = null;
-		try {
-			FileWriter fw = new FileWriter(logFile, true);
-			bw = new BufferedWriter(fw);
-			bw.append(line);
-			bw.flush();
-		} catch (IOException ignore) {
-			ignore.printStackTrace();
-		} finally
-		{
-			if(bw != null)
+			File logFile = new File( getLogDir(), from);
+			if(!logFile.exists())
 			{
 				try {
-					bw.close();
+					logFile.createNewFile();
 				} catch (IOException ignore) {
+					ignore.printStackTrace();
+				}
+			}
+			BufferedWriter bw = null;
+			try {
+				FileWriter fw = new FileWriter(logFile, true);
+				bw = new BufferedWriter(fw);
+				bw.append(line);
+				bw.flush();
+			} catch (IOException ignore) {
+				ignore.printStackTrace();
+			} finally
+			{
+				if(bw != null)
+				{
+					try {
+						bw.close();
+					} catch (IOException ignore) {
+					}
 				}
 			}
 		}
