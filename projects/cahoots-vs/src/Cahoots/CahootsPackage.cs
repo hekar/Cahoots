@@ -9,11 +9,13 @@ namespace Cahoots
     using System.Collections.ObjectModel;
     using System.ComponentModel;
     using System.ComponentModel.Design;
+    using System.IO;
     using System.Linq;
     using System.Runtime.InteropServices;
     using System.Threading;
     using System.Windows.Forms;
 
+    using Cahoots.Ext;
     using Cahoots.Services;
     using Cahoots.Services.Contracts;
     using Cahoots.Services.Models;
@@ -56,6 +58,7 @@ namespace Cahoots
         protected override void Initialize()
         {
             base.Initialize();
+            this.InitializePreferences();
             this.InitializeMessagingSystem();
 
             // find references to the toolbar buttons
@@ -69,7 +72,60 @@ namespace Cahoots
         {
             this.CommunicationRelay = new MessageRelay(
                     new UsersService(),
-                    new ChatService(this));
+                    new ChatService(this, ""));
+        }
+
+        /// <summary>
+        /// Initializes the preferences.
+        /// </summary>
+        private void InitializePreferences()
+        {
+            var path =
+                Environment.GetFolderPath(Environment.SpecialFolder.Personal);
+            var root = path + @"\Visual Studio 2010\Cahoots\";
+            var prefs = root + @"preferences.xml";
+
+            if (!Directory.Exists(root))
+            {
+                Directory.CreateDirectory(root);
+            }
+
+            if (File.Exists(prefs))
+            {
+                // read in preferences
+                using (var stream = File.OpenRead(prefs))
+                using (var reader = new StreamReader(stream))
+                {
+                    var xml = reader.ReadToEnd();
+                    this.Preferences = XmlHelper.Deserialize<Preferences>(xml);
+                }
+            }
+            else
+            {
+                // need to create a preferences file...
+                this.Preferences = new Preferences()
+                {
+                    ChatLogsDirectory = root + @"chat logs"
+                };
+
+                this.Preferences.Servers.Add(new Server()
+                {
+                    Name = "Localhost",
+                    Address = "http://localhost:9000/"
+                });
+
+                using (var stream = File.Create(prefs))
+                using (var writer = new StreamWriter(stream))
+                {
+                    var xml = XmlHelper.Serialize(this.Preferences);
+                    writer.Write(xml);
+                }
+            }
+
+            if (!Directory.Exists(this.Preferences.ChatLogsDirectory))
+            {
+                Directory.CreateDirectory(this.Preferences.ChatLogsDirectory);
+            }
         }
 
         /// <summary>
@@ -128,6 +184,14 @@ namespace Cahoots
         /// The window id index.
         /// </summary>
         private int WindowIndex = 0;
+
+        /// <summary>
+        /// Gets or sets the preferences.
+        /// </summary>
+        /// <value>
+        /// The preferences.
+        /// </value>
+        private Preferences Preferences { get; set; }
 
         #endregion
 

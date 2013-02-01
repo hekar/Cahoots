@@ -1,6 +1,8 @@
-﻿/// Service for sending and receiving chat messages
+﻿/// ChatService.cs
 /// Codeora 2013
 ///
+/// Service for sending and receiving chat messages
+/// 
 
 namespace Cahoots.Services
 {
@@ -19,7 +21,7 @@ namespace Cahoots.Services
         /// <summary>
         /// Initializes a new instance of the <see cref="ChatService" /> class.
         /// </summary>
-        public ChatService(IWindowService windowService) : base("chat")
+        public ChatService(IWindowService windowService, string path) : base("chat")
         {
             this.ViewModels = new Dictionary<string, ChatViewModel>();
             this.WindowService = windowService;

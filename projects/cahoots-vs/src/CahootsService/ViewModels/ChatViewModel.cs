@@ -1,14 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Cahoots.Services.Models;
-using Cahoots.Services.MessageModels;
-using Cahoots.Ext.View;
-using Cahoots.Ext;
+﻿/// ChatViewModel.cs
+/// Codeora 2013
+///
+/// View model for driving chat windows.
+///
 
 namespace Cahoots.Services.ViewModels
 {
+    using System;
+    using Cahoots.Ext.View;
+    using Cahoots.Services.MessageModels;
+    using Cahoots.Services.Models;
+
     public class ChatViewModel : BaseViewModel
     {
         /// <summary>
