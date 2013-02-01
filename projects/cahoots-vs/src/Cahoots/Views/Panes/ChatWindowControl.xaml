@@ -37,7 +37,7 @@
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
-        <TextBox Name="txtMessage" Grid.Column="0" Grid.Row="1" Margin="2" TextChanged="txtMessage_TextChanged"></TextBox>
+        <TextBox Name="txtMessage" Grid.Column="0" Grid.Row="1" Margin="2" TextChanged="txtMessage_TextChanged" KeyDown="txtMessage_KeyDown"></TextBox>
         <Button Name="btnSend" Grid.Column="1" Grid.Row="1" Margin="2" Click="Button_Click" IsEnabled="False">Send</Button>
     </Grid>
 </UserControl>

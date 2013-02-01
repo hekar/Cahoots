@@ -21,13 +21,5 @@ namespace Cahoots.Services.Models
         /// The address.
         /// </value>
         public string Address { get; set; }
-
-        /// <summary>
-        /// Gets or sets the port.
-        /// </summary>
-        /// <value>
-        /// The port.
-        /// </value>
-        public int Port { get; set; }
     }
 }

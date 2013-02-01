@@ -6,13 +6,16 @@ namespace Cahoots
 {
     using System;
     using System.Collections.Generic;
+    using System.Collections.ObjectModel;
     using System.ComponentModel;
     using System.ComponentModel.Design;
+    using System.IO;
     using System.Linq;
     using System.Runtime.InteropServices;
     using System.Threading;
     using System.Windows.Forms;
 
+    using Cahoots.Ext;
     using Cahoots.Services;
     using Cahoots.Services.Contracts;
     using Cahoots.Services.Models;
@@ -20,7 +23,6 @@ namespace Cahoots
     using Microsoft.VisualStudio.Shell;
     using Microsoft.VisualStudio.Shell.Interop;
     using WebSocketSharp;
-    using System.Collections.ObjectModel;
 
     /// <summary>
     /// Cahoots VSPackage Extension class.
@@ -56,6 +58,7 @@ namespace Cahoots
         protected override void Initialize()
         {
             base.Initialize();
+            this.InitializePreferences();
             this.InitializeMessagingSystem();
 
             // find references to the toolbar buttons
@@ -69,7 +72,60 @@ namespace Cahoots
         {
             this.CommunicationRelay = new MessageRelay(
                     new UsersService(),
-                    new ChatService(this));
+                    new ChatService(this, this.Preferences));
+        }
+
+        /// <summary>
+        /// Initializes the preferences.
+        /// </summary>
+        private void InitializePreferences()
+        {
+            var path =
+                Environment.GetFolderPath(Environment.SpecialFolder.Personal);
+            var root = path + @"\Visual Studio 2010\Cahoots\";
+            var prefs = root + @"preferences.xml";
+
+            if (!Directory.Exists(root))
+            {
+                Directory.CreateDirectory(root);
+            }
+
+            if (File.Exists(prefs))
+            {
+                // read in preferences
+                using (var stream = File.OpenRead(prefs))
+                using (var reader = new StreamReader(stream))
+                {
+                    var xml = reader.ReadToEnd();
+                    this.Preferences = XmlHelper.Deserialize<Preferences>(xml);
+                }
+            }
+            else
+            {
+                // need to create a preferences file...
+                this.Preferences = new Preferences()
+                {
+                    ChatLogsDirectory = root + @"chat logs\"
+                };
+
+                this.Preferences.Servers.Add(new Server()
+                {
+                    Name = "Localhost",
+                    Address = "http://localhost:9000/"
+                });
+
+                using (var stream = File.Create(prefs))
+                using (var writer = new StreamWriter(stream))
+                {
+                    var xml = XmlHelper.Serialize(this.Preferences);
+                    writer.Write(xml);
+                }
+            }
+
+            if (!Directory.Exists(this.Preferences.ChatLogsDirectory))
+            {
+                Directory.CreateDirectory(this.Preferences.ChatLogsDirectory);
+            }
         }
 
         /// <summary>
@@ -107,7 +163,7 @@ namespace Cahoots
         /// Me.
         /// </value>
         public string Me { get; set; }
-        
+
         /// <summary>
         /// Gets or sets the chats.
         /// </summary>
@@ -128,6 +184,14 @@ namespace Cahoots
         /// The window id index.
         /// </summary>
         private int WindowIndex = 0;
+
+        /// <summary>
+        /// Gets or sets the preferences.
+        /// </summary>
+        /// <value>
+        /// The preferences.
+        /// </value>
+        private Preferences Preferences { get; set; }
 
         #endregion
 
@@ -271,7 +335,7 @@ namespace Cahoots
                 else
                 {
                     // display error message.
-                    var  retry = MessageBox.Show(
+                    var retry = MessageBox.Show(
                             "An error occured authenticating with Cahoots:\r\n"
                             + this.AuthenticationService.ErrorMessage,
                             "Failed to authenticate with Cahoots.",
@@ -306,7 +370,7 @@ namespace Cahoots
             if (result == DialogResult.Yes)
             {
                 var bg = new BackgroundWorker();
-                bg.DoWork +=new DoWorkEventHandler(
+                bg.DoWork += new DoWorkEventHandler(
                     (s, ev) => this.AuthenticationService.Deauthenticate());
                 bg.RunWorkerAsync();
                 this.ConnectButton.Enabled = true;
@@ -317,7 +381,8 @@ namespace Cahoots
                     frame.CloseFrame((int)__FRAMECLOSE.FRAMECLOSE_NoSave);
                 }
 
-                this.Socket.Send(new byte[] { 0x1A });
+                this.WindowFrames.Clear();
+
                 this.Socket.Close();
                 this.Socket.Dispose();
                 this.Socket = null;
@@ -326,6 +391,21 @@ namespace Cahoots
         }
 
         #endregion
+
+        /// <summary>
+        /// Preferences the button execute handler.
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">
+        ///   The <see cref="EventArgs" /> instance containing the event data.
+        /// </param>
+        protected override void PreferenceButtonExecuteHandler(
+                object sender,
+                EventArgs e)
+        {
+            var window = new PreferencesWindow(this.Preferences);
+            window.ShowDialog();
+        }
 
         /// <summary>
         /// Invokes an action on the UI thread.
@@ -356,15 +436,6 @@ namespace Cahoots
         }
 
         /// <summary>
-        /// Sends to socket.
-        /// </summary>
-        /// <param name="message">The message.</param>
-        public void SendToSocket(string message)
-        {
-            Socket.Send(message);
-        }
-
-        /// <summary>
         /// Opens a chat window.
         /// </summary>
         /// <param name="user">The user.</param>
@@ -376,11 +447,11 @@ namespace Cahoots
                 pane.Caption = "Chat — " + user.Name;
                 Chats.Add(user.Name, pane);
                 var frame = (IVsWindowFrame)pane.Frame;
-                frame.Show();
                 this.WindowFrames.Add(frame);
                 var win = (pane as ChatWindowToolWindow).Content as ChatWindowControl;
                 var vm = this.GetViewModel("chat", user, this.Me) as ChatViewModel;
                 win.ViewModel = vm;
+                frame.Show();
             }
             else
             {
@@ -414,13 +485,17 @@ namespace Cahoots
         {
             if (this.Socket != null)
             {
-                if (this.Socket.IsAlive)
+                if (this.Socket.ReadyState == WsState.OPEN)
                 {
-                    this.Socket.Send(new byte[] { 0x1A });
                     this.Socket.Close();
                 }
 
                 this.Socket.Dispose();
+            }
+
+            foreach (var frame in this.WindowFrames)
+            {
+                frame.CloseFrame((int)__FRAMECLOSE.FRAMECLOSE_NoSave);
             }
 
             base.Dispose(disposing);
