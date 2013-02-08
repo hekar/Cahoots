@@ -121,4 +121,21 @@
 			</action>
 		</viewerContribution>
  </extension>
+ <extension
+       point="org.eclipse.ui.preferencePages">
+    <page
+          class="com.cahoots.preferences.CahootsPreferencePage"
+          id="com.cahoots.preferences.CahootsPreferencePage"
+          name="Cahoots">
+    </page>
+ </extension>
+ <extension
+       point="org.eclipse.core.runtime.preferences">
+    <initializer
+          class="com.cahoots.preferences.PreferenceInitializer">
+    </initializer>
+ </extension>
+ <extension
+       point="org.eclipse.equinox.preferences.preferences">
+ </extension>
 </plugin>

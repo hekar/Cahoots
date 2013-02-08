@@ -1,11 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Runtime.Serialization;
+﻿/// SendChatMessage.
+/// Codeora 2013
+///
+/// JSON model for sending chat messages to the server.
+///
 
 namespace Cahoots.Services.MessageModels
 {
+    using System;
+    using System.Runtime.Serialization;
+
     [DataContract]
     public class SendChatMessage : MessageBase
     {
@@ -35,5 +38,14 @@ namespace Cahoots.Services.MessageModels
         /// </value>
         [DataMember(Name = "message", IsRequired = true)]
         public string Message { get; set; }
+
+        /// <summary>
+        /// Gets or sets the time stamp.
+        /// </summary>
+        /// <value>
+        /// The time stamp.
+        /// </value>
+        [DataMember(Name = "timestamp", IsRequired = true)]
+        public string TimeStamp { get; set; }
     }
 }

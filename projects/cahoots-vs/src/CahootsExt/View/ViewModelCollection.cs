@@ -1,4 +1,10 @@
-﻿
+﻿/// ViewModelCollection.cs
+/// Codeora 2013
+///
+/// Collection for view models.
+/// Overrides the collection changes method so the UI will update properly.
+///
+
 namespace Cahoots.Ext.View
 {
     using System;
@@ -16,7 +22,10 @@ namespace Cahoots.Ext.View
         /// <summary>
         /// Raises the <see cref="E:CollectionChanged" /> event.
         /// </summary>
-        /// <param name="e">The <see cref="NotifyCollectionChangedEventArgs" /> instance containing the event data.</param>
+        /// <param name="e">
+        ///   The <see cref="NotifyCollectionChangedEventArgs" />
+        ///   instance containing the event data.
+        /// </param>
         protected override void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
         {
             NotifyCollectionChangedEventHandler CollectionChanged = this.CollectionChanged;
