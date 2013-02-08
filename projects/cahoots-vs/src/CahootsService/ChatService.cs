@@ -15,6 +15,7 @@ namespace Cahoots.Services
     using Cahoots.Services.Models;
     using Cahoots.Services.ViewModels;
     using Cahoots.Services.MessageModels;
+    using System.IO;
 
     public class ChatService : AsyncService, IAsyncService
     {
@@ -92,6 +93,16 @@ namespace Cahoots.Services
                         vm.Chatee.Name,
                         model.Message,
                         dt));
+
+                if (this.Preferences.SaveChatLogs)
+                {
+                    // log
+                    this.Log(
+                            vm.Chatee.UserName,
+                            model.Message,
+                            vm.Chatee.Name,
+                            dt);
+                }
             }
         }
 
@@ -134,6 +145,16 @@ namespace Cahoots.Services
         {
             var str = JsonHelper.Serialize(message);
             this.SendMessage(str);
+
+            if (this.Preferences.SaveChatLogs)
+            {
+                // log
+                this.Log(
+                        message.To,
+                        message.Message,
+                        "You",
+                        DateTime.Parse(message.TimeStamp));
+            }
         }
 
         /// <summary>
@@ -144,6 +165,21 @@ namespace Cahoots.Services
             this.ViewModels.Clear();
         }
 
-
+        /// <summary>
+        /// Logs the specified file.
+        /// </summary>
+        /// <param name="file">The file.</param>
+        /// <param name="msg">The MSG.</param>
+        /// <param name="sender">The sender.</param>
+        /// <param name="dt">The dt.</param>
+        private void Log(string file, string msg, string sender, DateTime dt)
+        {
+            var path = this.Preferences.ChatLogsDirectory + file + ".log";
+            using (var stream = new FileStream(path, FileMode.Append | FileMode.OpenOrCreate))
+            using (var writer = new StreamWriter(stream))
+            {
+                writer.WriteLine("{0} {1}: {2}", dt, sender, msg);
+            }
+        }
     }
 }
