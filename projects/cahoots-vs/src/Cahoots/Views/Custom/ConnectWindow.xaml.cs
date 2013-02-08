@@ -7,9 +7,11 @@
 namespace Cahoots
 {
     using System;
+    using System.Linq;
     using System.Windows;
     using System.Windows.Controls;
     using System.Windows.Input;
+    using System.Collections.Generic;
 
     /// <summary>
     /// Interaction logic for ConnectWindow.xaml
@@ -20,9 +22,13 @@ namespace Cahoots
         /// Initializes a new instance of the 
         /// <see cref="ConnectWindow" /> class.
         /// </summary>
-        public ConnectWindow()
+        public ConnectWindow(IEnumerable<string> servers)
         {
             InitializeComponent();
+            foreach (var server in servers)
+            {
+                cbServer.Items.Add(new ComboBoxItem() { Content = server });
+            }
         }
 
         /// <summary>
@@ -134,6 +140,28 @@ namespace Cahoots
             if (e.Key == Key.Enter && btnConnect.IsEnabled)
             {
                 Connect_Click(sender, new RoutedEventArgs());
+            }
+        }
+
+        /// <summary>
+        /// Handles the Click event of the Button control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">
+        ///   The <see cref="RoutedEventArgs" />
+        ///   instance containing the event data.
+        /// </param>
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            if (CahootsPackage.Instance.ShowPreferences())
+            {
+                cbServer.Items.Clear();
+                foreach (var server in CahootsPackage.Instance.Preferences.Servers.Select(s => s.Name))
+                {
+                    cbServer.Items.Add(new ComboBoxItem() { Content = server });
+                }
+
+                cbServer.SelectedIndex = 0;
             }
         }
     }
