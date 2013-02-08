@@ -1,5 +1,13 @@
 -- Table: chat
 
+-- Constraint: username
+
+-- ALTER TABLE users DROP CONSTRAINT username;
+
+ALTER TABLE users
+  ADD CONSTRAINT username UNIQUE(username);
+
+
 -- DROP TABLE chat;
 
 CREATE TABLE chat
