@@ -33,20 +33,24 @@ public class TextEditorTools {
 		}
 
 		final IEditorPart ep = wp.getActiveEditor();
+		return editorPartToTextEditor(ep);
+	}
+
+	public ITextEditor editorPartToTextEditor(final IEditorPart ep) {
 		if (ep instanceof ITextEditor) {
 			return (ITextEditor) ep;
 		} else if (ep != null) {
 			return (ITextEditor) ep.getAdapter(ITextEditor.class);
+		} else {
+			return null;
 		}
-
-		return null;
 	}
 
-	public IEditorPart openEditor(IWorkbenchPage workbenchPage,
-			IEditorInput editorInput, String editorId) {
+	public IEditorPart openEditor(final IWorkbenchPage workbenchPage,
+			final IEditorInput editorInput, final String editorId) {
 		try {
-			IWorkbenchPage page = workbenchPage;
-			IEditorPart editor = page.openEditor(editorInput, editorId);
+			final IWorkbenchPage page = workbenchPage;
+			final IEditorPart editor = page.openEditor(editorInput, editorId);
 			
 			if (editor == null) {
 				throw new EditorNotFoundException("Editor was not found or external editor opened");
@@ -54,21 +58,21 @@ public class TextEditorTools {
 			
 			return editor;
 			
-		} catch (PartInitException e) {
+		} catch (final PartInitException e) {
 			throw ExceptionUtils.toRuntime(e);
 		}
 	}
 
-	public IEditorPart openEditor(ExecutionEvent executionEvent,
-			IEditorInput editorInput, String editorId) {
-		IWorkbenchPage page = HandlerUtil.getActiveWorkbenchWindow(
+	public IEditorPart openEditor(final ExecutionEvent executionEvent,
+			final IEditorInput editorInput, final String editorId) {
+		final IWorkbenchPage page = HandlerUtil.getActiveWorkbenchWindow(
 				executionEvent).getActivePage();
 		return openEditor(page, editorInput, editorId);
 	}
 
-	public IEditorPart openEditor(ViewPart viewPart, IEditorInput editorInput,
-			String editorId) {
-		IWorkbenchPage page = viewPart.getViewSite().getPage();
+	public IEditorPart openEditor(final ViewPart viewPart, final IEditorInput editorInput,
+			final String editorId) {
+		final IWorkbenchPage page = viewPart.getViewSite().getPage();
 		return openEditor(page, editorInput, editorId);
 	}
 	

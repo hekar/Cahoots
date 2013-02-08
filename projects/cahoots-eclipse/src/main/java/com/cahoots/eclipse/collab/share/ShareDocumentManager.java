@@ -9,9 +9,12 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import javax.inject.Inject;
 
+import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.text.DocumentEvent;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IDocumentListener;
+import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.ide.ResourceUtil;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.ITextEditor;
 
@@ -29,6 +32,7 @@ import com.cahoots.json.send.SendShareDocumentMessage;
 
 public class ShareDocumentManager {
 
+	private boolean enabled = true;
 	private final CahootsSocket cahootsSocket;
 	private final OpSessionManager opSessionManager;
 	private final CahootsConnection connection;
@@ -64,8 +68,15 @@ public class ShareDocumentManager {
 		final List<String> collaboratorUsernames = extract(collaborators,
 				on(Collaborator.class).getUsername());
 
-		// TODO: Get Document ID
-		final String documentId = "1";
+		final IEditorInput editorInput = textEditor.getEditorInput();
+		if (editorInput == null) {
+			throw new IllegalStateException("Text editor has no editorInput");
+		}
+
+		// Get resource for text editor
+		final IResource resource = ResourceUtil.getResource(editorInput);
+		final String documentId = resource.getFullPath().toString();
+
 		final SendShareDocumentMessage message = new SendShareDocumentMessage(
 				connection.getUsername(), documentId, collaboratorUsernames);
 
@@ -79,17 +90,15 @@ public class ShareDocumentManager {
 				.getDocumentProvider();
 
 		if (documentProvider == null) {
-			// TODO: Log
 			throw new IllegalStateException(
 					"Document provider must not be null");
 		}
 
-		final IDocument document = documentProvider.getDocument(textEditor
-				.getEditorInput());
+		final IDocument document = documentProvider.getDocument(editorInput);
 		addDocumentListener(document, opId, documentId);
 	}
 
-	private void addDocumentListener(final IDocument document,
+	public void addDocumentListener(final IDocument document,
 			final String opId, final String documentId) {
 		final IDocumentListener documentListener = new IDocumentListener() {
 
@@ -98,18 +107,20 @@ public class ShareDocumentManager {
 			 */
 			@Override
 			public void documentChanged(final DocumentEvent event) {
-				final int length = event.fLength;
-				final int start = event.fOffset;
-				final int end = start + length;
-				final String text = event.getText();
-				if (length > 0 && text.isEmpty()) {
-					delete(opId, documentId, start, end);
-				} else if (length > 0 && !text.isEmpty()) {
-					replace(opId, documentId, start, end, text);
-				} else if (length == 0 && !text.isEmpty()) {
-					insert(opId, documentId, start, text);
-				} else {
-					// ???
+				if (enabled) {
+					final int length = event.fLength;
+					final int start = event.fOffset;
+					final int end = start + length;
+					final String text = event.getText();
+					if (length > 0 && text.isEmpty()) {
+						delete(opId, documentId, start, end);
+					} else if (length > 0 && !text.isEmpty()) {
+						replace(opId, documentId, start, end, text);
+					} else if (length == 0 && !text.isEmpty()) {
+						insert(opId, documentId, start, text);
+					} else {
+						// ???
+					}
 				}
 			}
 
@@ -165,5 +176,13 @@ public class ShareDocumentManager {
 		message.setUser(username);
 		message.setTickStamp(nextTickStamp);
 		cahootsSocket.send(message);
+	}
+
+	public void enableEvents() {
+		enabled = true;
+	}
+
+	public void disableEvents() {
+		enabled = false;
 	}
 }

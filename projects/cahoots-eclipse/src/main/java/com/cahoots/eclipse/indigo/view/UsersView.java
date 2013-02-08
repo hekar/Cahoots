@@ -32,6 +32,8 @@ import com.google.inject.Injector;
 
 public class UsersView extends ViewPart {
 
+	private static final String CAHOOTS_USERS_VIEW = "Cahoots - Users View";
+
 	public static final String ID = "com.cahoots.eclipse.indigo.view.UsersView";
 
 	private TableViewer viewer;
@@ -42,7 +44,7 @@ public class UsersView extends ViewPart {
 	
 	private final SourceContentChangedListener listener = new SourceContentChangedListener() {
 		@Override
-		public void onEvent(Object msg) {
+		public void onEvent(final Object msg) {
 			viewer.refresh();
 		}
 	};
@@ -51,7 +53,7 @@ public class UsersView extends ViewPart {
 	}
 
 	public UsersView() {
-		Injector injector = Activator.getInjector();
+		final Injector injector = Activator.getInjector();
 		source = injector.getInstance(UserListViewContentProvider.class);
 	}
 
@@ -158,7 +160,7 @@ public class UsersView extends ViewPart {
 
 	private void showMessage(final String message) {
 		MessageDialog.openInformation(viewer.getControl().getShell(),
-				"Users View", message);
+				CAHOOTS_USERS_VIEW, message);
 	}
 
 	public void setFocus() {

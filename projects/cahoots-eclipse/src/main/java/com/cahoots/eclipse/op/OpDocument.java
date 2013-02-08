@@ -1,18 +1,14 @@
 package com.cahoots.eclipse.op;
 
+import java.util.Arrays;
+
 public class OpDocument {
-	private final String startContents;
 	private final String opId;
 	private final String documentId;
 
-	public OpDocument(final String startContents, final String opId, final String documentId) {
-		this.startContents = startContents;
+	public OpDocument(final String opId, final String documentId) {
 		this.opId = opId;
 		this.documentId = documentId;
-	}
-
-	public String getStartContents() {
-		return startContents;
 	}
 
 	public String getOpId() {
@@ -23,4 +19,11 @@ public class OpDocument {
 		return documentId;
 	}
 
+	public String getFilename() {
+		// TODO: Add error handling
+		final String[] split = documentId.split("/");
+		return split[split.length - 1];
+	}
+
+	
 }

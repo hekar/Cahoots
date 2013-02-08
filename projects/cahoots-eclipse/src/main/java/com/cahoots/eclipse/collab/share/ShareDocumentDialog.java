@@ -6,6 +6,7 @@ import static ch.lambdaj.Lambda.filter;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.not;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 

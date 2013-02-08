@@ -38,7 +38,7 @@
           class="com.cahoots.eclipse.indigo.view.UsersView"
           icon="icons/sample.gif"
           id="com.cahoots.eclipse.indigo.view.UsersView"
-          name="Users View">
+          name="Cahoots - Users View">
     </view>
  </extension>
  <extension
