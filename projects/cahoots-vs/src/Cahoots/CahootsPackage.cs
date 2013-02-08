@@ -192,7 +192,7 @@ namespace Cahoots
         /// <value>
         /// The preferences.
         /// </value>
-        private Preferences Preferences { get; set; }
+        public Preferences Preferences { get; private set; }
 
         #endregion
 
@@ -305,11 +305,11 @@ namespace Cahoots
                 EventArgs evt)
         {
             // TODO: make this async???
-            var window = new ConnectWindow();
+            var window = new ConnectWindow(this.Preferences.Servers.Select(s => s.Name));
             if (window.ShowDialog() == true)
             {
                 // create a new authentication service for this connection.
-                var server = new Uri(window.Server);
+                var server = new Uri(this.Preferences.Servers.Single(s => s.Name == window.Server).Address);
                 this.AuthenticationService =
                         new AuthenticationService(
                             server,
@@ -327,7 +327,7 @@ namespace Cahoots
 
                     // TODO: make this based on something legit
                     this.Socket = new WebSocket(
-                            "ws://localhost:9000/app/message?auth_token=" + this.AuthenticationService.Token);
+                            "ws://" + server.Host + ":" + server.Port.ToString() + "/app/message?auth_token=" + this.AuthenticationService.Token);
 
                     this.CommunicationRelay.SetSocket(this.Socket);
 
@@ -404,8 +404,17 @@ namespace Cahoots
                 object sender,
                 EventArgs e)
         {
+            this.ShowPreferences();
+        }
+
+        /// <summary>
+        /// Shows the preferences.
+        /// </summary>
+        public bool ShowPreferences()
+        {
             var window = new PreferencesWindow(this.Preferences);
-            if (window.ShowDialog() ?? false)
+            var b = window.ShowDialog() ?? false;
+            if (b)
             {
                 // save preferences
                 var path = Environment.GetFolderPath(
@@ -420,6 +429,8 @@ namespace Cahoots
                     writer.Write(xml);
                 }
             }
+
+            return b;
         }
 
         /// <summary>
