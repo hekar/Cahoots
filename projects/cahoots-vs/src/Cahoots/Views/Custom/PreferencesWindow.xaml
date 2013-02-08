@@ -16,15 +16,26 @@
         <TabControl Name="tabControl1" Grid.Row="0" Grid.ColumnSpan="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
             <TabItem Header="Servers" Name="tabItem1">
                 <Grid>
-                    <ListView>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <ListView Name="lvServers" Grid.Row="0" SelectionChanged="ServersList_SelectionChanged">
                         <ListView.ItemTemplate>
                             <DataTemplate>
                                 <StackPanel>
-                                    
+                                    <TextBlock Text="{Binding Name}" />
+                                    <TextBlock Text="{Binding Address}" />
+                                    <Line HorizontalAlignment="Stretch" Height="1" Fill="Black" Margin="2" />
                                 </StackPanel>
                             </DataTemplate>
                         </ListView.ItemTemplate>
                     </ListView>
+                    <StackPanel Orientation="Horizontal" Grid.Row="1">
+                        <Button Name="btnNewServer" Margin="2" Width="50" Click="btnNewServer_Click">New</Button>
+                        <Button Name="btnEditServer" Margin="2" Width="50" IsEnabled="False" Click="btnEditServer_Click">Edit</Button>
+                        <Button Name="btnDeleteServer" Margin="2" Width="50" IsEnabled="False" Click="btnDeleteServer_Click">Delete</Button>
+                    </StackPanel>
                 </Grid>
             </TabItem>
             <TabItem Header="Chat" Name="tabItem2">

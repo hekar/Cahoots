@@ -1,0 +1,22 @@
+﻿<Window x:Class="Cahoots.EditServerWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="EditServerWindow" Height="140" Width="300" ResizeMode="NoResize">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <TextBlock Grid.Row="0">Name</TextBlock>
+        <TextBox Grid.Row="1" Name="txtName"></TextBox>
+        <TextBlock Grid.Row="2">Address</TextBlock>
+        <TextBox Grid.Row="3" Name="txtAddress"></TextBox>
+        <StackPanel Grid.Row="4" Orientation="Horizontal" FlowDirection="RightToLeft">
+            <Button Name="btnCancel" Margin="2" Width="50" Click="btnCancel_Click">Cancel</Button>
+            <Button Name="btnSave" Margin="2" Width="50" Click="btnSave_Click">Save</Button>
+        </StackPanel>
+    </Grid>
+</Window>

@@ -405,7 +405,21 @@ namespace Cahoots
                 EventArgs e)
         {
             var window = new PreferencesWindow(this.Preferences);
-            window.ShowDialog();
+            if (window.ShowDialog() ?? false)
+            {
+                // save preferences
+                var path = Environment.GetFolderPath(
+                            Environment.SpecialFolder.Personal);
+                var root = path + @"\Visual Studio 2010\Cahoots\";
+                var prefs = root + @"preferences.xml";
+
+                using (var stream = File.Create(prefs))
+                using (var writer = new StreamWriter(stream))
+                {
+                    var xml = XmlHelper.Serialize(this.Preferences);
+                    writer.Write(xml);
+                }
+            }
         }
 
         /// <summary>
