@@ -5,6 +5,9 @@ import play.db.DB
 import org.jooq.impl.Factory
 import org.jooq.SQLDialect
 import com.cahoots.jooq.tables.Chat._
+import org.joda.time._
+import org.joda.time.format._
+import java.sql.Date
 
 /**
  * Created with IntelliJ IDEA.
@@ -37,10 +40,11 @@ class ChatService(
     val message = (json \ "message").as[String];
     val time = (json \ "timestamp").as[String];
 
-
+    val timestamp = ISODateTimeFormat.dateTimeNoMillis().parseDateTime(time);
+    val sqlTime : java.sql.Date = new java.sql.Date(timestamp.getMillis());
     val c = DB.getConnection()
     val f = new Factory(c, SQLDialect.POSTGRES)
-    if (f.insertInto(CHAT, CHAT.FROM, CHAT.TO, CHAT.DATE, CHAT.MESSAGE).values(from, to, time, message).execute() != 0)
+    if (f.insertInto(CHAT, CHAT.FROM, CHAT.TO, CHAT.DATE, CHAT.MESSAGE).values(from, to, sqlTime, message).execute() != 0)
     {
       notifyOne(to,
         JsObject(
