@@ -1,7 +1,10 @@
 package services
 
 import play.api.libs.json._
-import play.data.format.Formats.DateTime
+import play.db.DB
+import org.jooq.impl.Factory
+import org.jooq.SQLDialect
+import com.cahoots.jooq.tables.Chat._
 
 /**
  * Created with IntelliJ IDEA.
@@ -21,6 +24,8 @@ class ChatService(
   def processMessage(json: JsValue) {
     val msgType :String = (json \ "type").as[String];
 
+
+
     if (msgType == "send") {
       sendMessage(json);
     }
@@ -32,15 +37,21 @@ class ChatService(
     val message = (json \ "message").as[String];
     val time = (json \ "timestamp").as[String];
 
-    notifyOne(to,
-      JsObject(
-        Seq(
-          "from" -> JsString(from),
-          "message" -> JsString(message),
-          "timestamp" -> JsString(time),
-          "type" -> JsString("receive"),
-          "service" -> JsString("chat")
-        ))
-    )
+
+    val c = DB.getConnection()
+    val f = new Factory(c, SQLDialect.POSTGRES)
+    if (f.insertInto(CHAT, CHAT.FROM, CHAT.TO, CHAT.DATE, CHAT.MESSAGE).values(from, to, time, message).execute() != 0)
+    {
+      notifyOne(to,
+        JsObject(
+          Seq(
+            "from" -> JsString(from),
+            "message" -> JsString(message),
+            "timestamp" -> JsString(time),
+            "type" -> JsString("receive"),
+            "service" -> JsString("chat")
+          ))
+      )
+    }
   }
 }

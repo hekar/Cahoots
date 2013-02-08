@@ -13,6 +13,11 @@ package com.cahoots.jooq;
 public final class Sequences {
 
 	/**
+	 * The sequence public.chat_id_seq
+	 */
+	public static final org.jooq.Sequence<java.lang.Long> CHAT_ID_SEQ = new org.jooq.impl.SequenceImpl<java.lang.Long>("chat_id_seq", com.cahoots.jooq.Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT);
+
+	/**
 	 * The sequence public.roles_id_seq
 	 */
 	public static final org.jooq.Sequence<java.lang.Long> ROLES_ID_SEQ = new org.jooq.impl.SequenceImpl<java.lang.Long>("roles_id_seq", com.cahoots.jooq.Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT);

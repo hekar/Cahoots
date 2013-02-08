@@ -3,9 +3,9 @@
   <!-- Configure the database connection here -->
   <jdbc>
     <driver>org.postgresql.Driver</driver>
-    <url>jdbc:postgresql://localhost:5432/codeora</url>
+    <url>jdbc:postgresql://localhost:5432/cahoots</url>
     <user>postgres</user>
-    <password>postgres</password>
+    <password>admin</password>
   </jdbc>
 
   <generator>
@@ -40,7 +40,7 @@
 
     <target>
       <!-- The destination package of your generated classes (within the destination directory) -->
-      <packageName>com.codeora.cahoots.jooq</packageName>
+      <packageName>com.cahoots.jooq</packageName>
 
       <!-- The destination directory of your generated classes -->
       <directory>../app</directory>
