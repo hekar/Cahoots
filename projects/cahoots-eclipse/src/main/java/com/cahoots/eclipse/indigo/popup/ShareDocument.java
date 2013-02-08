@@ -42,7 +42,8 @@ public class ShareDocument implements IObjectActionDelegate,
 
 	@Override
 	public void setActiveEditor(final IAction action, final IEditorPart targetEditor) {
-		shell = targetEditor.getSite().getShell();
+		// TODO: What to do here???
+		//shell = targetEditor.getSite().getShell();
 		this.targetEditor = targetEditor;
 	}
 

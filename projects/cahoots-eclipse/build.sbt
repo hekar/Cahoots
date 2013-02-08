@@ -43,6 +43,6 @@ libraryDependencies += "org.hamcrest" % "hamcrest-library" % "1.3"
 unmanagedJars in Compile <++= baseDirectory map { base =>
   val baseDirectories = (base / "lib") +++
     (file(System.getenv("ECLIPSE_HOME") + "/plugins"))
-    val customJars = (baseDirectories ** "*.jar") filter { !_.getAbsolutePath().contains("source") }
+    val customJars = (baseDirectories ** "*.jar") filter { !_.getAbsolutePath().contains(".source") }
       customJars.classpath
 }

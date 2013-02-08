@@ -221,9 +221,11 @@ class OpService(
          * Notify all clients of this operational transformational session that an insert
          * operation has been performed
          */
-        opSession.collaborators.foreach {
-          collaborator =>
+        (opSession.userHost :: opSession.collaborators.toList).foreach {
+          collaborator => {
+            Logger.info(collaborator)
             handle(collaborator, opSession)
+          }
         }
 
       } else {
