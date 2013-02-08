@@ -1,5 +1,7 @@
 package com.cahoots.json.receive;
 
+import com.google.common.base.Objects;
+
 public class ShareDocumentMessage {
 	private String service;
 	private String type;
@@ -7,8 +9,8 @@ public class ShareDocumentMessage {
 	private String documentId;
 	private String opId;
 
-	public ShareDocumentMessage(String service, String type, String sharer,
-			String documentId, String opId) {
+	public ShareDocumentMessage(final String service, final String type,
+			final String sharer, final String documentId, final String opId) {
 		this.service = service;
 		this.type = type;
 		this.sharer = sharer;
@@ -20,7 +22,7 @@ public class ShareDocumentMessage {
 		return service;
 	}
 
-	public void setService(String service) {
+	public void setService(final String service) {
 		this.service = service;
 	}
 
@@ -28,7 +30,7 @@ public class ShareDocumentMessage {
 		return type;
 	}
 
-	public void setType(String type) {
+	public void setType(final String type) {
 		this.type = type;
 	}
 
@@ -36,7 +38,7 @@ public class ShareDocumentMessage {
 		return sharer;
 	}
 
-	public void setSharer(String sharer) {
+	public void setSharer(final String sharer) {
 		this.sharer = sharer;
 	}
 
@@ -44,7 +46,7 @@ public class ShareDocumentMessage {
 		return documentId;
 	}
 
-	public void setDocumentId(String documentId) {
+	public void setDocumentId(final String documentId) {
 		this.documentId = documentId;
 	}
 
@@ -52,8 +54,28 @@ public class ShareDocumentMessage {
 		return opId;
 	}
 
-	public void setOpId(String opId) {
+	public void setOpId(final String opId) {
 		this.opId = opId;
+	}
+
+	@Override
+	public boolean equals(final Object obj) {
+		if (obj instanceof ShareDocumentMessage) {
+			final ShareDocumentMessage other = (ShareDocumentMessage) obj;
+			return Objects.equal(this.documentId, other.documentId)
+					&& Objects.equal(this.opId, other.opId)
+					&& Objects.equal(this.service, other.service)
+					&& Objects.equal(this.type, other.type)
+					&& Objects.equal(this.sharer, other.sharer);
+		} else {
+			return false;
+		}
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hashCode(this.documentId, this.opId, this.service,
+				this.type, this.sharer);
 	}
 
 }
