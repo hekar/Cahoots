@@ -41,6 +41,7 @@ public class ConnectDialog extends Window {
 	private final BackgroundJobScheduler backgroundJobScheduler;
 	private final MessageDialog messageDialog;
 	private Combo servers;
+
 	/**
 	 * Create the dialog.
 	 * 
@@ -55,18 +56,21 @@ public class ConnectDialog extends Window {
 		backgroundJobScheduler = injector
 				.getInstance(BackgroundJobScheduler.class);
 		messageDialog = injector.getInstance(MessageDialog.class);
-		Activator.getActivator().getPreferenceStore().addPropertyChangeListener(new IPropertyChangeListener() {
-			
-			@Override
-			public void propertyChange(PropertyChangeEvent arg0) {
-				if(arg0.getProperty().equals(PreferenceConstants.P_SERVERS) && servers != null)
-				{
-					servers.removeAll();
-					servers.setItems(((String)arg0.getNewValue()).split(","));
-					servers.select(0);
-				}
-			}
-		});
+		Activator.getActivator().getPreferenceStore()
+				.addPropertyChangeListener(new IPropertyChangeListener() {
+
+					@Override
+					public void propertyChange(PropertyChangeEvent arg0) {
+						if (arg0.getProperty().equals(
+								PreferenceConstants.P_SERVERS)
+								&& servers != null) {
+							servers.removeAll();
+							servers.setItems(((String) arg0.getNewValue())
+									.split(","));
+							servers.select(0);
+						}
+					}
+				});
 	}
 
 	/**
@@ -101,7 +105,8 @@ public class ConnectDialog extends Window {
 		serverLabel.setText("Server:");
 
 		servers = new Combo(content, SWT.NONE);
-		servers.setItems(Activator.getActivator().getPreferenceStore().getString(PreferenceConstants.P_SERVERS).split(","));
+		servers.setItems(Activator.getActivator().getPreferenceStore()
+				.getString(PreferenceConstants.P_SERVERS).split(","));
 		servers.select(0);
 		servers.setLayoutData("spanx, growx, split 2");
 
@@ -117,9 +122,13 @@ public class ConnectDialog extends Window {
 
 					@Override
 					public void run() {
-						PreferencesUtil.createPreferenceDialogOn(PlatformUI
-								.getWorkbench().getActiveWorkbenchWindow()
-								.getShell(), "com.cahoots.preferences.CahootsPreferencePage", null, null).open();
+						PreferencesUtil
+								.createPreferenceDialogOn(
+										PlatformUI.getWorkbench()
+												.getActiveWorkbenchWindow()
+												.getShell(),
+										"com.cahoots.preferences.CahootsPreferencePage",
+										null, null).open();
 
 					}
 				});
@@ -174,16 +183,16 @@ public class ConnectDialog extends Window {
 		connect.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(final SelectionEvent e) {
-				
+
 				final String username = usernameEdit.getText();
 				final String password = passwordEdit.getText();
 				final String server = servers.getText();
-				
+
 				final BackgroundJob backgroundJob = new BackgroundJob() {
 					@Override
 					public IStatus run(final IProgressMonitor monitor) {
 						socket.connect(username, password, server);
-						
+
 						final Runnable runnable = new Runnable() {
 							@Override
 							public void run() {
@@ -209,8 +218,8 @@ public class ConnectDialog extends Window {
 					}
 				};
 
-				backgroundJobScheduler.schedule("Establish Connection to Cahoots",
-						backgroundJob);
+				backgroundJobScheduler.schedule(
+						"Establish Connection to Cahoots", backgroundJob);
 			}
 		});
 

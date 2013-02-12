@@ -21,8 +21,8 @@ public class MainModule implements Module {
 		binder.bind(Chat.class).in(Singleton.class);
 		binder.bind(CahootsConnection.class).in(Singleton.class);
 		binder.bind(ShareDocumentManager.class).in(Singleton.class);
-		binder.bind(OpSessionManager.class).in(Singleton.class);		
-		binder.bind(ShareDocumentSessionManager.class).in(Singleton.class);		
+		binder.bind(OpSessionManager.class).in(Singleton.class);
+		binder.bind(ShareDocumentSessionManager.class).in(Singleton.class);
 		binder.bind(WebSocketClientFactory.class);
 		binder.bind(CahootsHttpClient.class);
 	}

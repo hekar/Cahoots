@@ -30,8 +30,11 @@ public class Chat {
 					public void run() {
 						final ChatDialog dia;
 						if (!chats.containsKey(msg.getFrom())) {
-							dia = new ChatDialog(PlatformUI.getWorkbench()
-									.getActiveWorkbenchWindow().getShell(), Arrays.asList(new String[]{msg.getFrom()}));
+							dia = new ChatDialog(
+									PlatformUI.getWorkbench()
+											.getActiveWorkbenchWindow()
+											.getShell(),
+									Arrays.asList(new String[] { msg.getFrom() }));
 
 							chats.put(msg.getFrom(), dia);
 						} else {
@@ -43,12 +46,11 @@ public class Chat {
 				});
 			}
 		});
-		
-		socket.addDisconnectEventListener(new  DisconnectEventListener() {
+
+		socket.addDisconnectEventListener(new DisconnectEventListener() {
 			@Override
 			public void onEvent(DisconnectEvent msg) {
-				for( ChatDialog window : chats.values())
-				{
+				for (ChatDialog window : chats.values()) {
 					window.close();
 				}
 				chats.clear();
@@ -60,7 +62,8 @@ public class Chat {
 		final ChatDialog dia;
 		if (!chats.containsKey(to)) {
 			dia = new ChatDialog(PlatformUI.getWorkbench()
-					.getActiveWorkbenchWindow().getShell(), Arrays.asList(new String[]{to}));
+					.getActiveWorkbenchWindow().getShell(),
+					Arrays.asList(new String[] { to }));
 			chats.put(to, dia);
 		} else {
 			dia = chats.get(to);

@@ -9,8 +9,9 @@ import com.cahoots.eclipse.collab.share.ShareDocumentRegistrar;
 
 /**
  * This class is a hacky, stupid piece of crap - me
+ * 
  * @author Hekar
- *
+ * 
  */
 public class EventRegistrarManager {
 

@@ -30,7 +30,8 @@ public class TestOpService {
 	@BeforeClass
 	public static void classSetUp() throws Exception {
 		cahootsConnection = new CahootsConnection();
-		socket = new CahootsSocket(cahootsConnection, new WebSocketClientFactory(), new TextEditorTools());
+		socket = new CahootsSocket(cahootsConnection,
+				new WebSocketClientFactory(), new TextEditorTools());
 		socket.connect("admin", "admin", "127.0.0.1:9000");
 	}
 

@@ -29,8 +29,8 @@ public class Disconnect implements IWorkbenchWindowActionDelegate {
 	public void run(IAction action) {
 		boolean authenticated = connection.isAuthenticated();
 		if (authenticated) {
-			DisconnectDialog dialog = new DisconnectDialog(shell, SWT.DIALOG_TRIM
-					| SWT.APPLICATION_MODAL);
+			DisconnectDialog dialog = new DisconnectDialog(shell,
+					SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL);
 			dialog.open();
 		}
 	}

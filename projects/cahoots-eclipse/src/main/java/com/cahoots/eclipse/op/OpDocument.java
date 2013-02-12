@@ -25,5 +25,4 @@ public class OpDocument {
 		return split[split.length - 1];
 	}
 
-	
 }

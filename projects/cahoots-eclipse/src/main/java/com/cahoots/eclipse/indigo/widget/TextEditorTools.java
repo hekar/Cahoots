@@ -51,13 +51,14 @@ public class TextEditorTools {
 		try {
 			final IWorkbenchPage page = workbenchPage;
 			final IEditorPart editor = page.openEditor(editorInput, editorId);
-			
+
 			if (editor == null) {
-				throw new EditorNotFoundException("Editor was not found or external editor opened");
+				throw new EditorNotFoundException(
+						"Editor was not found or external editor opened");
 			}
-			
+
 			return editor;
-			
+
 		} catch (final PartInitException e) {
 			throw ExceptionUtils.toRuntime(e);
 		}
@@ -70,10 +71,10 @@ public class TextEditorTools {
 		return openEditor(page, editorInput, editorId);
 	}
 
-	public IEditorPart openEditor(final ViewPart viewPart, final IEditorInput editorInput,
-			final String editorId) {
+	public IEditorPart openEditor(final ViewPart viewPart,
+			final IEditorInput editorInput, final String editorId) {
 		final IWorkbenchPage page = viewPart.getViewSite().getPage();
 		return openEditor(page, editorInput, editorId);
 	}
-	
+
 }

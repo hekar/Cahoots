@@ -16,9 +16,13 @@ public class IndigoModule implements Module {
 	@Override
 	public void configure(final Binder binder) {
 		binder.bind(Activator.class).toInstance(Activator.getActivator());
-		binder.bind(IWorkbench.class).toInstance(Activator.getActivator().getWorkbench());
-		binder.bind(IWorkbenchWindow.class).toInstance(Activator.getActivator().getWorkbench().getActiveWorkbenchWindow());
-		binder.bind(IEditorRegistry.class).toInstance(Activator.getActivator().getWorkbench().getEditorRegistry());
+		binder.bind(IWorkbench.class).toInstance(
+				Activator.getActivator().getWorkbench());
+		binder.bind(IWorkbenchWindow.class).toInstance(
+				Activator.getActivator().getWorkbench()
+						.getActiveWorkbenchWindow());
+		binder.bind(IEditorRegistry.class).toInstance(
+				Activator.getActivator().getWorkbench().getEditorRegistry());
 		binder.bind(UserListViewContentProvider.class).in(Singleton.class);
 		binder.bind(EventRegistrarManager.class).in(Singleton.class);
 	}

@@ -15,10 +15,10 @@ public class ExceptionUtils {
 
 	public static String getStackTrace(final Throwable throwable) {
 		final Writer writer = new StringWriter();
-		
+
 		final PrintWriter printWriter = new PrintWriter(writer);
 		throwable.printStackTrace(printWriter);
-		
+
 		final String message = writer.toString();
 		return message;
 	}

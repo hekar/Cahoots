@@ -187,7 +187,8 @@ public class CahootsSocket {
 					final DisconnectEventListener disconnectEventListener = (DisconnectEventListener) listener;
 					disconnectEventListener.onEvent(new DisconnectEvent());
 				} else {
-					throw new IllegalStateException("Non DisconnectEventListener in listeners");
+					throw new IllegalStateException(
+							"Non DisconnectEventListener in listeners");
 				}
 			}
 		}

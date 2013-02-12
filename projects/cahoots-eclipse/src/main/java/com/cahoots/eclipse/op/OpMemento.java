@@ -13,7 +13,7 @@ public class OpMemento {
 	public OpDocument getDocument() {
 		return document;
 	}
-	
+
 	public void addTransformation(final OpTransformation transformation) {
 		transformations.add(transformation);
 	}

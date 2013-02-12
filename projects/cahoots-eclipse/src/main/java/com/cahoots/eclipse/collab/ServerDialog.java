@@ -14,9 +14,9 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
 public class ServerDialog extends Window {
-	
+
 	String serverName = null;
-	
+
 	/**
 	 * Create the dialog.
 	 * 
@@ -26,7 +26,7 @@ public class ServerDialog extends Window {
 	public ServerDialog(final Shell parent) {
 		super(parent);
 
-        setShellStyle(getShellStyle() | SWT.APPLICATION_MODAL);
+		setShellStyle(getShellStyle() | SWT.APPLICATION_MODAL);
 	}
 
 	/**
@@ -47,14 +47,14 @@ public class ServerDialog extends Window {
 
 		final Label server = new Label(content, SWT.NONE);
 		server.setText("server:");
-		
+
 		final Text serverText = new Text(content, SWT.BORDER);
 		serverText.setLayoutData("spanx, growx, wrap");
 
 		final Button connect = new Button(content, SWT.NONE);
 		connect.setText("&Add");
 		connect.setLayoutData("skip 1, split 2, tag ok");
-		
+
 		connect.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(final SelectionEvent e) {
@@ -76,14 +76,11 @@ public class ServerDialog extends Window {
 			}
 		});
 
-
 		return content;
 	}
-	
-	public String getServer()
-	{
-		if(serverName != null)
-		{
+
+	public String getServer() {
+		if (serverName != null) {
 			return serverName;
 		}
 		return null;

@@ -95,11 +95,11 @@ public class ShareDocumentRegistrar implements EventRegistrar {
 					final String opId = msg.getOpId();
 					System.out.println(cahootsConnection.getUsername());
 
-//					final boolean sameUser = sharer.equals(cahootsConnection
-//							.getUsername());
-//					if (sameUser) {
-//						return;
-//					}
+					// final boolean sameUser = sharer.equals(cahootsConnection
+					// .getUsername());
+					// if (sameUser) {
+					// return;
+					// }
 
 					final Runnable runnable = new Runnable() {
 						public void run() {

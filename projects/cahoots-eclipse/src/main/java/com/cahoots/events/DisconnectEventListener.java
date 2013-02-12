@@ -1,4 +1,5 @@
 package com.cahoots.events;
 
-public interface DisconnectEventListener extends GenericEventListener<DisconnectEvent> {
+public interface DisconnectEventListener extends
+		GenericEventListener<DisconnectEvent> {
 }

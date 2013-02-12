@@ -95,7 +95,7 @@ public final class Log {
 		final String message = ExceptionUtils.getStackTrace(e);
 		error(message);
 	}
-	
+
 	public void verbose(final Exception e) {
 		final String message = ExceptionUtils.getStackTrace(e);
 		verbose(message);

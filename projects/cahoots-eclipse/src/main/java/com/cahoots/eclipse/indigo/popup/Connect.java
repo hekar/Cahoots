@@ -26,7 +26,8 @@ public class Connect implements IWorkbenchWindowActionDelegate {
 
 	@Override
 	public void init(final IWorkbenchWindow window) {
-		connection = Activator.getInjector().getInstance(CahootsConnection.class);
+		connection = Activator.getInjector().getInstance(
+				CahootsConnection.class);
 		socket = Activator.getInjector().getInstance(CahootsSocket.class);
 		messageDialog = Activator.getInjector()
 				.getInstance(MessageDialog.class);
@@ -49,22 +50,24 @@ public class Connect implements IWorkbenchWindowActionDelegate {
 	@Override
 	public void run(final IAction action) {
 		final boolean connected = connection.isAuthenticated();
-		
+
 		if (connected) {
-			final MessageDialogStatus prompt = messageDialog.prompt(shell, "Already Connected?",
-					"Would you like to disconnect before connecting to another server?");
-			
+			final MessageDialogStatus prompt = messageDialog
+					.prompt(shell, "Already Connected?",
+							"Would you like to disconnect before connecting to another server?");
+
 			if (prompt == MessageDialogStatus.OK) {
 				socket.disconnect();
 			}
 		}
-		
+
 		final ConnectDialog dialog = new ConnectDialog(shell);
 		dialog.open();
 	}
 
 	@Override
-	public void selectionChanged(final IAction action, final ISelection selection) {
+	public void selectionChanged(final IAction action,
+			final ISelection selection) {
 	}
 
 	@Override
