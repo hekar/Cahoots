@@ -44,7 +44,7 @@ public class ShareDocumentRegistrar implements EventRegistrar {
 
 	private static Log logger = Log.getLogger(ShareDocumentRegistrar.class);
 
-	private final IncomingShareDocumentManager incomingShareDocumentManager;
+	private final ShareDocumentSessionManager incomingShareDocumentManager;
 	private final ShareDocumentManager shareDocumentManager;
 	private final CahootsSocket cahootsSocket;
 	private final TextEditorTools editorTools;
@@ -56,7 +56,7 @@ public class ShareDocumentRegistrar implements EventRegistrar {
 
 	@Inject
 	public ShareDocumentRegistrar(
-			final IncomingShareDocumentManager incomingShareDocumentManager,
+			final ShareDocumentSessionManager shareDocumentSessionManager,
 			final MessageDialog messageDialog,
 			final CahootsConnection cahootsConnection,
 			final IWorkbenchWindow workbenchWindow,
@@ -64,7 +64,7 @@ public class ShareDocumentRegistrar implements EventRegistrar {
 			final ResourceFinder resourceFinder,
 			final ShareDocumentManager shareDocumentManager,
 			final CahootsSocket cahootsSocket, final TextEditorTools editorTools) {
-		this.incomingShareDocumentManager = incomingShareDocumentManager;
+		this.incomingShareDocumentManager = shareDocumentSessionManager;
 		this.messageDialog = messageDialog;
 		this.cahootsConnection = cahootsConnection;
 		this.workbenchWindow = workbenchWindow;
@@ -93,12 +93,13 @@ public class ShareDocumentRegistrar implements EventRegistrar {
 					final String documentId = msg.getDocumentId();
 					final String sharer = msg.getSharer();
 					final String opId = msg.getOpId();
+					System.out.println(cahootsConnection.getUsername());
 
-					final boolean sameUser = sharer.equals(cahootsConnection
-							.getUsername());
-					if (sameUser) {
-						return;
-					}
+//					final boolean sameUser = sharer.equals(cahootsConnection
+//							.getUsername());
+//					if (sameUser) {
+//						return;
+//					}
 
 					final Runnable runnable = new Runnable() {
 						public void run() {
@@ -170,6 +171,7 @@ public class ShareDocumentRegistrar implements EventRegistrar {
 			final IWorkbenchPage activePage = workbenchWindow.getActivePage();
 			// TODO: Make sure this editor has a correct id
 			final String editorId = editorPart.getSite().getId();
+			System.out.println("Editor ID: " + editorId);
 			final IEditorPart editor = editorTools.openEditor(activePage,
 					editorInput, editorId);
 			if (editor == null) {

@@ -80,22 +80,24 @@ public class ShareDocumentManager {
 		final SendShareDocumentMessage message = new SendShareDocumentMessage(
 				connection.getUsername(), documentId, collaboratorUsernames);
 
-		final ShareDocumentMessage response = cahootsSocket
-				.sendAndWaitForResponse(message, ShareDocumentMessage.class,
-						ShareDocumentEventListener.class);
-
-		final String opId = response.getOpId();
-
-		final IDocumentProvider documentProvider = textEditor
-				.getDocumentProvider();
-
-		if (documentProvider == null) {
-			throw new IllegalStateException(
-					"Document provider must not be null");
-		}
-
-		final IDocument document = documentProvider.getDocument(editorInput);
-		addDocumentListener(document, opId, documentId);
+		cahootsSocket.send(message);
+		
+//		final ShareDocumentMessage response = 
+//				cahootsSocket.sendAndWaitForResponse(message, ShareDocumentMessage.class,
+//						ShareDocumentEventListener.class);
+//
+//		final String opId = response.getOpId();
+//
+//		final IDocumentProvider documentProvider = textEditor
+//				.getDocumentProvider();
+//
+//		if (documentProvider == null) {
+//			throw new IllegalStateException(
+//					"Document provider must not be null");
+//		}
+//
+//		final IDocument document = documentProvider.getDocument(editorInput);
+//		addDocumentListener(document, opId, documentId);
 	}
 
 	public void addDocumentListener(final IDocument document,

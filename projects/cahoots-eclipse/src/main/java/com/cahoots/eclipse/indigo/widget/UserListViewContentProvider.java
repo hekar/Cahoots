@@ -79,7 +79,8 @@ public class UserListViewContentProvider extends ViewContentProvider {
 		
 		// Do not return the currently logged in username
 		return filter(
-				having(on(Collaborator.class).getUsername(), not(equalTo(cahootsConnection.getUsername()))), elements).toArray();
+				having(on(Collaborator.class).getUsername(), 
+						not(equalTo(cahootsConnection.getUsername()))), elements).toArray();
 	}
 
 	public void add(final Collaborator element) {

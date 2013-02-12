@@ -14,13 +14,9 @@
 
 package org.eclipse.ecf.docshare;
 
-import org.eclipse.ecf.internal.docshare.Messages;
-
 import java.io.*;
 import java.util.Collections;
 import java.util.Map;
-import org.eclipse.core.filesystem.EFS;
-import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.runtime.*;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.ecf.core.IContainer;
@@ -28,16 +24,8 @@ import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.identity.IDCreateException;
 import org.eclipse.ecf.core.util.ECFException;
 import org.eclipse.ecf.core.util.Trace;
-import org.eclipse.ecf.datashare.AbstractShare;
-import org.eclipse.ecf.datashare.IChannelContainerAdapter;
-import org.eclipse.ecf.datashare.events.IChannelDisconnectEvent;
 import org.eclipse.ecf.docshare.messages.*;
 import org.eclipse.ecf.internal.docshare.*;
-import org.eclipse.ecf.presence.IPresenceContainerAdapter;
-import org.eclipse.ecf.presence.roster.*;
-import org.eclipse.ecf.sync.*;
-import org.eclipse.ecf.sync.doc.DocumentChangeMessage;
-import org.eclipse.ecf.sync.doc.IDocumentSynchronizationStrategyFactory;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.text.*;
 import org.eclipse.jface.text.source.*;
@@ -46,9 +34,6 @@ import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.widgets.*;
 import org.eclipse.ui.*;
-import org.eclipse.ui.editors.text.EditorsUI;
-import org.eclipse.ui.texteditor.IDocumentProvider;
-import org.eclipse.ui.texteditor.ITextEditor;
 
 /**
  * Represents a document sharing session between two participants.

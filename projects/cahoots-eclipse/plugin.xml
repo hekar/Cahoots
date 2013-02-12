@@ -30,15 +30,22 @@
  <extension
        point="org.eclipse.ui.views">
     <category
-          id="cahoots-users-view"
-          name="Users">
+          id="cahoots-view"
+          name="Cahoots">
     </category>
     <view
-          category="cahoots-users-view"
+          category="cahoots-view"
           class="com.cahoots.eclipse.indigo.view.UsersView"
           icon="icons/sample.gif"
           id="com.cahoots.eclipse.indigo.view.UsersView"
           name="Cahoots - Users View">
+    </view>
+    <view
+          category="cahoots-view"
+          class="com.cahoots.eclipse.indigo.view.SharedDocumentView"
+          icon="icons/sample.gif"
+          id="com.cahoots.eclipse.indigo.view.SharedDocumentView"
+          name="Cahoots - Shared Documents">
     </view>
  </extension>
  <extension
@@ -47,6 +54,15 @@
           targetID="org.eclipse.jdt.ui.JavaPerspective">
        <view
              id="com.cahoots.eclipse.indigo.view.UsersView"
+             ratio="0.5"
+             relationship="right"
+             relative="org.eclipse.ui.views.TaskList">
+       </view>
+    </perspectiveExtension>
+    <perspectiveExtension
+          targetID="org.eclipse.jdt.ui.JavaPerspective">
+       <view
+             id="com.cahoots.eclipse.indigo.view.SharedDocumentView"
              ratio="0.5"
              relationship="right"
              relative="org.eclipse.ui.views.TaskList">
