@@ -22,6 +22,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
+import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 
@@ -147,7 +148,7 @@ public class ChatDialog extends Window {
 		final String msg = message.getText().trim();
 		if (!msg.isEmpty()) {
 			socket.send(new ChatSendMessage(connection.getUsername(),
-					collaborator, new Date(), msg));
+					collaborator, timeStampFormat.print(DateTime.now().getMillis()), msg));
 		}
 
 		message.setText("");

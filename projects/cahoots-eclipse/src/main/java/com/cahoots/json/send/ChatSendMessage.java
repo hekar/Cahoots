@@ -1,25 +1,23 @@
 package com.cahoots.json.send;
 
-import java.util.Date;
-
 import com.cahoots.json.MessageBase;
 
 public class ChatSendMessage extends MessageBase {
 	private String from;
 	private String to;
-	private Date date;
+	private String timestamp;
 	private String message;
 	
 	public ChatSendMessage(){
 		super("chat", "send");
 	}
 	
-	public ChatSendMessage(String from, String to, Date date, String message)
+	public ChatSendMessage(String from, String to, String date, String message)
 	{
 		super("chat", "send");
 		this.from = from;
 		this.to = to;
-		this.date = date;
+		this.timestamp = date;
 		this.message = message;
 	}
 	
@@ -35,11 +33,11 @@ public class ChatSendMessage extends MessageBase {
 	public void setTo(String to) {
 		this.to = to;
 	}
-	public Date getDate() {
-		return date;
+	public String getTimestamp() {
+		return timestamp;
 	}
-	public void setDate(Date date) {
-		this.date = date;
+	public void setTimestamp(String date) {
+		this.timestamp = date;
 	}
 	public String getMessage() {
 		return message;

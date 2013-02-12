@@ -23,6 +23,10 @@ namespace Cahoots
     using Microsoft.VisualStudio.Shell;
     using Microsoft.VisualStudio.Shell.Interop;
     using WebSocketSharp;
+    using Microsoft.VisualStudio.CommandBars;
+    using System.Reflection;
+    using System.Collections;
+    using EnvDTE;
 
     /// <summary>
     /// Cahoots VSPackage Extension class.
@@ -63,6 +67,9 @@ namespace Cahoots
 
             // find references to the toolbar buttons
             FindToolbarButtons();
+
+            // setup context menus
+            SetupContextMenus();
         }
 
         /// <summary>
@@ -76,10 +83,43 @@ namespace Cahoots
         }
 
         /// <summary>
+        /// Sets up the context menus.
+        /// </summary>
+        private void SetupContextMenus()
+        {
+            this.ApplicationObject = GetService(typeof(EnvDTE.DTE)) as _DTE;
+
+            var menus = this.ApplicationObject.CommandBars as CommandBars;
+            var editorMenu = menus["Code Window"];
+
+            // add the cahoots menu item
+            CommandBarPopup cahootsMenu = (CommandBarPopup)
+                    editorMenu.Controls.Add(MsoControlType.msoControlPopup,
+                    System.Reflection.Missing.Value,
+                    System.Reflection.Missing.Value, 1, true);
+            // Set the caption of the menuitem
+            cahootsMenu.Caption = "Cahoots";
+
+            // add the share submenu item
+            CommandBarControl share =
+              cahootsMenu.Controls.Add(MsoControlType.msoControlButton,
+              System.Reflection.Missing.Value,
+              System.Reflection.Missing.Value, 1, true);
+            // Set the caption of the submenuitem
+            share.Caption = "Share";
+
+            this.ShareMenuHander =
+                    this.ApplicationObject.Events.get_CommandBarEvents(share) as CommandBarEventsClass;
+            this.ShareMenuHander.Click += new 
+                    _dispCommandBarControlEvents_ClickEventHandler(OpenShareStarter);
+        }
+
+        /// <summary>
         /// Initializes the preferences.
         /// </summary>
         private void InitializePreferences()
         {
+            // get paths and stuff
             var path =
                 Environment.GetFolderPath(Environment.SpecialFolder.Personal);
             var root = path + @"\Visual Studio 2010\Cahoots\";
@@ -142,6 +182,22 @@ namespace Cahoots
         #region Members
 
         /// <summary>
+        /// Gets or sets the application object.
+        /// </summary>
+        /// <value>
+        /// The application object.
+        /// </value>
+        private _DTE ApplicationObject { get; set; }
+
+        /// <summary>
+        /// Gets or sets the share menu hander.
+        /// </summary>
+        /// <value>
+        /// The share menu hander.
+        /// </value>
+        private CommandBarEventsClass ShareMenuHander { get; set; }
+
+        /// <summary>
         /// Gets or sets the socket.
         /// </summary>
         /// <value>
@@ -192,7 +248,7 @@ namespace Cahoots
         /// <value>
         /// The preferences.
         /// </value>
-        private Preferences Preferences { get; set; }
+        public Preferences Preferences { get; private set; }
 
         #endregion
 
@@ -305,11 +361,11 @@ namespace Cahoots
                 EventArgs evt)
         {
             // TODO: make this async???
-            var window = new ConnectWindow();
+            var window = new ConnectWindow(this.Preferences.Servers.Select(s => s.Name));
             if (window.ShowDialog() == true)
             {
                 // create a new authentication service for this connection.
-                var server = new Uri(window.Server);
+                var server = new Uri(this.Preferences.Servers.Single(s => s.Name == window.Server).Address);
                 this.AuthenticationService =
                         new AuthenticationService(
                             server,
@@ -327,7 +383,7 @@ namespace Cahoots
 
                     // TODO: make this based on something legit
                     this.Socket = new WebSocket(
-                            "ws://localhost:9000/app/message?auth_token=" + this.AuthenticationService.Token);
+                            "ws://" + server.Host + ":" + server.Port.ToString() + "/app/message?auth_token=" + this.AuthenticationService.Token);
 
                     this.CommunicationRelay.SetSocket(this.Socket);
 
@@ -404,8 +460,17 @@ namespace Cahoots
                 object sender,
                 EventArgs e)
         {
+            this.ShowPreferences();
+        }
+
+        /// <summary>
+        /// Shows the preferences.
+        /// </summary>
+        public bool ShowPreferences()
+        {
             var window = new PreferencesWindow(this.Preferences);
-            if (window.ShowDialog() ?? false)
+            var b = window.ShowDialog() ?? false;
+            if (b)
             {
                 // save preferences
                 var path = Environment.GetFolderPath(
@@ -420,6 +485,8 @@ namespace Cahoots
                     writer.Write(xml);
                 }
             }
+
+            return b;
         }
 
         /// <summary>
@@ -429,6 +496,18 @@ namespace Cahoots
         private void InvokeOnUI(Action action)
         {
             UIContext.Send(_ => action(), null);
+        }
+
+        /// <summary>
+        /// Opens the share starter.
+        /// </summary>
+        /// <param name="control">The control.</param>
+        /// <param name="handled">if set to <c>true</c> [handled].</param>
+        /// <param name="cancelDefault">if set to <c>true</c> [cancel default].</param>
+        protected void OpenShareStarter(object control, ref bool handled, ref bool cancelDefault)
+        {
+            // http://www.codeproject.com/Articles/479214/Developing-extension-packages-for-Visual-Studio-20
+            var doc = this.ApplicationObject.ActiveDocument;
         }
 
         /// <summary>

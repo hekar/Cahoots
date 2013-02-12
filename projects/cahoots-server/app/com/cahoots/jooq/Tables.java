@@ -13,6 +13,11 @@ package com.cahoots.jooq;
 public final class Tables {
 
 	/**
+	 * The table public.chat
+	 */
+	public static final com.cahoots.jooq.tables.Chat CHAT = com.cahoots.jooq.tables.Chat.CHAT;
+
+	/**
 	 * The table public.database_version
 	 */
 	public static final com.cahoots.jooq.tables.DatabaseVersion DATABASE_VERSION = com.cahoots.jooq.tables.DatabaseVersion.DATABASE_VERSION;
