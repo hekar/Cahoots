@@ -1,12 +1,9 @@
 package com.cahoots.eclipse.indigo.editor;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 
 import javax.inject.Inject;
 
-import org.apache.commons.httpclient.util.ExceptionUtil;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspace;
@@ -19,7 +16,6 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.ide.ResourceUtil;
-import org.eclipse.ui.internal.Workbench;
 
 import com.cahoots.eclipse.Activator;
 import com.cahoots.java.lang.ExceptionUtils;

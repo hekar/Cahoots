@@ -15,16 +15,13 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IDocumentListener;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.ide.ResourceUtil;
-import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 import com.cahoots.connection.CahootsConnection;
 import com.cahoots.connection.websocket.CahootsSocket;
 import com.cahoots.eclipse.indigo.job.BackgroundJobScheduler;
 import com.cahoots.eclipse.op.OpSessionManager;
-import com.cahoots.events.ShareDocumentEventListener;
 import com.cahoots.json.Collaborator;
-import com.cahoots.json.receive.ShareDocumentMessage;
 import com.cahoots.json.send.SendOpDeleteMessage;
 import com.cahoots.json.send.SendOpInsertMessage;
 import com.cahoots.json.send.SendOpReplaceMessage;

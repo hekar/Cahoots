@@ -2,7 +2,6 @@ package com.cahoots.eclipse.indigo.log;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.PrintWriter;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
@@ -11,7 +10,6 @@ import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
-import org.apache.commons.httpclient.util.ExceptionUtil;
 import org.osgi.framework.Bundle;
 
 import com.cahoots.eclipse.Activator;
@@ -55,7 +53,7 @@ public final class Log {
 		return loggers.get(name);
 	}
 
-	private Logger logger;
+	private final Logger logger;
 
 	public Log(final String name) {
 		logger = Logger.getLogger(name);

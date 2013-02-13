@@ -76,6 +76,7 @@ public class ConnectDialog extends Window {
 	/**
 	 * Create contents of the dialog.
 	 */
+	@Override
 	protected Composite createContents(final Composite parent) {
 		final Shell shell = getShell();
 		shell.setText("Connect to Cahoots");

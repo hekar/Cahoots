@@ -1,12 +1,11 @@
 package com.cahoots.eclipse.collab.share;
 
+import static ch.lambdaj.Lambda.filter;
 import static ch.lambdaj.Lambda.having;
 import static ch.lambdaj.Lambda.on;
-import static ch.lambdaj.Lambda.filter;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.not;
 
-import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
@@ -42,9 +41,9 @@ import com.google.inject.Injector;
  */
 public class ShareDocumentDialog extends Window {
 
-	private ShareDocumentManager shareDocumentManager;
-	private TextEditorTools textEditorTools;
-	private CahootsConnection connectionDetails;
+	private final ShareDocumentManager shareDocumentManager;
+	private final TextEditorTools textEditorTools;
+	private final CahootsConnection connectionDetails;
 
 	public ShareDocumentDialog(final Shell parentShell) {
 		super(parentShell);
@@ -146,6 +145,7 @@ public class ShareDocumentDialog extends Window {
 
 		// Handle double clicking the username. Share with this user
 		usersList.addDoubleClickListener(new IDoubleClickListener() {
+			@Override
 			public void doubleClick(final DoubleClickEvent event) {
 				final ISelection selection = event.getSelection();
 				if (selection instanceof StructuredSelection) {
