@@ -6,14 +6,12 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
-import org.eclipse.swt.events.PaintEvent;
-import org.eclipse.swt.events.PaintListener;
-import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.menus.WorkbenchWindowControlContribution;
 import org.osgi.framework.Bundle;
 
@@ -32,7 +30,7 @@ public class FastBar extends WorkbenchWindowControlContribution {
 
 	private Composite bar;
 	private Label barImg;
-	private Label barmsg;
+	private Label usrImg;
 	private Bundle bundle;
 	private Injector injector;
 	private CahootsConnection details;
@@ -47,14 +45,20 @@ public class FastBar extends WorkbenchWindowControlContribution {
 
 		details = injector.getInstance(CahootsConnection.class);
 		bar = createLoginTrim(parent);
-		bar.setToolTipText("Connect to Cahoots");
-		barmsg = new Label(bar, SWT.NONE);
 
 		barImg = new Label(bar, SWT.NONE);
-
+		usrImg = new Label(bar, SWT.NONE);
 		try {
 			barImg.setImage(ImageDescriptor.createFromURL(
 					new URL(bundle.getEntry("/"), "icons/" + "black_logo.gif"))
+					.createImage());
+		} catch (final Exception e) {
+			e.printStackTrace();
+		}
+
+		try {
+			usrImg.setImage(ImageDescriptor.createFromURL(
+					new URL(bundle.getEntry("/"), "icons/" + "user.gif"))
 					.createImage());
 		} catch (final Exception e) {
 			e.printStackTrace();
@@ -81,8 +85,37 @@ public class FastBar extends WorkbenchWindowControlContribution {
 			}
 		};
 
-		bar.addMouseListener(m);
 		barImg.addMouseListener(m);
+
+		usrImg.setToolTipText("View users list");
+
+		usrImg.addMouseListener(new MouseListener() {
+
+			@Override
+			public void mouseUp(final MouseEvent arg0) {
+
+			}
+
+			@Override
+			public void mouseDown(final MouseEvent arg0) {
+
+			}
+
+			@Override
+			public void mouseDoubleClick(final MouseEvent arg0) {
+				try {
+					PlatformUI
+							.getWorkbench()
+							.getActiveWorkbenchWindow()
+							.getActivePage()
+							.showView(
+									"com.cahoots.eclipse.indigo.view.UsersView");
+				} catch (final PartInitException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		});
 
 		final CahootsSocket socket = injector.getInstance(CahootsSocket.class);
 		socket.addConnectEventListener(new ConnectEventListener() {
@@ -91,10 +124,9 @@ public class FastBar extends WorkbenchWindowControlContribution {
 				SwtDisplayUtils.async(new Runnable() {
 					@Override
 					public void run() {
-						bar.setToolTipText(String.format("Connected as %s@%s",
-								details.getUsername(), details.getServer()));
-						barmsg.setText(String.format("%s@%s",
-								details.getUsername(), details.getServer()));
+						barImg.setToolTipText(String.format(
+								"Connected as %s@%s", details.getUsername(),
+								details.getServer()));
 
 						try {
 							barImg.setImage(ImageDescriptor.createFromURL(
@@ -117,10 +149,9 @@ public class FastBar extends WorkbenchWindowControlContribution {
 				SwtDisplayUtils.async(new Runnable() {
 					@Override
 					public void run() {
-						bar.setToolTipText(String.format("Connected as %s@%s",
-								details.getUsername(), details.getServer()));
-						barmsg.setText(String.format("%s@%s",
-								details.getUsername(), details.getServer()));
+						barImg.setToolTipText(String.format(
+								"Connected as %s@%s", details.getUsername(),
+								details.getServer()));
 						try {
 							barImg.setImage(ImageDescriptor.createFromURL(
 									new URL(bundle.getEntry("/"), "icons/"
@@ -137,16 +168,6 @@ public class FastBar extends WorkbenchWindowControlContribution {
 
 	private Composite createLoginTrim(final Composite parent) {
 		final Composite comp = new Composite(parent, SWT.NONE);
-		comp.addPaintListener(new PaintListener() {
-			@Override
-			public void paintControl(final PaintEvent e) {
-
-				final GC g = e.gc;
-				g.setForeground(Display.getCurrent().getSystemColor(
-						SWT.COLOR_DARK_GRAY));
-				g.drawRectangle(0, 0, e.width - 1, e.height - 1);
-			}
-		});
 
 		final RowLayout layout = new RowLayout(SWT.HORIZONTAL);
 		layout.pack = true;
