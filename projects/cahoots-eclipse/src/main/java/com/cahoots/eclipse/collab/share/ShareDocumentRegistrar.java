@@ -23,6 +23,7 @@ import com.cahoots.eclipse.indigo.log.Log;
 import com.cahoots.eclipse.indigo.widget.MessageDialog;
 import com.cahoots.eclipse.indigo.widget.MessageDialogStatus;
 import com.cahoots.eclipse.indigo.widget.TextEditorTools;
+import com.cahoots.eclipse.indigo.widget.UserListViewContentProvider;
 import com.cahoots.eclipse.op.OpDocument;
 import com.cahoots.eclipse.swt.SwtDisplayUtils;
 import com.cahoots.events.OpDeleteEventListener;
@@ -44,7 +45,7 @@ public class ShareDocumentRegistrar implements EventRegistrar {
 
 	private static Log logger = Log.getLogger(ShareDocumentRegistrar.class);
 
-	private final IncomingShareDocumentManager incomingShareDocumentManager;
+	private final ShareDocumentSessionManager incomingShareDocumentManager;
 	private final ShareDocumentManager shareDocumentManager;
 	private final CahootsSocket cahootsSocket;
 	private final TextEditorTools editorTools;
@@ -53,18 +54,21 @@ public class ShareDocumentRegistrar implements EventRegistrar {
 	private final IEditorRegistry editorRegistry;
 	private final CahootsConnection cahootsConnection;
 	private final MessageDialog messageDialog;
+	private final UserListViewContentProvider userList;
 
 	@Inject
 	public ShareDocumentRegistrar(
-			final IncomingShareDocumentManager incomingShareDocumentManager,
+			final ShareDocumentSessionManager shareDocumentSessionManager,
 			final MessageDialog messageDialog,
 			final CahootsConnection cahootsConnection,
 			final IWorkbenchWindow workbenchWindow,
 			final IEditorRegistry editorRegistry,
 			final ResourceFinder resourceFinder,
 			final ShareDocumentManager shareDocumentManager,
-			final CahootsSocket cahootsSocket, final TextEditorTools editorTools) {
-		this.incomingShareDocumentManager = incomingShareDocumentManager;
+			final CahootsSocket cahootsSocket,
+			final TextEditorTools editorTools,
+			final UserListViewContentProvider userList) {
+		this.incomingShareDocumentManager = shareDocumentSessionManager;
 		this.messageDialog = messageDialog;
 		this.cahootsConnection = cahootsConnection;
 		this.workbenchWindow = workbenchWindow;
@@ -73,6 +77,7 @@ public class ShareDocumentRegistrar implements EventRegistrar {
 		this.shareDocumentManager = shareDocumentManager;
 		this.cahootsSocket = cahootsSocket;
 		this.editorTools = editorTools;
+		this.userList = userList;
 	}
 
 	@Override
@@ -93,27 +98,33 @@ public class ShareDocumentRegistrar implements EventRegistrar {
 					final String documentId = msg.getDocumentId();
 					final String sharer = msg.getSharer();
 					final String opId = msg.getOpId();
-
-					final boolean sameUser = sharer.equals(cahootsConnection
-							.getUsername());
-					if (sameUser) {
-						return;
-					}
+					System.out.println(cahootsConnection.getUsername());
+					// final boolean sameUser =
+					// sharer.equals(cahootsConnection
+					// .getUsername());
+					// if (sameUser) {
+					// return;
+					// }
 
 					final Runnable runnable = new Runnable() {
+						@Override
 						public void run() {
-							final OpDocument document = new OpDocument(opId,
-									documentId);
-							final String inviteMessage = String.format(
-									"%s is requesting to share document %s.",
-									sharer, document.getFilename());
-							final MessageDialogStatus prompt = messageDialog
-									.prompt(workbenchWindow.getShell(),
-											"Accept Invite", inviteMessage);
-							if (prompt != MessageDialogStatus.OK) {
-								return;
+							// Don't prompt if we started the collaboration
+							if (!sharer.equals(cahootsConnection.getUsername())) {
+								final String name = userList.get(sharer)
+										.getName();
+								final OpDocument document = new OpDocument(
+										opId, documentId);
+								final String inviteMessage = String
+										.format("%s is requesting to share document %s.",
+												name, document.getFilename());
+								final MessageDialogStatus prompt = messageDialog
+										.prompt(workbenchWindow.getShell(),
+												"Accept Invite", inviteMessage);
+								if (prompt != MessageDialogStatus.OK) {
+									return;
+								}
 							}
-
 							final ITextEditor textEditor = getSharedDocumentTextEditor(documentId);
 							setupNotifications(textEditor);
 
@@ -170,6 +181,7 @@ public class ShareDocumentRegistrar implements EventRegistrar {
 			final IWorkbenchPage activePage = workbenchWindow.getActivePage();
 			// TODO: Make sure this editor has a correct id
 			final String editorId = editorPart.getSite().getId();
+			System.out.println("Editor ID: " + editorId);
 			final IEditorPart editor = editorTools.openEditor(activePage,
 					editorInput, editorId);
 			if (editor == null) {

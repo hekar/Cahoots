@@ -1,7 +1,5 @@
 package com.cahoots.eclipse.op;
 
-import java.util.Arrays;
-
 public class OpDocument {
 	private final String opId;
 	private final String documentId;
@@ -25,5 +23,4 @@ public class OpDocument {
 		return split[split.length - 1];
 	}
 
-	
 }

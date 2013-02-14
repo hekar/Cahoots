@@ -30,8 +30,8 @@ import com.cahoots.json.receive.UserChangeMessage;
 @SuppressWarnings("restriction")
 public class UserListViewContentProvider extends ViewContentProvider {
 
-	private Map<String, Collaborator> elements = new ConcurrentHashMap<String, Collaborator>();
-	private List<SourceContentChangedListener> listeners = new ArrayList<SourceContentChangedListener>();
+	private final Map<String, Collaborator> elements = new ConcurrentHashMap<String, Collaborator>();
+	private final List<SourceContentChangedListener> listeners = new ArrayList<SourceContentChangedListener>();
 	private final CahootsConnection cahootsConnection;
 
 	@Inject
@@ -67,19 +67,24 @@ public class UserListViewContentProvider extends ViewContentProvider {
 		});
 	}
 
+	@Override
 	public void inputChanged(final Viewer v, final Object oldInput,
 			final Object newInput) {
 	}
 
+	@Override
 	public void dispose() {
 	}
 
+	@Override
 	public Object[] getElements(final Object parent) {
 		final Collection<Collaborator> elements = this.elements.values();
-		
+
 		// Do not return the currently logged in username
 		return filter(
-				having(on(Collaborator.class).getUsername(), not(equalTo(cahootsConnection.getUsername()))), elements).toArray();
+				having(on(Collaborator.class).getUsername(),
+						not(equalTo(cahootsConnection.getUsername()))),
+				elements).toArray();
 	}
 
 	public void add(final Collaborator element) {
@@ -104,6 +109,10 @@ public class UserListViewContentProvider extends ViewContentProvider {
 		for (final SourceContentChangedListener listener : listeners) {
 			listener.onEvent(this);
 		}
+	}
+
+	public Collaborator get(final String username) {
+		return elements.get(username);
 	}
 
 }

@@ -10,10 +10,10 @@ import com.cahoots.json.Collaborator;
 
 public class UserListViewLabelProvider extends LabelProvider implements
 		ITableLabelProvider {
-	
+
 	public UserListViewLabelProvider() {
 	}
-	
+
 	public String getColumnText(final Object obj, final int index) {
 		return getText(obj);
 	}

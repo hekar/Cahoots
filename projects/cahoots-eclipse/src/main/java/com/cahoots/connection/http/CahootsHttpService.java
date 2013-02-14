@@ -20,29 +20,31 @@ public class CahootsHttpService {
 
 	private String authToken;
 	private String domain;
-	
+
 	@Inject
 	public CahootsHttpService(CahootsConnection connection) {
 		this.authToken = connection.getAuthToken();
 		this.domain = connection.getServer();
 	}
-	
+
 	public ListUsersResponse listUsers() {
 		final List<NameValuePair> data = new LinkedList<NameValuePair>();
-		data.add( new NameValuePair("auth_token", authToken));
-		
+		data.add(new NameValuePair("auth_token", authToken));
+
 		final List<String> bodyResponse = new ArrayList<String>();
-		new CahootsHttpClient().get(domain, "/user/list", data, new CahootsHttpResponseReceivedListener() {
-			@Override
-			public void onReceive(final int statusCode, final HttpMethodBase method) {
-				try {
-					bodyResponse.add(method.getResponseBodyAsString());
-				} catch (final IOException e) {
-					e.printStackTrace();
-				}
-			}
-		});
-		
+		new CahootsHttpClient().get(domain, "/user/list", data,
+				new CahootsHttpResponseReceivedListener() {
+					@Override
+					public void onReceive(final int statusCode,
+							final HttpMethodBase method) {
+						try {
+							bodyResponse.add(method.getResponseBodyAsString());
+						} catch (final IOException e) {
+							e.printStackTrace();
+						}
+					}
+				});
+
 		if (bodyResponse.size() > 0) {
 			final String json = bodyResponse.get(0);
 			return new Gson().fromJson(json, ListUsersResponse.class);

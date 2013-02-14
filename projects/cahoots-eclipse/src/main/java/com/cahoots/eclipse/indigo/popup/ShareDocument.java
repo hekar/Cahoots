@@ -21,10 +21,10 @@ public class ShareDocument implements IObjectActionDelegate,
 
 	private Shell shell;
 	private CahootsSocket cahootsSocket;
-	
+
 	@SuppressWarnings("unused")
 	private IWorkbenchPart targetPart;
-	
+
 	@SuppressWarnings("unused")
 	private IEditorPart targetEditor;
 
@@ -41,9 +41,10 @@ public class ShareDocument implements IObjectActionDelegate,
 	}
 
 	@Override
-	public void setActiveEditor(final IAction action, final IEditorPart targetEditor) {
+	public void setActiveEditor(final IAction action,
+			final IEditorPart targetEditor) {
 		// TODO: What to do here???
-		//shell = targetEditor.getSite().getShell();
+		// shell = targetEditor.getSite().getShell();
 		this.targetEditor = targetEditor;
 	}
 
@@ -53,7 +54,7 @@ public class ShareDocument implements IObjectActionDelegate,
 			final ConnectDialog connectDialog = new ConnectDialog(shell);
 			connectDialog.setBlockOnOpen(true);
 			connectDialog.open();
-			
+
 			if (connectDialog.getReturnCode() == SWT.CANCEL) {
 				return;
 			}
@@ -67,12 +68,11 @@ public class ShareDocument implements IObjectActionDelegate,
 	@Override
 	public void selectionChanged(final IAction action,
 			final ISelection selection) {
-		
+
 		if (selection instanceof TextSelection) {
 			// TODO: Handle text selection and cursor movement changes here
 			@SuppressWarnings("unused")
-			final
-			TextSelection textSelection = (TextSelection) selection;
+			final TextSelection textSelection = (TextSelection) selection;
 		}
 	}
 }

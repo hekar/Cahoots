@@ -25,5 +25,4 @@ public class EditorNotFoundException extends RuntimeException {
 		super(cause);
 	}
 
-	
 }

@@ -5,7 +5,7 @@ import java.util.List;
 public class SendShareDocumentMessage {
 	private final String service = "op";
 	private final String type = "share";
-	
+
 	private String user;
 	private String documentId;
 	private List<String> collaborators;
@@ -50,5 +50,4 @@ public class SendShareDocumentMessage {
 		return type;
 	}
 
-	
 }

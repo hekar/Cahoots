@@ -16,7 +16,8 @@ public class Collaborator {
 		this.name = name;
 	}
 
-	public Collaborator(final String name, final String role, final String status, final String username) {
+	public Collaborator(final String name, final String role,
+			final String status, final String username) {
 		this.name = name;
 		this.role = role;
 		this.status = status;
@@ -54,7 +55,7 @@ public class Collaborator {
 	public void setUsername(final String username) {
 		this.username = username;
 	}
-	
+
 	public CollaboratorStatus getCollaboratorStatus() {
 		return CollaboratorStatus.fromString(status);
 	}
