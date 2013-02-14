@@ -12,7 +12,6 @@ import com.cahoots.connection.http.tools.CahootsHttpClient;
 import com.cahoots.connection.websocket.CahootsSocket;
 import com.cahoots.eclipse.indigo.widget.TextEditorTools;
 import com.cahoots.eclipse.op.OpSynchronizedClock;
-import com.cahoots.eclipse.op.OpTransformation;
 import com.cahoots.events.OpDeleteEventListener;
 import com.cahoots.events.OpInsertEventListener;
 import com.cahoots.events.OpReplaceEventListener;

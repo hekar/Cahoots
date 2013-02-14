@@ -65,8 +65,7 @@ public class ShareDocumentRegistrar implements EventRegistrar {
 			final IEditorRegistry editorRegistry,
 			final ResourceFinder resourceFinder,
 			final ShareDocumentManager shareDocumentManager,
-			final CahootsSocket cahootsSocket, 
-			final CahootsSocket cahootsSocket, final TextEditorTools editorTools) {
+			final CahootsSocket cahootsSocket,
 			final TextEditorTools editorTools,
 			final UserListViewContentProvider userList) {
 		this.incomingShareDocumentManager = shareDocumentSessionManager;
@@ -99,6 +98,7 @@ public class ShareDocumentRegistrar implements EventRegistrar {
 					final String documentId = msg.getDocumentId();
 					final String sharer = msg.getSharer();
 					final String opId = msg.getOpId();
+					final String name = userList.get(sharer).getName();
 
 					final Runnable runnable = new Runnable() {
 						public void run() {
@@ -115,8 +115,8 @@ public class ShareDocumentRegistrar implements EventRegistrar {
 								if (prompt != MessageDialogStatus.OK) {
 									return;
 								}
-								}
 							}
+
 							final ITextEditor textEditor = getSharedDocumentTextEditor(documentId);
 							setupNotifications(textEditor);
 
