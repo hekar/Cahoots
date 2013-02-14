@@ -98,23 +98,14 @@ public class ShareDocumentRegistrar implements EventRegistrar {
 					final String documentId = msg.getDocumentId();
 					final String sharer = msg.getSharer();
 					final String opId = msg.getOpId();
-					System.out.println(cahootsConnection.getUsername());
-					// final boolean sameUser =
-					// sharer.equals(cahootsConnection
-					// .getUsername());
-					// if (sameUser) {
-					// return;
-					// }
+					final String name = userList.get(sharer).getName();
 
 					final Runnable runnable = new Runnable() {
-						@Override
 						public void run() {
-							// Don't prompt if we started the collaboration
-							if (!sharer.equals(cahootsConnection.getUsername())) {
-								final String name = userList.get(sharer)
-										.getName();
-								final OpDocument document = new OpDocument(
-										opId, documentId);
+							final OpDocument document = new OpDocument(opId,
+									documentId);
+
+							if (!cahootsConnection.isLoggedInUser(sharer)) {
 								final String inviteMessage = String
 										.format("%s is requesting to share document %s.",
 												name, document.getFilename());
@@ -125,6 +116,7 @@ public class ShareDocumentRegistrar implements EventRegistrar {
 									return;
 								}
 							}
+
 							final ITextEditor textEditor = getSharedDocumentTextEditor(documentId);
 							setupNotifications(textEditor);
 

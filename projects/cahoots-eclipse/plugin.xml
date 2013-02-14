@@ -27,6 +27,14 @@
       style="push"/>
 		</actionSet>
 	</extension>
+	<extension point="org.eclipse.ui.menus">
+      <menuContribution locationURI="toolbar:org.eclipse.ui.trim.status">
+         <toolbar id="com.cahoots.eclipse.indigo.view">
+             <control class="com.cahoots.eclipse.indigo.view.FastBar"></control>
+         </toolbar>
+      </menuContribution>
+   </extension>
+	
  <extension
        point="org.eclipse.ui.views">
     <category

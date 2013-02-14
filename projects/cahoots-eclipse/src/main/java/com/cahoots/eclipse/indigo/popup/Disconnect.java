@@ -2,41 +2,31 @@ package com.cahoots.eclipse.indigo.popup;
 
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 
-import com.cahoots.connection.CahootsConnection;
 import com.cahoots.eclipse.Activator;
-import com.cahoots.eclipse.collab.DisconnectDialog;
 import com.google.inject.Injector;
 
 public class Disconnect implements IWorkbenchWindowActionDelegate {
 
-	private Shell shell;
-	private CahootsConnection connection;
+	private ConnectStuff stuff;
 
 	@Override
-	public void init(IWorkbenchWindow window) {
-		shell = window.getShell();
+	public void init(final IWorkbenchWindow window) {
 
-		Injector injector = Activator.getInjector();
-		connection = injector.getInstance(CahootsConnection.class);
+		final Injector injector = Activator.getInjector();
+		stuff = injector.getInstance(ConnectStuff.class);
 	}
 
 	@Override
-	public void run(IAction action) {
-		boolean authenticated = connection.isAuthenticated();
-		if (authenticated) {
-			DisconnectDialog dialog = new DisconnectDialog(shell,
-					SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL);
-			dialog.open();
-		}
+	public void run(final IAction action) {
+		stuff.disconnect();
 	}
 
 	@Override
-	public void selectionChanged(IAction action, ISelection selection) {
+	public void selectionChanged(final IAction action,
+			final ISelection selection) {
 	}
 
 	@Override
