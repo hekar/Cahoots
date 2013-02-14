@@ -9,6 +9,7 @@ namespace Cahoots
     using System.Collections.ObjectModel;
     using System.ComponentModel;
     using System.ComponentModel.Design;
+    using System.Diagnostics;
     using System.IO;
     using System.Linq;
     using System.Runtime.InteropServices;
@@ -20,13 +21,16 @@ namespace Cahoots
     using Cahoots.Services.Contracts;
     using Cahoots.Services.Models;
     using Cahoots.Services.ViewModels;
+
+    using EnvDTE;
+    using Microsoft.VisualStudio.CommandBars;
+    using Microsoft.VisualStudio.Editor;
     using Microsoft.VisualStudio.Shell;
     using Microsoft.VisualStudio.Shell.Interop;
+    using Microsoft.VisualStudio.Text.Editor;
+    using Microsoft.VisualStudio.TextManager.Interop;
     using WebSocketSharp;
-    using Microsoft.VisualStudio.CommandBars;
-    using System.Reflection;
-    using System.Collections;
-    using EnvDTE;
+    using Cahoots.Views.Custom;
 
     /// <summary>
     /// Cahoots VSPackage Extension class.
@@ -79,7 +83,8 @@ namespace Cahoots
         {
             this.CommunicationRelay = new MessageRelay(
                     new UsersService(),
-                    new ChatService(this, this.Preferences));
+                    new ChatService(this, this.Preferences),
+                    new OpService());
         }
 
         /// <summary>
@@ -101,15 +106,16 @@ namespace Cahoots
             cahootsMenu.Caption = "Cahoots";
 
             // add the share submenu item
-            CommandBarControl share =
+            ShareMenuCommand =
               cahootsMenu.Controls.Add(MsoControlType.msoControlButton,
               System.Reflection.Missing.Value,
               System.Reflection.Missing.Value, 1, true);
             // Set the caption of the submenuitem
-            share.Caption = "Share";
+            ShareMenuCommand.Caption = "Share";
+            ShareMenuCommand.Enabled = false;
 
             this.ShareMenuHander =
-                    this.ApplicationObject.Events.get_CommandBarEvents(share) as CommandBarEventsClass;
+                    this.ApplicationObject.Events.get_CommandBarEvents(ShareMenuCommand) as CommandBarEventsClass;
             this.ShareMenuHander.Click += new 
                     _dispCommandBarControlEvents_ClickEventHandler(OpenShareStarter);
         }
@@ -196,6 +202,14 @@ namespace Cahoots
         /// The share menu hander.
         /// </value>
         private CommandBarEventsClass ShareMenuHander { get; set; }
+
+        /// <summary>
+        /// Gets or sets the share menu command.
+        /// </summary>
+        /// <value>
+        /// The share menu command.
+        /// </value>
+        private CommandBarControl ShareMenuCommand { get; set; }
 
         /// <summary>
         /// Gets or sets the socket.
@@ -364,6 +378,8 @@ namespace Cahoots
             var window = new ConnectWindow(this.Preferences.Servers.Select(s => s.Name));
             if (window.ShowDialog() == true)
             {
+                this.ApplicationObject.StatusBar.Text = "Connecting to Cahoots...";
+
                 // create a new authentication service for this connection.
                 var server = new Uri(this.Preferences.Servers.Single(s => s.Name == window.Server).Address);
                 this.AuthenticationService =
@@ -388,9 +404,14 @@ namespace Cahoots
                     this.CommunicationRelay.SetSocket(this.Socket);
 
                     this.Socket.Connect();
+
+                    this.ApplicationObject.StatusBar.Text = "Cahoots Connected!";
+                    ShareMenuCommand.Enabled = true;
                 }
                 else
                 {
+                    this.ApplicationObject.StatusBar.Text = "Cahoots Connection Error...";
+
                     // display error message.
                     var retry = MessageBox.Show(
                             "An error occured authenticating with Cahoots:\r\n"
@@ -444,6 +465,9 @@ namespace Cahoots
                 this.Socket.Dispose();
                 this.Socket = null;
                 this.CommunicationRelay.SetSocket(null);
+
+                this.ApplicationObject.StatusBar.Text = "Cahoots Connected!";
+                this.ShareMenuCommand.Enabled = false;
             }
         }
 
@@ -506,8 +530,18 @@ namespace Cahoots
         /// <param name="cancelDefault">if set to <c>true</c> [cancel default].</param>
         protected void OpenShareStarter(object control, ref bool handled, ref bool cancelDefault)
         {
-            // http://www.codeproject.com/Articles/479214/Developing-extension-packages-for-Visual-Studio-20
-            var doc = this.ApplicationObject.ActiveDocument;
+            var users = this.CommunicationRelay.Services["users"] as UsersService;
+            var window = new SelectCollaborators(users.GetCollaborators());
+
+            if (window.ShowDialog() == true)
+            {
+                var collaborators = window.Selected;
+
+                //var active = this.ApplicationObject.ActiveDocument;
+                //var view = this.ApplicationObject.GetEditorView(active.FullName);
+
+                //(this.CommunicationRelay.Services["op"] as OpService).AddSharedDocument(active.FullName, view);
+            }
         }
 
         /// <summary>
