@@ -396,6 +396,7 @@ namespace Cahoots
                             "ws://" + server.Host + ":" + server.Port.ToString() + "/app/message?auth_token=" + this.AuthenticationService.Token);
 
                     this.CommunicationRelay.SetSocket(this.Socket);
+                    this.CommunicationRelay.Services["users"].As<UsersService>().UserName = window.UserName;
 
                     this.Socket.Connect();
 

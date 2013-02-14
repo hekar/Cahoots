@@ -21,7 +21,21 @@ namespace Cahoots.Services
             this.ViewModel = new UsersViewModel();
         }
 
+        /// <summary>
+        /// Gets or sets the view model.
+        /// </summary>
+        /// <value>
+        /// The view model.
+        /// </value>
         private UsersViewModel ViewModel { get; set; }
+
+        /// <summary>
+        /// Gets or sets the name of the user.
+        /// </summary>
+        /// <value>
+        /// The name of the user.
+        /// </value>
+        public string UserName { get; set; }
 
         /// <summary>
         /// Processes the JSON message.
@@ -73,7 +87,9 @@ namespace Cahoots.Services
         {
             if (message.Users != null)
             {
-                foreach (var user in message.Users)
+                var users =
+                        message.Users.Where(c => c.UserName != this.UserName);
+                foreach (var user in users)
                 {
                     this.UpdateCollaborator(user);
                 }
@@ -95,7 +111,10 @@ namespace Cahoots.Services
         /// <param name="message">The message.</param>
         public void UpdateUserStatus(ReceiveUserStatusMessage message)
         {
-            this.UpdateCollaborator(message.User);
+            if (message.User.UserName != this.UserName)
+            {
+                this.UpdateCollaborator(message.User);
+            }
         }
 
         /// <summary>
