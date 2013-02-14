@@ -20,6 +20,12 @@ GET      /app/message                           controllers.Application.message(
 GET      /user/list                             controllers.User.listUsers(auth_token)
 
 # ~~~~~~~~~~~
+# OpTransformation
+# ~~~~~~~~~~~
+GET      /op/clock                             controllers.OpTransformation.clock(auth_token, opId)
+
+
+# ~~~~~~~~~~~
 # Administrative Portal
 # ~~~~~~~~~~~
 GET     /auth/login                             controllers.Auth.login

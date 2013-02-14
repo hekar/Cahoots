@@ -63,7 +63,8 @@ public class ShareDocumentRegistrar implements EventRegistrar {
 			final IEditorRegistry editorRegistry,
 			final ResourceFinder resourceFinder,
 			final ShareDocumentManager shareDocumentManager,
-			final CahootsSocket cahootsSocket, final TextEditorTools editorTools) {
+			final CahootsSocket cahootsSocket, 
+			final TextEditorTools editorTools) {
 		this.incomingShareDocumentManager = shareDocumentSessionManager;
 		this.messageDialog = messageDialog;
 		this.cahootsConnection = cahootsConnection;
@@ -93,26 +94,22 @@ public class ShareDocumentRegistrar implements EventRegistrar {
 					final String documentId = msg.getDocumentId();
 					final String sharer = msg.getSharer();
 					final String opId = msg.getOpId();
-					System.out.println(cahootsConnection.getUsername());
-
-//					final boolean sameUser = sharer.equals(cahootsConnection
-//							.getUsername());
-//					if (sameUser) {
-//						return;
-//					}
 
 					final Runnable runnable = new Runnable() {
 						public void run() {
 							final OpDocument document = new OpDocument(opId,
 									documentId);
-							final String inviteMessage = String.format(
-									"%s is requesting to share document %s.",
-									sharer, document.getFilename());
-							final MessageDialogStatus prompt = messageDialog
-									.prompt(workbenchWindow.getShell(),
-											"Accept Invite", inviteMessage);
-							if (prompt != MessageDialogStatus.OK) {
-								return;
+
+							if (!cahootsConnection.isLoggedInUser(sharer)) {
+								final String inviteMessage = String
+										.format("%s is requesting to share document %s.",
+												sharer, document.getFilename());
+								final MessageDialogStatus prompt = messageDialog
+										.prompt(workbenchWindow.getShell(),
+												"Accept Invite", inviteMessage);
+								if (prompt != MessageDialogStatus.OK) {
+									return;
+								}
 							}
 
 							final ITextEditor textEditor = getSharedDocumentTextEditor(documentId);

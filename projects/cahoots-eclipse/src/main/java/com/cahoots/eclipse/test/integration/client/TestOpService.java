@@ -1,14 +1,18 @@
 package com.cahoots.eclipse.test.integration.client;
 
 import java.util.Arrays;
+import java.util.concurrent.Future;
 
 import org.eclipse.jetty.websocket.WebSocketClientFactory;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.cahoots.connection.CahootsConnection;
+import com.cahoots.connection.http.tools.CahootsHttpClient;
 import com.cahoots.connection.websocket.CahootsSocket;
 import com.cahoots.eclipse.indigo.widget.TextEditorTools;
+import com.cahoots.eclipse.op.OpSynchronizedClock;
+import com.cahoots.eclipse.op.OpTransformation;
 import com.cahoots.events.OpDeleteEventListener;
 import com.cahoots.events.OpInsertEventListener;
 import com.cahoots.events.OpReplaceEventListener;
@@ -92,4 +96,13 @@ public class TestOpService {
 				OpDeleteEventListener.class);
 	}
 
+	@Test
+	public void testSynchronizedClock() throws Exception {
+		final ShareDocumentMessage document = shareDocument();
+		
+		final Future<OpSynchronizedClock> clockFuture = OpSynchronizedClock.fromConnection(new CahootsHttpClient(), cahootsConnection);
+		final OpSynchronizedClock clock = clockFuture.get();
+		
+		System.out.println(clock);
+	}
 }

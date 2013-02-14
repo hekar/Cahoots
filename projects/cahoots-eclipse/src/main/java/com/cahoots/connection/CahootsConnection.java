@@ -33,8 +33,17 @@ public class CahootsConnection {
 	public String getServer() {
 		return details.getServer();
 	}
+	
+	public boolean isLoggedInUser(final String username) {
+		final String loggedInUser = getUsername();
+		if (loggedInUser == null) {
+			return false;
+		}
+		
+		return loggedInUser.equals(username);
+	}
 
-	public void updateConnectionDetails(ConnectionDetails details) {
+	public void updateConnectionDetails(final ConnectionDetails details) {
 		this.details = details;
 	}
 
