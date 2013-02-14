@@ -3,6 +3,7 @@ package services
 import play.api._
 import play.api.libs.json._
 import collection.mutable.{HashMap, HashSet => MutableHashSet}
+import collection.mutable
 
 /**
  * Operational transformations service
@@ -12,10 +13,7 @@ class OpService(
                  sendAll: (JsValue) => Unit)
   extends AsyncService("op", sendOne, sendAll) {
 
-  /**
-   * Document Id -> Shared operational transformation
-   */
-  val ops = new HashMap[String, OpSession]
+  import OpSessions.ops
 
   def processMessage(json: JsValue) {
     Logger.debug("Message received: ")
@@ -258,4 +256,18 @@ class OpSession(val opSessionId: Int, val documentId: String, val userHost: Stri
    */
   val collaborators = new MutableHashSet[String]
 
+  private val _start = System.currentTimeMillis()
+
+  /**
+   * Time since op session has been started
+   * @return
+   */
+  def clock = System.currentTimeMillis() - _start
+}
+
+object OpSessions {
+  /**
+   * Document Id -> Shared operational transformation
+   */
+  val ops = new HashMap[String, OpSession]
 }
