@@ -100,9 +100,10 @@ public class TestOpService {
 	public void testSynchronizedClock() throws Exception {
 		final ShareDocumentMessage document = shareDocument();
 		
-		final Future<OpSynchronizedClock> clockFuture = OpSynchronizedClock.fromConnection(new CahootsHttpClient(), cahootsConnection);
+		final Future<OpSynchronizedClock> clockFuture = OpSynchronizedClock.fromConnection(new CahootsHttpClient(), 
+				cahootsConnection, document.getOpId());
 		final OpSynchronizedClock clock = clockFuture.get();
 		
-		System.out.println(clock);
+		System.out.println(clock.getClock());
 	}
 }
