@@ -23,6 +23,7 @@ import com.cahoots.eclipse.indigo.log.Log;
 import com.cahoots.eclipse.indigo.widget.MessageDialog;
 import com.cahoots.eclipse.indigo.widget.MessageDialogStatus;
 import com.cahoots.eclipse.indigo.widget.TextEditorTools;
+import com.cahoots.eclipse.indigo.widget.UserListViewContentProvider;
 import com.cahoots.eclipse.op.OpDocument;
 import com.cahoots.eclipse.swt.SwtDisplayUtils;
 import com.cahoots.events.OpDeleteEventListener;
@@ -53,6 +54,7 @@ public class ShareDocumentRegistrar implements EventRegistrar {
 	private final IEditorRegistry editorRegistry;
 	private final CahootsConnection cahootsConnection;
 	private final MessageDialog messageDialog;
+	private final UserListViewContentProvider userList;
 
 	@Inject
 	public ShareDocumentRegistrar(
@@ -64,7 +66,9 @@ public class ShareDocumentRegistrar implements EventRegistrar {
 			final ResourceFinder resourceFinder,
 			final ShareDocumentManager shareDocumentManager,
 			final CahootsSocket cahootsSocket, 
-			final TextEditorTools editorTools) {
+			final CahootsSocket cahootsSocket, final TextEditorTools editorTools) {
+			final TextEditorTools editorTools,
+			final UserListViewContentProvider userList) {
 		this.incomingShareDocumentManager = shareDocumentSessionManager;
 		this.messageDialog = messageDialog;
 		this.cahootsConnection = cahootsConnection;
@@ -74,6 +78,7 @@ public class ShareDocumentRegistrar implements EventRegistrar {
 		this.shareDocumentManager = shareDocumentManager;
 		this.cahootsSocket = cahootsSocket;
 		this.editorTools = editorTools;
+		this.userList = userList;
 	}
 
 	@Override
@@ -103,15 +108,15 @@ public class ShareDocumentRegistrar implements EventRegistrar {
 							if (!cahootsConnection.isLoggedInUser(sharer)) {
 								final String inviteMessage = String
 										.format("%s is requesting to share document %s.",
-												sharer, document.getFilename());
+												name, document.getFilename());
 								final MessageDialogStatus prompt = messageDialog
 										.prompt(workbenchWindow.getShell(),
 												"Accept Invite", inviteMessage);
 								if (prompt != MessageDialogStatus.OK) {
 									return;
 								}
+								}
 							}
-
 							final ITextEditor textEditor = getSharedDocumentTextEditor(documentId);
 							setupNotifications(textEditor);
 

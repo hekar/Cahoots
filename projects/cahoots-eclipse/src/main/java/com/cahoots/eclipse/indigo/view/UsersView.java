@@ -41,7 +41,7 @@ public class UsersView extends ViewPart {
 	private Action action1;
 	private Action action2;
 	private Action doubleClickAction;
-	
+
 	private final SourceContentChangedListener listener = new SourceContentChangedListener() {
 		@Override
 		public void onEvent(final Object msg) {
@@ -64,7 +64,7 @@ public class UsersView extends ViewPart {
 		viewer.setLabelProvider(new UserListViewLabelProvider());
 		viewer.setSorter(new NameSorter());
 		viewer.setInput(getViewSite());
-		
+
 		source.addContentChangedListener(listener);
 
 		// Create the help context id for the viewer's control
@@ -144,8 +144,9 @@ public class UsersView extends ViewPart {
 				final ISelection selection = viewer.getSelection();
 				final Object obj = ((IStructuredSelection) selection)
 						.getFirstElement();
-				final Collaborator collab = (Collaborator)obj;
-				Activator.getInjector().getInstance(Chat.class).startChat(collab.getUsername());
+				final Collaborator collab = (Collaborator) obj;
+				Activator.getInjector().getInstance(Chat.class)
+						.startChat(collab.getUsername());
 			}
 		};
 	}

@@ -49,11 +49,12 @@ public class ChatDialog extends Window {
 	private StyledText log;
 	private StyledText message;
 	private Button send;
-	
+
 	private File logDir;
 
 	private static String lineSeparator = System.getProperty("line.separator");
-	private final DateTimeFormatter timeStampFormat = ISODateTimeFormat.dateTimeNoMillis();
+	private final DateTimeFormatter timeStampFormat = ISODateTimeFormat
+			.dateTimeNoMillis();
 
 	public ChatDialog(final Shell parent, final List<String> collaborators) {
 		super(parent);
@@ -80,8 +81,9 @@ public class ChatDialog extends Window {
 		getShell().setSize(640, 480);
 
 		final Composite content = parent;
-		
-		content.setLayout(new MigLayout("fill", "", "[growprio 100][growprio 0]"));
+
+		content.setLayout(new MigLayout("fill", "",
+				"[growprio 100][growprio 0]"));
 
 		log = new StyledText(content, SWT.BORDER | SWT.READ_ONLY);
 		log.setLayoutData("grow, wrap");
@@ -102,7 +104,6 @@ public class ChatDialog extends Window {
 				}
 			}
 		});
-		
 
 		if (!message.forceFocus()) {
 			logger.debug("Failure to force focus on textbox in chat dialog");
@@ -124,35 +125,30 @@ public class ChatDialog extends Window {
 		return content;
 	}
 
-	private File getLogDir()
-	{
-		if(logDir == null)
-		{
+	private File getLogDir() {
+		if (logDir == null) {
 			StringBuilder sb = new StringBuilder();
 
-			sb
-				.append(System.getProperty( "user.home" ))
-				.append(File.separator)
-				.append(".cahoots")
-				.append(File.separator)
-				.append("chat")
-				.append(File.separator);
-			
+			sb.append(System.getProperty("user.home")).append(File.separator)
+					.append(".cahoots").append(File.separator).append("chat")
+					.append(File.separator);
+
 			logDir = new File(sb.toString());
 			logDir.mkdir();
 		}
 		return logDir;
 	}
-	
+
 	private void sendMessage() {
 		final String msg = message.getText().trim();
 		if (!msg.isEmpty()) {
 			socket.send(new ChatSendMessage(connection.getUsername(),
-					collaborator, timeStampFormat.print(DateTime.now().getMillis()), msg));
+					collaborator, timeStampFormat.print(DateTime.now()
+							.getMillis()), msg));
 		}
 
 		message.setText("");
-		
+
 		final String time = timeStampFormat.print(new Date().getTime());
 		// TODO: Handle multiple timezones, send everything UTC and convert to
 		// local timezone
@@ -164,16 +160,14 @@ public class ChatDialog extends Window {
 
 	}
 
-	private String readLog(String from)
-	{
+	private String readLog(String from) {
 		StringBuilder msg = new StringBuilder();
-		File logFile = new File( getLogDir(), collaborator);
+		File logFile = new File(getLogDir(), collaborator);
 		try {
 			FileReader fr = new FileReader(logFile);
 			BufferedReader br = new BufferedReader(fr);
 			String line = null;
-			while((line = br.readLine()) != null)
-			{
+			while ((line = br.readLine()) != null) {
 				msg.append(line);
 				msg.append(lineSeparator);
 			}
@@ -181,14 +175,12 @@ public class ChatDialog extends Window {
 		}
 		return msg.toString();
 	}
-	
-	private void writeToLog(String from, String line)
-	{
-		if(Activator.getActivator().getPreferenceStore().getBoolean(PreferenceConstants.P_SAVE_CHAT))
-		{
-			File logFile = new File( getLogDir(), from);
-			if(!logFile.exists())
-			{
+
+	private void writeToLog(String from, String line) {
+		if (Activator.getActivator().getPreferenceStore()
+				.getBoolean(PreferenceConstants.P_SAVE_CHAT)) {
+			File logFile = new File(getLogDir(), from);
+			if (!logFile.exists()) {
 				try {
 					logFile.createNewFile();
 				} catch (IOException ignore) {
@@ -203,10 +195,8 @@ public class ChatDialog extends Window {
 				bw.flush();
 			} catch (IOException ignore) {
 				ignore.printStackTrace();
-			} finally
-			{
-				if(bw != null)
-				{
+			} finally {
+				if (bw != null) {
 					try {
 						bw.close();
 					} catch (IOException ignore) {
@@ -215,7 +205,7 @@ public class ChatDialog extends Window {
 			}
 		}
 	}
-	
+
 	public void receiveMessage(final ChatReceiveMessage msg) {
 		final String time = timeStampFormat.print(new Date().getTime());
 		SwtDisplayUtils.async(new Runnable() {
@@ -224,13 +214,9 @@ public class ChatDialog extends Window {
 				// TODO: Handle multiple timezones, send everything UTC and
 				// convert to local timezone
 				StringBuilder sb = new StringBuilder();
-				sb.append(time)
-					.append(" ")
-					.append(msg.getFrom())
-					.append(": ")
-					.append(msg.getMessage())
-					.append(lineSeparator);
-				
+				sb.append(time).append(" ").append(msg.getFrom()).append(": ")
+						.append(msg.getMessage()).append(lineSeparator);
+
 				String message = sb.toString();
 				log.append(message);
 				writeToLog(msg.getFrom(), message);

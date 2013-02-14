@@ -1,6 +1,5 @@
 package com.cahoots.connection;
 
-
 /**
  * Not sure about what to do with this class.
  * 

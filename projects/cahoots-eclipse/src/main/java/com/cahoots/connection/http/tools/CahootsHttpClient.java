@@ -22,7 +22,8 @@ public class CahootsHttpClient {
 		}
 	}
 	
-	public void get(final String server, final String path, final List<NameValuePair> data,
+	public void get(final String server, final String path,
+			final List<NameValuePair> data,
 			final CahootsHttpResponseReceivedListener listener) {
 		final HttpClient client = new HttpClient();
 		final GetMethod method = new GetMethod("http://" + server + path);
@@ -36,7 +37,8 @@ public class CahootsHttpClient {
 		}
 	}
 
-	public void post(final String server, final String path, final List<NameValuePair> data,
+	public void post(final String server, final String path,
+			final List<NameValuePair> data,
 			final CahootsHttpResponseReceivedListener listener) {
 		final HttpClient client = new HttpClient();
 		final PostMethod method = new PostMethod("http://" + server + path);

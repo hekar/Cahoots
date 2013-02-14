@@ -52,11 +52,13 @@ public class SharedDocumentView extends ViewPart {
 		}
 
 		public void remove(final UnShareDocumentMessage message) {
-			for (final Iterator<ShareDocumentMessage> it = elements.iterator(); it.hasNext();) {
+			for (final Iterator<ShareDocumentMessage> it = elements.iterator(); it
+					.hasNext();) {
 				final ShareDocumentMessage sdm = it.next();
-				
-				final boolean equals = sdm.getDocumentId().equals(message.getDocumentId()) &&
-						sdm.getOpId().equals(message.getOpId());
+
+				final boolean equals = sdm.getDocumentId().equals(
+						message.getDocumentId())
+						&& sdm.getOpId().equals(message.getOpId());
 				if (equals) {
 					it.remove();
 				}

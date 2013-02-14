@@ -1,6 +1,5 @@
 package com.cahoots.eclipse.event;
 
-
 /**
  * Allows the registration of events under an EventRegistrarManager
  */

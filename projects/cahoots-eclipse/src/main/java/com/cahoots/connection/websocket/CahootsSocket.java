@@ -21,7 +21,6 @@ import com.cahoots.connection.CahootsConnection;
 import com.cahoots.connection.ConnectionDetails;
 import com.cahoots.connection.http.tools.CahootsHttpClient;
 import com.cahoots.connection.http.tools.CahootsHttpResponseReceivedListener;
-import com.cahoots.eclipse.Activator;
 import com.cahoots.eclipse.indigo.log.Log;
 import com.cahoots.eclipse.indigo.widget.TextEditorTools;
 import com.cahoots.events.ChatReceivedEventListener;
@@ -96,7 +95,7 @@ public class CahootsSocket {
 					new ArrayList<ChatReceivedEventListener>());
 		}
 	};
-	private List<ConnectEventListener> connectListeners = new ArrayList<ConnectEventListener>();
+	private final List<ConnectEventListener> connectListeners = new ArrayList<ConnectEventListener>();
 
 	private ListenableFuture<WebSocket> connection;
 
@@ -187,7 +186,8 @@ public class CahootsSocket {
 					final DisconnectEventListener disconnectEventListener = (DisconnectEventListener) listener;
 					disconnectEventListener.onEvent(new DisconnectEvent());
 				} else {
-					throw new IllegalStateException("Non DisconnectEventListener in listeners");
+					throw new IllegalStateException(
+							"Non DisconnectEventListener in listeners");
 				}
 			}
 		}

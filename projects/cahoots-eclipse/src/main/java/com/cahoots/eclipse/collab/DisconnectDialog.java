@@ -38,7 +38,7 @@ public class DisconnectDialog extends Dialog {
 	public DisconnectDialog(Shell parent, int style) {
 		super(parent, style);
 		setText("SWT Dialog");
-		
+
 		Injector injector = Activator.getInjector();
 		cahootsConnection = injector.getInstance(CahootsConnection.class);
 		cahootsSocket = injector.getInstance(CahootsSocket.class);
@@ -86,14 +86,17 @@ public class DisconnectDialog extends Dialog {
 				PostMethod method = new PostMethod("http://"
 						+ cahootsConnection.getServer() + "/app/logout");
 				List<NameValuePair> data = new LinkedList<NameValuePair>();
-				data.add(new NameValuePair("auth_token", cahootsConnection.getAuthToken()));
+				data.add(new NameValuePair("auth_token", cahootsConnection
+						.getAuthToken()));
 
 				method.setRequestBody(data.toArray(new NameValuePair[data
 						.size()]));
 				try {
 					int statusCode = client.executeMethod(method);
 					if (statusCode == 200) {
-						cahootsConnection.updateConnectionDetails(new ConnectionDetails("", "", "", ""));
+						cahootsConnection
+								.updateConnectionDetails(new ConnectionDetails(
+										"", "", "", ""));
 						cahootsSocket.disconnect();
 						shell.close();
 					} else {
@@ -111,7 +114,7 @@ public class DisconnectDialog extends Dialog {
 			}
 		});
 
-		// Cancel button 
+		// Cancel button
 		Button cancel = new Button(shell, SWT.NONE);
 		cancel.setBounds(179, 31, 75, 25);
 		cancel.setText("Cancel");
