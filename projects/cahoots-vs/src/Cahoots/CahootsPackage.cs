@@ -9,28 +9,22 @@ namespace Cahoots
     using System.Collections.ObjectModel;
     using System.ComponentModel;
     using System.ComponentModel.Design;
-    using System.Diagnostics;
     using System.IO;
     using System.Linq;
     using System.Runtime.InteropServices;
     using System.Threading;
     using System.Windows.Forms;
-
     using Cahoots.Ext;
     using Cahoots.Services;
     using Cahoots.Services.Contracts;
     using Cahoots.Services.Models;
     using Cahoots.Services.ViewModels;
-
+    using Cahoots.Views.Custom;
     using EnvDTE;
     using Microsoft.VisualStudio.CommandBars;
-    using Microsoft.VisualStudio.Editor;
     using Microsoft.VisualStudio.Shell;
     using Microsoft.VisualStudio.Shell.Interop;
-    using Microsoft.VisualStudio.Text.Editor;
-    using Microsoft.VisualStudio.TextManager.Interop;
     using WebSocketSharp;
-    using Cahoots.Views.Custom;
 
     /// <summary>
     /// Cahoots VSPackage Extension class.

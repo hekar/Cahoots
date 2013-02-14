@@ -10,6 +10,7 @@ namespace Cahoots.Services
     using System.Collections.Generic;
     using System.Net;
     using Cahoots.Ext;
+    using Cahoots.Ext.String;
     using Cahoots.Ext.Net;
 
     /// <summary>

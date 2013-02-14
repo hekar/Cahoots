@@ -69,6 +69,7 @@
     <Compile Include="MessageModels\Chat\ReceiveMessage.cs" />
     <Compile Include="MessageModels\Chat\SendChatMessage.cs" />
     <Compile Include="MessageModels\MessageBase.cs" />
+    <Compile Include="MessageModels\Ops\SendShareMessage.cs" />
     <Compile Include="MessageModels\Users\ReceiveAllUsersMessage.cs" />
     <Compile Include="MessageModels\Users\ReceiveUserStatusMessage.cs" />
     <Compile Include="Models\ChatMessageModel.cs" />

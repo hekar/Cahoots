@@ -6,7 +6,6 @@
 
 namespace Cahoots.Services.MessageModels
 {
-    using System;
     using System.Runtime.Serialization;
 
     [DataContract]

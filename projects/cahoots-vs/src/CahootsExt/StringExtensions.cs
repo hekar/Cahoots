@@ -4,7 +4,7 @@
 // </copyright>
 // ------------------------------------------------------------------------
 
-namespace Cahoots.Ext
+namespace Cahoots.Ext.String
 {
     /// <summary>
     /// The string extensions class.
