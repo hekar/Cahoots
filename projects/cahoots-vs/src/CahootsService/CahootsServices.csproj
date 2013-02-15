@@ -69,11 +69,17 @@
     <Compile Include="MessageModels\Chat\ReceiveMessage.cs" />
     <Compile Include="MessageModels\Chat\SendChatMessage.cs" />
     <Compile Include="MessageModels\MessageBase.cs" />
+    <Compile Include="MessageModels\Ops\BaseOpMessage.cs" />
+    <Compile Include="MessageModels\Ops\OpDeleteMessage.cs" />
+    <Compile Include="MessageModels\Ops\OpInsertMessage.cs" />
+    <Compile Include="MessageModels\Ops\OpReplaceMessage.cs" />
+    <Compile Include="MessageModels\Ops\ReceiveShareMessage.cs" />
     <Compile Include="MessageModels\Ops\SendShareMessage.cs" />
     <Compile Include="MessageModels\Users\ReceiveAllUsersMessage.cs" />
     <Compile Include="MessageModels\Users\ReceiveUserStatusMessage.cs" />
     <Compile Include="Models\ChatMessageModel.cs" />
     <Compile Include="Models\Collaborator.cs" />
+    <Compile Include="Models\DocumentModel.cs" />
     <Compile Include="Models\ModelBase.cs" />
     <Compile Include="Models\Preferences\Preferences.cs" />
     <Compile Include="Models\Preferences\Server.cs" />

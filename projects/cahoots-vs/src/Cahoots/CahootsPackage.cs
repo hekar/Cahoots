@@ -24,6 +24,7 @@ namespace Cahoots
     using Microsoft.VisualStudio.CommandBars;
     using Microsoft.VisualStudio.Shell;
     using Microsoft.VisualStudio.Shell.Interop;
+    using Microsoft.VisualStudio.Text.Editor;
     using WebSocketSharp;
 
     /// <summary>
@@ -78,7 +79,7 @@ namespace Cahoots
             this.CommunicationRelay = new MessageRelay(
                     new UsersService(),
                     new ChatService(this, this.Preferences),
-                    new OpService());
+                    new OpService(this));
         }
 
         /// <summary>
@@ -387,16 +388,14 @@ namespace Cahoots
                 {
                     this.ConnectButton.Enabled = false;
                     this.DisconnectButton.Enabled = true;
-                    //this.Host.Enabled = true;
 
                     this.Me = this.AuthenticationService.UserName;
 
-                    // TODO: make this based on something legit
                     this.Socket = new WebSocket(
                             "ws://" + server.Host + ":" + server.Port.ToString() + "/app/message?auth_token=" + this.AuthenticationService.Token);
 
                     this.CommunicationRelay.SetSocket(this.Socket);
-                    this.CommunicationRelay.Services["users"].As<UsersService>().UserName = window.UserName;
+                    this.CommunicationRelay.SetUserName(this.Me);
 
                     this.Socket.Connect();
 
@@ -525,14 +524,21 @@ namespace Cahoots
         /// <param name="cancelDefault">if set to <c>true</c> [cancel default].</param>
         protected void OpenShareStarter(object control, ref bool handled, ref bool cancelDefault)
         {
-            var users = this.CommunicationRelay.Services["users"] as UsersService;
+            var users = this.CommunicationRelay.Service<UsersService>();
             var window = new SelectCollaborators(users.GetCollaborators());
 
             if (window.ShowDialog() == true)
             {
-                var collaborators = window.Selected;
+                var collaborators = window.Selected.Select(c => c.UserName);
 
-                //var active = this.ApplicationObject.ActiveDocument;
+                var solution = this.ApplicationObject.Solution.FullName;
+                var solutionPath = solution.Substring(0, solution.LastIndexOf('\\'));
+
+                var documentPath = this.ApplicationObject.ActiveDocument.FullName;
+                var documentId = documentPath.Replace(solutionPath, "").Replace('\\', '/');
+
+                this.CommunicationRelay.Service<OpService>().StartCollaboration(this.Me, documentId, collaborators.ToList());
+
                 //var view = this.ApplicationObject.GetEditorView(active.FullName);
 
                 //(this.CommunicationRelay.Services["op"] as OpService).AddSharedDocument(active.FullName, view);
@@ -571,14 +577,14 @@ namespace Cahoots
                 Chats.Add(user.Name, pane);
                 var frame = (IVsWindowFrame)pane.Frame;
                 this.WindowFrames.Add(frame);
-                var win = (pane as ChatWindowToolWindow).Content as ChatWindowControl;
+                var win = pane.As<ChatWindowToolWindow>().Content as ChatWindowControl;
                 var vm = this.GetViewModel("chat", user, this.Me) as ChatViewModel;
                 win.ViewModel = vm;
                 frame.Show();
             }
             else
             {
-                ((IVsWindowFrame)Chats[user.Name].Frame).Show();
+                Chats[user.Name].Frame.As<IVsWindowFrame>().Show();
             }
         }
 
@@ -595,6 +601,15 @@ namespace Cahoots
             {
                 this.InvokeOnUI(() => this.OpenChatWindow(user));
             }
+        }
+
+        /// <summary>
+        /// Opens the document window.
+        /// </summary>
+        /// <param name="filePath">The file path.</param>
+        public IWpfTextView OpenDocumentWindow(string filePath)
+        {
+            return this.ApplicationObject.GetEditorView(filePath);
         }
 
         /// <summary>

@@ -30,14 +30,6 @@ namespace Cahoots.Services
         private UsersViewModel ViewModel { get; set; }
 
         /// <summary>
-        /// Gets or sets the name of the user.
-        /// </summary>
-        /// <value>
-        /// The name of the user.
-        /// </value>
-        public string UserName { get; set; }
-
-        /// <summary>
         /// Processes the JSON message.
         /// </summary>
         /// <param name="type">The message type.</param>

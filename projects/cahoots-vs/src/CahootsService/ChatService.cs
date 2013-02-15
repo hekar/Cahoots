@@ -143,8 +143,7 @@ namespace Cahoots.Services
         /// <param name="message">The message.</param>
         public void Send(SendChatMessage message)
         {
-            var str = JsonHelper.Serialize(message);
-            this.SendMessage(str);
+            this.SendMessage(message);
 
             if (this.Preferences.SaveChatLogs)
             {

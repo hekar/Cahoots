@@ -15,6 +15,14 @@ namespace Cahoots.Services
         /// The service identifier.
         /// </value>
         string ServiceIdentifier { get; }
+
+        /// <summary>
+        /// Gets or sets the name of the user.
+        /// </summary>
+        /// <value>
+        /// The name of the user.
+        /// </value>
+        string UserName { get; set; }
         
         /// <summary>
         /// Initializes the service senders.

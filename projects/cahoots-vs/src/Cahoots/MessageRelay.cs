@@ -98,6 +98,18 @@ namespace Cahoots
         }
 
         /// <summary>
+        /// Sets the name of the user.
+        /// </summary>
+        /// <param name="userName">Name of the user.</param>
+        public void SetUserName(string userName)
+        {
+            foreach (var service in this.Services.Values)
+            {
+                service.UserName = userName;
+            }
+        }
+
+        /// <summary>
         /// Sends a to the server message.
         /// </summary>
         /// <param name="message">The message.</param>
@@ -107,6 +119,24 @@ namespace Cahoots
             {
                 this.Socket.Send(message);
             }
+        }
+
+        /// <summary>
+        /// Gets a service of a specific type.
+        /// </summary>
+        /// <typeparam name="T">The service type.</typeparam>
+        /// <returns>The service of the type.</returns>
+        public T Service<T>() where T : class, IAsyncService
+        {
+            foreach (var service in this.Services.Values)
+            {
+                if (service is T)
+                {
+                    return service as T;
+                }
+            }
+
+            return null;
         }
 
         /// <summary>

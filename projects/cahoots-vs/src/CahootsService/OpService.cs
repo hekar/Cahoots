@@ -1,17 +1,30 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using Cahoots.Ext.String;
-using Microsoft.VisualStudio.Text;
-using Microsoft.VisualStudio.Text.Editor;
+﻿///
+///
+///
 
 namespace Cahoots.Services
 {
+    using System.Collections.Generic;
+    using System.Collections.ObjectModel;
+    using System.Diagnostics;
+    using System.Windows;
+    using Cahoots.Ext;
+    using Cahoots.Ext.String;
+    using Cahoots.Services.Contracts;
+    using Cahoots.Services.MessageModels.Ops;
+    using Cahoots.Services.Models;
+    using Cahoots.Services.ViewModels;
+    using Microsoft.VisualStudio.Text;
+
     public class OpService : AsyncService
     {
-        public OpService() : base("op")
+        /// <summary>
+        /// Initializes a new instance of the <see cref="OpService" /> class.
+        /// </summary>
+        public OpService(IWindowService windowService) : base("op")
         {
-            this.Editors = new Dictionary<string, IWpfTextView>();
+            this.Editors = new Dictionary<string, DocumentModel>();
+            this.WindowService = WindowService;
         }
 
         /// <summary>
@@ -20,11 +33,158 @@ namespace Cahoots.Services
         /// <value>
         /// The editors.
         /// </value>
-        private Dictionary<string, IWpfTextView> Editors { get; set; }
+        private Dictionary<string, DocumentModel> Editors { get; set; }
 
-        public void StartCollaboration(string name, IWpfTextView view)
+        /// <summary>
+        /// Gets or sets the window service.
+        /// </summary>
+        /// <value>
+        /// The window service.
+        /// </value>
+        private IWindowService WindowService { get; set; }
+
+        /// <summary>
+        /// Starts the collaboration.
+        /// </summary>
+        /// <param name="user">The user.</param>
+        /// <param name="document">The document.</param>
+        /// <param name="users">The users.</param>
+        public void StartCollaboration(string user, string documentId, List<string> users)
         {
-            view.TextBuffer.Changed += TextBuffer_Changed;
+            var model = new SendShareMessage()
+            {
+                Service = "op",
+                MessageType = "share",
+                User = user,
+                DocumentId = documentId,
+                Collaborators = new Collection<string>(users)
+            };
+
+            this.SendMessage(model);
+        }
+
+        /// <summary>
+        /// Gets a view model for the service.
+        /// </summary>
+        /// <param name="parameters">The parameters.</param>
+        /// <returns></returns>
+        public override BaseViewModel GetViewModel(params object[] parameters)
+        {
+            return null;
+        }
+
+        /// <summary>
+        /// Processes the JSON message.
+        /// </summary>
+        /// <param name="type">The message type.</param>
+        /// <param name="json">The json.</param>
+        public override void ProcessMessage(string type, string json)
+        {
+            switch (type)
+            {
+                case "insert":
+                    var insert = JsonHelper.Deserialize<OpInsertMessage>(json);
+                    this.Insert(insert);
+                    break;
+
+                case "delete":
+                    var delete = JsonHelper.Deserialize<OpDeleteMessage>(json);
+                    this.Delete(delete);
+                    break;
+
+                case "replace":
+                    var replace = JsonHelper.Deserialize<OpReplaceMessage>(json);
+                    this.Replace(replace);
+                    break;
+
+                case "shared":
+                    var share = JsonHelper.Deserialize<ReceiveShareMessage>(json);
+                    this.ReceiveShare(share);
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// Performs an insert in a document.
+        /// </summary>
+        /// <param name="model">The model.</param>
+        private void Insert(OpInsertMessage model)
+        {
+            if (this.Editors.ContainsKey(model.DocumentId))
+            {
+                var view = this.Editors[model.DocumentId].View;
+                view.TextBuffer.Insert(model.Start, model.Content);
+            }
+        }
+
+        /// <summary>
+        /// Performs a delete in a document.
+        /// </summary>
+        /// <param name="model">The model.</param>
+        private void Delete(OpDeleteMessage model)
+        {
+            if (this.Editors.ContainsKey(model.DocumentId))
+            {
+                var view = this.Editors[model.DocumentId].View;
+                var span = new Span(model.Start, model.End - model.Start);
+                view.TextBuffer.Delete(span);
+            }
+        }
+
+        /// <summary>
+        /// Performs a replace in a document.
+        /// </summary>
+        /// <param name="model">The model.</param>
+        private void Replace(OpReplaceMessage model)
+        {
+            if (this.Editors.ContainsKey(model.DocumentId))
+            {
+                var view = this.Editors[model.DocumentId].View;
+                var span = new Span(model.Start, model.End - model.Start);
+                view.TextBuffer.Replace(span, model.Content);
+            }
+        }
+
+        /// <summary>
+        /// Receives a share request.
+        /// </summary>
+        /// <param name="model">The model.</param>
+        public void ReceiveShare(ReceiveShareMessage model)
+        {
+            bool accept = false;
+
+            if (model.Sharer != this.UserName)
+            {
+                var msg = string.Format("{0} would like to share a document with you.  Accept?", model.Sharer);
+                var result = MessageBox.Show(msg, "Collaboration Invite", MessageBoxButton.YesNo);
+
+                if (result == MessageBoxResult.Yes)
+                {
+                    accept = true;
+                }
+            }
+            else
+            {
+                accept = true;
+            }
+
+            if (accept)
+            {
+                // find/open the document
+                var view = this.WindowService.OpenDocumentWindow("");
+
+                var doc = new DocumentModel()
+                {
+                    DocumentId = model.DocumentId,
+                    FullPath = "",
+                    OpId = model.OpId,
+                    View = view
+                };
+
+                // attach events and stuff
+                view.TextBuffer.Changed += TextBuffer_Changed;
+                view.Closed += new System.EventHandler(view_Closed);
+            }
         }
 
         /// <summary>
@@ -50,6 +210,17 @@ namespace Cahoots.Services
                             change.NewPosition + change.NewLength);
                     Debug.WriteLine(change.NewText);
                     Debug.WriteLine("");
+
+                    var model = new OpInsertMessage()
+                    {
+                        Service = "op",
+                        MessageType = "insert",
+                        User = this.UserName,
+                        Start = change.NewPosition,
+                        Content = change.NewText
+                    };
+
+                    this.SendMessage(model);
                 }
                 else if (!change.OldText.IsNullOrEmpty() && change.NewText.IsNullOrEmpty())
                 {
@@ -78,15 +249,22 @@ namespace Cahoots.Services
             }
         }
 
-        public override void ProcessMessage(string type, string json)
+        /// <summary>
+        /// Handles the Closed event of the view control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">
+        ///   The <see cref="System.EventArgs" />
+        ///   instance containing the event data.
+        /// </param>
+        void view_Closed(object sender, System.EventArgs e)
         {
+            // end collaboration
         }
 
-        public override ViewModels.BaseViewModel GetViewModel(params object[] parameters)
-        {
-            throw new NotImplementedException();
-        }
-
+        /// <summary>
+        /// Cleans up the service if the user disconnects.
+        /// </summary>
         public override void Disconnect()
         {
         }

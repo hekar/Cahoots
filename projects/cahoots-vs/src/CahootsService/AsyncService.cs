@@ -1,5 +1,7 @@
 ﻿using System;
 using Cahoots.Services.ViewModels;
+using Cahoots.Ext;
+using Cahoots.Services.MessageModels;
 
 namespace Cahoots.Services
 {
@@ -48,6 +50,14 @@ namespace Cahoots.Services
         public string ServiceIdentifier { get; private set; }
 
         /// <summary>
+        /// Gets or sets the name of the user.
+        /// </summary>
+        /// <value>
+        /// The name of the user.
+        /// </value>
+        public string UserName { get; set; }
+
+        /// <summary>
         /// Processes the JSON message.
         /// </summary>
         /// <param name="type">The message type.</param>
@@ -77,8 +87,9 @@ namespace Cahoots.Services
         /// <summary>
         /// Sends the text/json.
         /// </summary>
-        /// <param name="json">The json.</param>
-        protected void SendMessage(string json)
+        /// <typeparam name="T">The entity type.</typeparam>
+        /// <param name="entity">The entity.</param>
+        protected void SendMessage<T>(T entity) where T : MessageBase
         {
             if (this.MessageSender == null)
             {
@@ -86,6 +97,7 @@ namespace Cahoots.Services
                     "This instance is not configured to send text/json messages");
             }
 
+            var json = JsonHelper.Serialize(entity);
             this.MessageSender(json);
         }
 
