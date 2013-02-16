@@ -94,7 +94,7 @@ namespace Cahoots.Services
             if (this.MessageSender == null)
             {
                 throw new InvalidOperationException(
-                    "This instance is not configured to send text/json messages");
+                    "This instance is not configured to send messages");
             }
 
             var json = JsonHelper.Serialize(entity);

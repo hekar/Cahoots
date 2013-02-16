@@ -23,8 +23,8 @@ namespace Cahoots.Services
         /// </summary>
         public OpService(IWindowService windowService) : base("op")
         {
-            this.Editors = new Dictionary<string, DocumentModel>();
-            this.WindowService = WindowService;
+            this.Documents = new Dictionary<string, DocumentModel>();
+            this.WindowService = windowService;
         }
 
         /// <summary>
@@ -33,7 +33,7 @@ namespace Cahoots.Services
         /// <value>
         /// The editors.
         /// </value>
-        private Dictionary<string, DocumentModel> Editors { get; set; }
+        private Dictionary<string, DocumentModel> Documents { get; set; }
 
         /// <summary>
         /// Gets or sets the window service.
@@ -49,7 +49,10 @@ namespace Cahoots.Services
         /// <param name="user">The user.</param>
         /// <param name="document">The document.</param>
         /// <param name="users">The users.</param>
-        public void StartCollaboration(string user, string documentId, List<string> users)
+        public void StartCollaboration(
+                string user,
+                string documentId,
+                List<string> users)
         {
             var model = new SendShareMessage()
             {
@@ -84,21 +87,32 @@ namespace Cahoots.Services
             {
                 case "insert":
                     var insert = JsonHelper.Deserialize<OpInsertMessage>(json);
-                    this.Insert(insert);
+                    if (insert.User != this.UserName)
+                    {
+                        this.Insert(insert);
+                    }
                     break;
 
                 case "delete":
                     var delete = JsonHelper.Deserialize<OpDeleteMessage>(json);
-                    this.Delete(delete);
+                    if (delete.User != this.UserName)
+                    {
+                        this.Delete(delete);
+                    }
                     break;
 
                 case "replace":
-                    var replace = JsonHelper.Deserialize<OpReplaceMessage>(json);
-                    this.Replace(replace);
+                    var replace =
+                            JsonHelper.Deserialize<OpReplaceMessage>(json);
+                    if (replace.User != this.UserName)
+                    {
+                        this.Replace(replace);
+                    }
                     break;
 
                 case "shared":
-                    var share = JsonHelper.Deserialize<ReceiveShareMessage>(json);
+                    var share =
+                            JsonHelper.Deserialize<ReceiveShareMessage>(json);
                     this.ReceiveShare(share);
                     break;
             }
@@ -110,10 +124,13 @@ namespace Cahoots.Services
         /// <param name="model">The model.</param>
         private void Insert(OpInsertMessage model)
         {
-            if (this.Editors.ContainsKey(model.DocumentId))
+            if (this.Documents.ContainsKey(model.DocumentId))
             {
-                var view = this.Editors[model.DocumentId].View;
-                view.TextBuffer.Insert(model.Start, model.Content);
+                var doc = this.Documents[model.DocumentId];
+                doc.BlockEvent = true;
+                var view = doc.View;
+                this.WindowService.InvokeOnUI(
+                    () => view.TextBuffer.Insert(model.Start, model.Content));
             }
         }
 
@@ -123,11 +140,14 @@ namespace Cahoots.Services
         /// <param name="model">The model.</param>
         private void Delete(OpDeleteMessage model)
         {
-            if (this.Editors.ContainsKey(model.DocumentId))
+            if (this.Documents.ContainsKey(model.DocumentId))
             {
-                var view = this.Editors[model.DocumentId].View;
+                var doc = this.Documents[model.DocumentId];
+                doc.BlockEvent = true;
+                var view = doc.View;
                 var span = new Span(model.Start, model.End - model.Start);
-                view.TextBuffer.Delete(span);
+                this.WindowService.InvokeOnUI(
+                    () => view.TextBuffer.Delete(span));
             }
         }
 
@@ -137,11 +157,14 @@ namespace Cahoots.Services
         /// <param name="model">The model.</param>
         private void Replace(OpReplaceMessage model)
         {
-            if (this.Editors.ContainsKey(model.DocumentId))
+            if (this.Documents.ContainsKey(model.DocumentId))
             {
-                var view = this.Editors[model.DocumentId].View;
+                var doc = this.Documents[model.DocumentId];
+                doc.BlockEvent = true;
+                var view = doc.View;
                 var span = new Span(model.Start, model.End - model.Start);
-                view.TextBuffer.Replace(span, model.Content);
+                this.WindowService.InvokeOnUI(
+                    () => view.TextBuffer.Replace(span, model.Content));
             }
         }
 
@@ -155,8 +178,14 @@ namespace Cahoots.Services
 
             if (model.Sharer != this.UserName)
             {
-                var msg = string.Format("{0} would like to share a document with you.  Accept?", model.Sharer);
-                var result = MessageBox.Show(msg, "Collaboration Invite", MessageBoxButton.YesNo);
+                var msg = string.Format(
+                    "{0} would like to share a document with you.  Accept?",
+                    model.Sharer);
+
+                var result = MessageBox.Show(
+                        msg,
+                        "Collaboration Invite",
+                        MessageBoxButton.YesNo);
 
                 if (result == MessageBoxResult.Yes)
                 {
@@ -171,19 +200,24 @@ namespace Cahoots.Services
             if (accept)
             {
                 // find/open the document
-                var view = this.WindowService.OpenDocumentWindow("");
+                var tuple = this.WindowService.OpenDocumentWindow(
+                                    model.DocumentId);
+
+                var view = tuple.Item2;
 
                 var doc = new DocumentModel()
                 {
                     DocumentId = model.DocumentId,
-                    FullPath = "",
+                    FullPath = tuple.Item1,
                     OpId = model.OpId,
-                    View = view
+                    View = view,
                 };
 
+                this.Documents.Add(model.DocumentId, doc);
+
                 // attach events and stuff
-                view.TextBuffer.Changed += TextBuffer_Changed;
-                view.Closed += new System.EventHandler(view_Closed);
+                view.TextBuffer.Changed += (s, e) => TextChanged(s, e, model.DocumentId);
+                view.Closed += (s, e) => EndCollaboration(s, e, model.DocumentId);
             }
         }
 
@@ -195,12 +229,17 @@ namespace Cahoots.Services
         ///   The <see cref="TextContentChangedEventArgs" />
         ///   instance containing the event data.
         /// </param>
-        private void TextBuffer_Changed(
-                object sender,
-                TextContentChangedEventArgs e)
+        private void TextChanged(object sender, TextContentChangedEventArgs e, string docId)
         {
+            var doc = this.Documents[docId];
+
             foreach (var change in e.Changes)
             {
+                if (doc.BlockEvent)
+                {
+                    continue;
+                }
+
                 if (change.OldText.IsNullOrEmpty() && !change.NewText.IsNullOrEmpty())
                 {
                     // insert
@@ -217,7 +256,9 @@ namespace Cahoots.Services
                         MessageType = "insert",
                         User = this.UserName,
                         Start = change.NewPosition,
-                        Content = change.NewText
+                        Content = change.NewText,
+                        DocumentId = docId,
+                        OpId = doc.OpId
                     };
 
                     this.SendMessage(model);
@@ -227,10 +268,23 @@ namespace Cahoots.Services
                     // delete
                     Debug.WriteLine(
                             "DELETE {0} to {1}",
-                            change.OldPosition,
+                            change.OldPosition, 
                             change.OldPosition + change.OldLength);
                     Debug.WriteLine(change.OldText);
                     Debug.WriteLine("");
+
+                    var model = new OpDeleteMessage()
+                    {
+                        Service = "op",
+                        MessageType = "delete",
+                        User = this.UserName,
+                        Start = change.OldPosition,
+                        End = change.OldPosition + change.OldLength,
+                        DocumentId = docId,
+                        OpId = doc.OpId
+                    };
+
+                    this.SendMessage(model);
                 }
                 else
                 {
@@ -245,6 +299,20 @@ namespace Cahoots.Services
                     Debug.WriteLine("-------------------------------------------");
                     Debug.WriteLine(change.NewText);
                     Debug.WriteLine("");
+
+                    var model = new OpReplaceMessage()
+                    {
+                        Service = "op",
+                        MessageType = "replace",
+                        User = this.UserName,
+                        Start = change.OldPosition,
+                        End = change.OldPosition + change.OldLength,
+                        Content = change.NewText,
+                        DocumentId = docId,
+                        OpId = doc.OpId
+                    };
+
+                    this.SendMessage(model);
                 }
             }
         }
@@ -257,7 +325,7 @@ namespace Cahoots.Services
         ///   The <see cref="System.EventArgs" />
         ///   instance containing the event data.
         /// </param>
-        void view_Closed(object sender, System.EventArgs e)
+        private void EndCollaboration(object sender, System.EventArgs e, string documentId)
         {
             // end collaboration
         }

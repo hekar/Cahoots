@@ -1,23 +1,16 @@
-﻿// ----------------------------------------------------------------------
-// <copyright file="MessageRelay.cs" company="Codeora">
-//     Copyright 2012. All right reserved
-// </copyright>
-// ------------------------------------------------------------------------
+﻿///
+///
+///
 
 namespace Cahoots
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using WebSocketSharp;
+    using Cahoots.Ext;
     using Cahoots.Services;
     using Cahoots.Services.MessageModels;
-    using Cahoots.Ext;
+    using WebSocketSharp;
 
-    /// <summary>
-    /// Class for relaying JSON messages to other services.
-    /// </summary>
     public class MessageRelay : IDisposable
     {
         /// <summary>

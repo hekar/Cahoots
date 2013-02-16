@@ -4,6 +4,7 @@
 
 namespace Cahoots.Services.Contracts
 {
+    using System;
     using Cahoots.Services.Models;
     using Microsoft.VisualStudio.Text.Editor;
 
@@ -25,6 +26,12 @@ namespace Cahoots.Services.Contracts
         /// Opens the document window.
         /// </summary>
         /// <param name="filePath">The file path.</param>
-        IWpfTextView OpenDocumentWindow(string filePath);
+        Tuple<string, IWpfTextView> OpenDocumentWindow(string filePath);
+
+        /// <summary>
+        /// Invokes an action on the UI thread.
+        /// </summary>
+        /// <param name="action">The action.</param>
+        void InvokeOnUI(Action action);
     }
 }

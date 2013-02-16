@@ -63,6 +63,7 @@ namespace Cahoots
             base.Initialize();
             this.InitializePreferences();
             this.InitializeMessagingSystem();
+            this.ApplicationObject = GetService(typeof(EnvDTE.DTE)) as _DTE;
 
             // find references to the toolbar buttons
             FindToolbarButtons();
@@ -81,14 +82,12 @@ namespace Cahoots
                     new ChatService(this, this.Preferences),
                     new OpService(this));
         }
-
+        
         /// <summary>
         /// Sets up the context menus.
         /// </summary>
         private void SetupContextMenus()
         {
-            this.ApplicationObject = GetService(typeof(EnvDTE.DTE)) as _DTE;
-
             var menus = this.ApplicationObject.CommandBars as CommandBars;
             var editorMenu = menus["Code Window"];
 
@@ -97,6 +96,7 @@ namespace Cahoots
                     editorMenu.Controls.Add(MsoControlType.msoControlPopup,
                     System.Reflection.Missing.Value,
                     System.Reflection.Missing.Value, 1, true);
+
             // Set the caption of the menuitem
             cahootsMenu.Caption = "Cahoots";
 
@@ -105,14 +105,15 @@ namespace Cahoots
               cahootsMenu.Controls.Add(MsoControlType.msoControlButton,
               System.Reflection.Missing.Value,
               System.Reflection.Missing.Value, 1, true);
+
             // Set the caption of the submenuitem
             ShareMenuCommand.Caption = "Share";
             ShareMenuCommand.Enabled = false;
 
             this.ShareMenuHander =
-                    this.ApplicationObject.Events.get_CommandBarEvents(ShareMenuCommand) as CommandBarEventsClass;
-            this.ShareMenuHander.Click += new 
-                    _dispCommandBarControlEvents_ClickEventHandler(OpenShareStarter);
+                    this.ApplicationObject.Events.get_CommandBarEvents(
+                                ShareMenuCommand) as CommandBarEventsClass;
+            this.ShareMenuHander.Click += OpenShareStarter;
         }
 
         /// <summary>
@@ -228,7 +229,7 @@ namespace Cahoots
         /// <value>
         /// Me.
         /// </value>
-        public string Me { get; set; }
+        public string UserName { get; set; }
 
         /// <summary>
         /// Gets or sets the chats.
@@ -328,7 +329,8 @@ namespace Cahoots
                     this.GetMenuCommand(PkgCmdIDList.ConnectToolbarButton);
             this.DisconnectButton =
                     this.GetMenuCommand(PkgCmdIDList.DisconnectToolbarButton);
-            this.UsersButton = this.GetMenuCommand(PkgCmdIDList.UsersToolbarButton);
+            this.UsersButton =
+                    this.GetMenuCommand(PkgCmdIDList.UsersToolbarButton);
 
             // we have to set this stuff again, 
             // otherwise it all gets reset to true.
@@ -370,13 +372,17 @@ namespace Cahoots
                 EventArgs evt)
         {
             // TODO: make this async???
-            var window = new ConnectWindow(this.Preferences.Servers.Select(s => s.Name));
+            var window = new ConnectWindow(
+                        this.Preferences.Servers.Select(s => s.Name));
             if (window.ShowDialog() == true)
             {
-                this.ApplicationObject.StatusBar.Text = "Connecting to Cahoots...";
+                this.ApplicationObject.StatusBar.Text =
+                        "Connecting to Cahoots...";
 
                 // create a new authentication service for this connection.
-                var server = new Uri(this.Preferences.Servers.Single(s => s.Name == window.Server).Address);
+                var server = new Uri(
+                    this.Preferences.Servers
+                            .Single(s => s.Name == window.Server).Address);
                 this.AuthenticationService =
                         new AuthenticationService(
                             server,
@@ -389,22 +395,29 @@ namespace Cahoots
                     this.ConnectButton.Enabled = false;
                     this.DisconnectButton.Enabled = true;
 
-                    this.Me = this.AuthenticationService.UserName;
+                    this.UserName = this.AuthenticationService.UserName;
 
-                    this.Socket = new WebSocket(
-                            "ws://" + server.Host + ":" + server.Port.ToString() + "/app/message?auth_token=" + this.AuthenticationService.Token);
+                    var address = string.Format(
+                            "ws://{0}:{1}/app/message?auth_token={2}",
+                            server.Host,
+                            server.Port.ToString(),
+                            this.AuthenticationService.Token);
+
+                    this.Socket = new WebSocket(address);
 
                     this.CommunicationRelay.SetSocket(this.Socket);
-                    this.CommunicationRelay.SetUserName(this.Me);
+                    this.CommunicationRelay.SetUserName(this.UserName);
 
                     this.Socket.Connect();
 
-                    this.ApplicationObject.StatusBar.Text = "Cahoots Connected!";
+                    this.ApplicationObject.StatusBar.Text =
+                                            "Cahoots Connected!";
                     ShareMenuCommand.Enabled = true;
                 }
                 else
                 {
-                    this.ApplicationObject.StatusBar.Text = "Cahoots Connection Error...";
+                    this.ApplicationObject.StatusBar.Text =
+                                            "Cahoots Connection Error...";
 
                     // display error message.
                     var retry = MessageBox.Show(
@@ -511,7 +524,7 @@ namespace Cahoots
         /// Invokes an action on the UI thread.
         /// </summary>
         /// <param name="action">The action.</param>
-        private void InvokeOnUI(Action action)
+        public void InvokeOnUI(Action action)
         {
             UIContext.Send(_ => action(), null);
         }
@@ -521,8 +534,13 @@ namespace Cahoots
         /// </summary>
         /// <param name="control">The control.</param>
         /// <param name="handled">if set to <c>true</c> [handled].</param>
-        /// <param name="cancelDefault">if set to <c>true</c> [cancel default].</param>
-        protected void OpenShareStarter(object control, ref bool handled, ref bool cancelDefault)
+        /// <param name="cancelDefault">
+        ///   if set to <c>true</c> [cancel default].
+        /// </param>
+        protected void OpenShareStarter(
+                object control,
+                ref bool handled,
+                ref bool cancelDefault)
         {
             var users = this.CommunicationRelay.Service<UsersService>();
             var window = new SelectCollaborators(users.GetCollaborators());
@@ -532,13 +550,21 @@ namespace Cahoots
                 var collaborators = window.Selected.Select(c => c.UserName);
 
                 var solution = this.ApplicationObject.Solution.FullName;
-                var solutionPath = solution.Substring(0, solution.LastIndexOf('\\'));
+                var solutionPath = solution.Substring(
+                        0,
+                        solution.LastIndexOf('\\'));
 
-                var documentPath = this.ApplicationObject.ActiveDocument.FullName;
-                var documentId = documentPath.Replace(solutionPath, "").Replace('\\', '/');
+                var documentPath =
+                        this.ApplicationObject.ActiveDocument.FullName;
+                var documentId =
+                    documentPath.Replace(solutionPath, "").Replace('\\', '/');
 
-                this.CommunicationRelay.Service<OpService>().StartCollaboration(this.Me, documentId, collaborators.ToList());
-
+                this.CommunicationRelay.Service<OpService>()
+                        .StartCollaboration(
+                                this.UserName,
+                                documentId,
+                                collaborators.ToList());
+                
                 //var view = this.ApplicationObject.GetEditorView(active.FullName);
 
                 //(this.CommunicationRelay.Services["op"] as OpService).AddSharedDocument(active.FullName, view);
@@ -551,7 +577,9 @@ namespace Cahoots
         /// <param name="service">The service.</param>
         /// <param name="parameters">The parameters.</param>
         /// <returns>The service view model.</returns>
-        public BaseViewModel GetViewModel(string service, params object[] parameters)
+        public BaseViewModel GetViewModel(
+                    string service,
+                    params object[] parameters)
         {
             var keys = new List<string>(this.CommunicationRelay.Services.Keys);
 
@@ -572,13 +600,19 @@ namespace Cahoots
         {
             if (!Chats.ContainsKey(user.Name))
             {
-                var pane = CahootsPackage.Instance.FindToolWindow(typeof(ChatWindowToolWindow), this.WindowIndex++, true);
+                var pane = CahootsPackage.Instance.FindToolWindow(
+                            typeof(ChatWindowToolWindow),
+                            this.WindowIndex++,
+                            true);
+
                 pane.Caption = "Chat — " + user.Name;
                 Chats.Add(user.Name, pane);
                 var frame = (IVsWindowFrame)pane.Frame;
                 this.WindowFrames.Add(frame);
-                var win = pane.As<ChatWindowToolWindow>().Content as ChatWindowControl;
-                var vm = this.GetViewModel("chat", user, this.Me) as ChatViewModel;
+                var win = pane.As<ChatWindowToolWindow>().Content
+                                                as ChatWindowControl;
+                var vm = this.GetViewModel("chat", user, this.UserName)
+                                                as ChatViewModel;
                 win.ViewModel = vm;
                 frame.Show();
             }
@@ -594,8 +628,10 @@ namespace Cahoots
         /// <param name="username">The username.</param>
         public void OpenChatWindow(string username)
         {
-            var service = this.CommunicationRelay.Services["users"] as UsersService;
-            var user = service.GetCollaborators().FirstOrDefault(c => c.UserName == username);
+            var service =
+                    this.CommunicationRelay.Services["users"] as UsersService;
+            var user = service.GetCollaborators().FirstOrDefault(
+                                c => c.UserName == username);
 
             if (user != null)
             {
@@ -607,9 +643,23 @@ namespace Cahoots
         /// Opens the document window.
         /// </summary>
         /// <param name="filePath">The file path.</param>
-        public IWpfTextView OpenDocumentWindow(string filePath)
+        public Tuple<string, IWpfTextView> OpenDocumentWindow(string filePath)
         {
-            return this.ApplicationObject.GetEditorView(filePath);
+            try
+            {
+                var solution = this.ApplicationObject.Solution.FullName;
+                var solutionPath = solution.Substring(
+                        0,
+                        solution.LastIndexOf('\\'));
+
+                var path = solutionPath + filePath.Replace('/', '\\');
+
+                return new Tuple<string, IWpfTextView>(path, this.ApplicationObject.GetEditorView(path));
+            }
+            catch
+            {
+                return null;
+            }
         }
 
         /// <summary>

@@ -58,5 +58,35 @@ namespace Cahoots.Services.Models
                 return 0;
             }
         }
+
+        private object locker = new object();
+
+        private int blocks = 0;
+        public bool BlockEvent
+        {
+            get
+            {
+                lock (locker)
+                {
+                    var b = blocks > 0;
+                    if (b)
+                    {
+                        blocks--;
+                    }
+
+                    return b;
+                }
+            }
+            set
+            {
+                if (value)
+                {
+                    lock (locker)
+                    {
+                        blocks++;
+                    }
+                }
+            }
+        }
     }
 }
