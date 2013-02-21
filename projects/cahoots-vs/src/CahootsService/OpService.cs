@@ -4,6 +4,7 @@
 
 namespace Cahoots.Services
 {
+    using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Diagnostics;
@@ -205,12 +206,14 @@ namespace Cahoots.Services
 
                 var view = tuple.Item2;
 
-                var doc = new DocumentModel()
+                var tick = this.WindowService.GetCurrentTick(model.OpId);
+
+                var doc = new DocumentModel(tick)
                 {
                     DocumentId = model.DocumentId,
                     FullPath = tuple.Item1,
                     OpId = model.OpId,
-                    View = view,
+                    View = view
                 };
 
                 this.Documents.Add(model.DocumentId, doc);
@@ -259,7 +262,8 @@ namespace Cahoots.Services
                         Start = change.NewPosition,
                         Content = change.NewText,
                         DocumentId = docId,
-                        OpId = doc.OpId
+                        OpId = doc.OpId,
+                        TickStamp = doc.TickStamp
                     };
 
                     this.SendMessage(model);
@@ -282,7 +286,8 @@ namespace Cahoots.Services
                         Start = change.OldPosition,
                         End = change.OldPosition + change.OldLength,
                         DocumentId = docId,
-                        OpId = doc.OpId
+                        OpId = doc.OpId,
+                        TickStamp = doc.TickStamp
                     };
 
                     this.SendMessage(model);
@@ -310,7 +315,8 @@ namespace Cahoots.Services
                         End = change.OldPosition + change.OldLength,
                         Content = change.NewText,
                         DocumentId = docId,
-                        OpId = doc.OpId
+                        OpId = doc.OpId,
+                        TickStamp = doc.TickStamp
                     };
 
                     this.SendMessage(model);
@@ -327,7 +333,7 @@ namespace Cahoots.Services
         ///   instance containing the event data.
         /// </param>
         /// <param name="docId">The document id.</param>
-        private void EndCollaboration(object sender, System.EventArgs e, string documentId)
+        private void EndCollaboration(object sender, EventArgs e, string documentId)
         {
             // end collaboration
         }

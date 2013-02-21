@@ -26,6 +26,7 @@ namespace Cahoots
     using Microsoft.VisualStudio.Shell.Interop;
     using Microsoft.VisualStudio.Text.Editor;
     using WebSocketSharp;
+    using System.Net;
 
     /// <summary>
     /// Cahoots VSPackage Extension class.
@@ -575,6 +576,28 @@ namespace Cahoots
         public long GetCurrentTick(string opId)
         {
             var start = (long)DateTime.Now.TimeOfDay.TotalMilliseconds;
+            var request =
+                HttpWebRequest.Create(
+                    new Uri (
+                        this.AuthenticationService.ServerUrl, 
+                            string.Format(
+                                "/op/clock?auth_token={0}&opId={1}",
+                                this.AuthenticationService.Token,
+                                opId)));
+            var response = request.GetResponse() as HttpWebResponse;
+            var latency =
+                    (long)DateTime.Now.TimeOfDay.TotalMilliseconds - start;
+
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                using (var stream = response.GetResponseStream())
+                using (var reader = new StreamReader(stream))
+                {
+                    var str = reader.ReadToEnd();
+                    return long.Parse(str) + (latency / 2);
+                }
+            }
+
             return 0;
         }
 

@@ -65,7 +65,7 @@ class OpService(
 
   def shareDocument(user: String, documentId: String, collaborators: List[String]) {
 
-    val nextOpSessionId = (if (ops.size > 0) ops.keys.map(_.toInt).toList.max else 0).toString
+    val nextOpSessionId = (if (ops.size > 0) ops.keys.map(_.toInt).toList.max + 1 else 0).toString
 
     /*
      * Always resend the notification, allow the client to deal with multiple notifications
