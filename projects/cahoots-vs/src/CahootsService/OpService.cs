@@ -229,6 +229,7 @@ namespace Cahoots.Services
         ///   The <see cref="TextContentChangedEventArgs" />
         ///   instance containing the event data.
         /// </param>
+        /// <param name="docId">The document id.</param>
         private void TextChanged(object sender, TextContentChangedEventArgs e, string docId)
         {
             var doc = this.Documents[docId];
@@ -325,6 +326,7 @@ namespace Cahoots.Services
         ///   The <see cref="System.EventArgs" />
         ///   instance containing the event data.
         /// </param>
+        /// <param name="docId">The document id.</param>
         private void EndCollaboration(object sender, System.EventArgs e, string documentId)
         {
             // end collaboration
