@@ -5,6 +5,8 @@ import static ch.lambdaj.Lambda.on;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicLong;
 
 import javax.inject.Inject;
@@ -18,9 +20,14 @@ import org.eclipse.ui.ide.ResourceUtil;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 import com.cahoots.connection.CahootsConnection;
+import com.cahoots.connection.http.tools.CahootsHttpClient;
 import com.cahoots.connection.websocket.CahootsSocket;
 import com.cahoots.eclipse.indigo.job.BackgroundJobScheduler;
+import com.cahoots.eclipse.op.OpDocument;
+import com.cahoots.eclipse.op.OpMemento;
+import com.cahoots.eclipse.op.OpSession;
 import com.cahoots.eclipse.op.OpSessionManager;
+import com.cahoots.eclipse.op.OpSynchronizedClock;
 import com.cahoots.json.Collaborator;
 import com.cahoots.json.send.SendOpDeleteMessage;
 import com.cahoots.json.send.SendOpInsertMessage;
@@ -39,13 +46,16 @@ public class ShareDocumentManager {
 	 * TODO: Move into session manager
 	 */
 	private static AtomicLong tickStamp = new AtomicLong(0);
+	private final CahootsHttpClient cahootsHttpClient;
 
 	@Inject
 	public ShareDocumentManager(final CahootsConnection connection,
+			final CahootsHttpClient cahootsHttpClient,
 			final CahootsSocket cahootsSocket,
 			final OpSessionManager opSessionManager,
 			final BackgroundJobScheduler backgroundJobScheduler) {
 		this.connection = connection;
+		this.cahootsHttpClient = cahootsHttpClient;
 		this.cahootsSocket = cahootsSocket;
 		this.opSessionManager = opSessionManager;
 		this.backgroundJobScheduler = backgroundJobScheduler;
@@ -82,36 +92,46 @@ public class ShareDocumentManager {
 
 	public void addDocumentListener(final IDocument document,
 			final String opId, final String documentId) {
-		final IDocumentListener documentListener = new IDocumentListener() {
+		try {
+			final OpSynchronizedClock clock = OpSynchronizedClock.fromConnection(cahootsHttpClient, connection, opId).get();
+			opSessionManager.addSession(opId, new OpSession(new OpMemento(new OpDocument(opId, documentId)), 
+					clock));
+			
+			final IDocumentListener documentListener = new IDocumentListener() {
 
-			/**
-			 * Handle insert operation
-			 */
-			@Override
-			public void documentChanged(final DocumentEvent event) {
-				if (enabled) {
-					final int length = event.fLength;
-					final int start = event.fOffset;
-					final int end = start + length;
-					final String text = event.getText();
-					if (length > 0 && text.isEmpty()) {
-						delete(opId, documentId, start, end);
-					} else if (length > 0 && !text.isEmpty()) {
-						replace(opId, documentId, start, end, text);
-					} else if (length == 0 && !text.isEmpty()) {
-						insert(opId, documentId, start, text);
-					} else {
-						// ???
+				/**
+				 * Handle insert operation
+				 */
+				@Override
+				public void documentChanged(final DocumentEvent event) {
+					if (enabled) {
+						final int length = event.fLength;
+						final int start = event.fOffset;
+						final int end = start + length;
+						final String text = event.getText();
+						if (length > 0 && text.isEmpty()) {
+							delete(opId, documentId, start, end);
+						} else if (length > 0 && !text.isEmpty()) {
+							replace(opId, documentId, start, end, text);
+						} else if (length == 0 && !text.isEmpty()) {
+							insert(opId, documentId, start, text);
+						} else {
+							// ???
+						}
 					}
 				}
-			}
 
-			@Override
-			public void documentAboutToBeChanged(final DocumentEvent event) {
-			}
-		};
+				@Override
+				public void documentAboutToBeChanged(final DocumentEvent event) {
+				}
+			};
 
-		document.addDocumentListener(documentListener);
+			document.addDocumentListener(documentListener);
+		} catch (final InterruptedException e) {
+			e.printStackTrace();
+		} catch (final ExecutionException e) {
+			e.printStackTrace();
+		}
 	}
 
 	private void insert(final String opId, final String documentId,
