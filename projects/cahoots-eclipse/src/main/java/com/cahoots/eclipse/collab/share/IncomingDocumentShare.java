@@ -61,7 +61,7 @@ public final class IncomingDocumentShare implements ShareDocumentEventListener {
 		this.editorTools = editorTools;
 		this.userList = userList;
 	}
-	
+
 	@Override
 	public void onEvent(final ShareDocumentMessage msg) {
 		try {
@@ -71,14 +71,14 @@ public final class IncomingDocumentShare implements ShareDocumentEventListener {
 			final String name = userList.get(sharer).getName();
 
 			final Runnable runnable = new Runnable() {
+				@Override
 				public void run() {
-					final OpDocument document = new OpDocument(opId,
-							documentId);
+					final OpDocument document = new OpDocument(opId, documentId);
 
 					if (!cahootsConnection.isLoggedInUser(sharer)) {
-						final String inviteMessage = String
-								.format("%s is requesting to share document %s.",
-										name, document.getFilename());
+						final String inviteMessage = String.format(
+								"%s is requesting to share document %s.", name,
+								document.getFilename());
 						final MessageDialogStatus prompt = messageDialog
 								.prompt(workbenchWindow.getShell(),
 										"Accept Invite", inviteMessage);
@@ -90,9 +90,8 @@ public final class IncomingDocumentShare implements ShareDocumentEventListener {
 					final ITextEditor textEditor = getSharedDocumentTextEditor(documentId);
 					addIncomingEventListeners(textEditor);
 
-					final IDocument doc = textEditor
-							.getDocumentProvider().getDocument(
-									textEditor.getEditorInput());
+					final IDocument doc = textEditor.getDocumentProvider()
+							.getDocument(textEditor.getEditorInput());
 					shareDocumentManager.addDocumentListener(doc, opId,
 							documentId);
 				}
@@ -104,7 +103,7 @@ public final class IncomingDocumentShare implements ShareDocumentEventListener {
 			ShareDocumentRegistrar.logger.error(e);
 		}
 	}
-	
+
 	private ITextEditor getSharedDocumentTextEditor(final String documentId) {
 		final IFile file = resourceFinder.findFileByDocumentId(documentId);
 		final IEditorPart editorPart = resourceFinder.findEditorByFile(file);
@@ -137,7 +136,7 @@ public final class IncomingDocumentShare implements ShareDocumentEventListener {
 
 			// Open existing editor
 			final IWorkbenchPage activePage = workbenchWindow.getActivePage();
-			
+
 			final String editorId = editorPart.getSite().getId();
 			final IEditorPart editor = editorTools.openEditor(activePage,
 					editorInput, editorId);
@@ -151,15 +150,21 @@ public final class IncomingDocumentShare implements ShareDocumentEventListener {
 			return textEditor;
 		}
 	}
-	
+
 	private void addIncomingEventListeners(final ITextEditor textEditor) {
 		if (textEditor == null) {
 			throw new IllegalArgumentException("textEditor cannot be null");
 		}
 
-		cahootsSocket.addOpInsertEventListener(new IncomingInsert(opSessionRegister, shareDocumentManager, cahootsConnection, textEditor));
-		cahootsSocket.addOpReplaceEventListener(new IncomingReplace(opSessionRegister, shareDocumentManager, cahootsConnection, textEditor));
-		cahootsSocket.addOpDeleteEventListener(new IncomingDelete(opSessionRegister, shareDocumentManager, cahootsConnection, textEditor));
+		cahootsSocket.addOpInsertEventListener(new IncomingInsert(
+				opSessionRegister, shareDocumentManager, cahootsConnection,
+				textEditor));
+		cahootsSocket.addOpReplaceEventListener(new IncomingReplace(
+				opSessionRegister, shareDocumentManager, cahootsConnection,
+				textEditor));
+		cahootsSocket.addOpDeleteEventListener(new IncomingDelete(
+				opSessionRegister, shareDocumentManager, cahootsConnection,
+				textEditor));
 	}
 
 }

@@ -20,13 +20,13 @@ import com.cahoots.connection.CahootsConnection;
 import com.cahoots.connection.websocket.CahootsSocket;
 import com.cahoots.eclipse.Activator;
 import com.cahoots.eclipse.indigo.popup.ConnectStuff;
-import com.cahoots.eclipse.op.OpSessionManager;
+import com.cahoots.eclipse.op.OpSessionRegister;
 import com.cahoots.eclipse.swt.SwtDisplayUtils;
 import com.cahoots.events.ConnectEvent;
 import com.cahoots.events.ConnectEventListener;
 import com.cahoots.events.DisconnectEvent;
 import com.cahoots.events.DisconnectEventListener;
-import com.cahoots.json.send.LeaveCollabMessage;
+import com.cahoots.json.send.LeaveCollaborationMessage;
 import com.google.inject.Injector;
 
 public class FastBar extends WorkbenchWindowControlContribution {
@@ -141,18 +141,23 @@ public class FastBar extends WorkbenchWindowControlContribution {
 
 			@Override
 			public void mouseDoubleClick(final MouseEvent arg0) {
-				final CahootsConnection connection = (CahootsConnection) Activator
-						.getInjector().getBinding(CahootsConnection.class);
-				final OpSessionManager opSessionManager = (OpSessionManager) Activator
-						.getInjector().getBinding(OpSessionManager.class);
+				try {
+					final CahootsConnection connection = Activator
+							.getInjector().getInstance(CahootsConnection.class);
+					final OpSessionRegister opSessionManager = Activator
+							.getInjector().getInstance(OpSessionRegister.class);
 
-				final CahootsSocket socket = (CahootsSocket) Activator
-						.getInjector().getBinding(CahootsSocket.class);
+					final CahootsSocket socket = Activator.getInjector()
+							.getInstance(CahootsSocket.class);
 
-				for (final String op : opSessionManager.getSessionKeys()) {
-					socket.send(new LeaveCollabMessage(
-							connection.getUsername(), op));
+					for (final String op : opSessionManager.getSessionKeys()) {
+						socket.send(new LeaveCollaborationMessage(connection
+								.getUsername(), op));
+					}
+				} catch (final Exception e) {
+					e.printStackTrace();
 				}
+
 			}
 		});
 

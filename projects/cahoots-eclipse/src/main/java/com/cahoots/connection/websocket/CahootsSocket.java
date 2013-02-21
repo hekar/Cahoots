@@ -24,6 +24,7 @@ import com.cahoots.connection.http.tools.CahootsHttpResponseReceivedListener;
 import com.cahoots.eclipse.indigo.log.Log;
 import com.cahoots.eclipse.indigo.widget.TextEditorTools;
 import com.cahoots.events.ChatReceivedEventListener;
+import com.cahoots.events.CollaboratorLeftEventListener;
 import com.cahoots.events.ConnectEvent;
 import com.cahoots.events.ConnectEventListener;
 import com.cahoots.events.DisconnectEvent;
@@ -33,16 +34,15 @@ import com.cahoots.events.OpDeleteEventListener;
 import com.cahoots.events.OpInsertEventListener;
 import com.cahoots.events.OpReplaceEventListener;
 import com.cahoots.events.ShareDocumentEventListener;
-import com.cahoots.events.UnShareDocumentEventListener;
 import com.cahoots.events.UserChangeEventListener;
 import com.cahoots.json.Collaborator;
 import com.cahoots.json.MessageBase;
 import com.cahoots.json.receive.ChatReceiveMessage;
+import com.cahoots.json.receive.CollaboratorLeftMessage;
 import com.cahoots.json.receive.OpDeleteMessage;
 import com.cahoots.json.receive.OpInsertMessage;
 import com.cahoots.json.receive.OpReplaceMessage;
 import com.cahoots.json.receive.ShareDocumentMessage;
-import com.cahoots.json.receive.UnShareDocumentMessage;
 import com.cahoots.json.receive.UserChangeMessage;
 import com.cahoots.json.receive.UserListMessage;
 import com.google.gson.Gson;
@@ -58,17 +58,9 @@ public class CahootsSocket {
 
 	private static final Log logger = Log.getLogger(CahootsSocket.class);
 
-	/**
-	 * Timeout is 30 minutes long.
-	 * 
-	 * Format is in milliseconds
-	 */
-	private static final int TIMEOUT = 1800000;
-
 	private final AtomicLong sent = new AtomicLong(0);
 
 	private final CahootsConnection cahootsConnection;
-	private final TextEditorTools editorTools;
 
 	/**
 	 * Due to java's type erasure, it is not possible to make this listener
@@ -81,8 +73,6 @@ public class CahootsSocket {
 					new ArrayList<DisconnectEventListener>());
 			put(ShareDocumentEventListener.class,
 					new ArrayList<ShareDocumentEventListener>());
-			put(UnShareDocumentEventListener.class,
-					new ArrayList<UnShareDocumentEventListener>());
 			put(OpInsertEventListener.class,
 					new ArrayList<OpInsertEventListener>());
 			put(OpReplaceEventListener.class,
@@ -93,6 +83,8 @@ public class CahootsSocket {
 					new ArrayList<UserChangeEventListener>());
 			put(ChatReceivedEventListener.class,
 					new ArrayList<ChatReceivedEventListener>());
+			put(CollaboratorLeftEventListener.class,
+					new ArrayList<CollaboratorLeftEventListener>());
 		}
 	};
 	private final List<ConnectEventListener> connectListeners = new ArrayList<ConnectEventListener>();
@@ -105,7 +97,6 @@ public class CahootsSocket {
 			final TextEditorTools editorTools) {
 
 		this.cahootsConnection = cahootsConnection;
-		this.editorTools = editorTools;
 
 		try {
 			factory.setBufferSize(4096);
@@ -320,6 +311,11 @@ public class CahootsSocket {
 		listeners.get(ChatReceivedEventListener.class).add(listener);
 	}
 
+	public void addCollaboratorLeftEventLisener(
+			final CollaboratorLeftEventListener listener) {
+		listeners.get(CollaboratorLeftEventListener.class).add(listener);
+	}
+
 	/**
 	 * TODO: Create a separation of concerns between the CahootsSocket class
 	 * (rename it to CahootsService) and this class.
@@ -359,14 +355,14 @@ public class CahootsSocket {
 			} else if ("op".equals(base.getService())) {
 				fireEvents("shared", ShareDocumentEventListener.class,
 						ShareDocumentMessage.class, base, message, gson);
-				fireEvents("unshared", UnShareDocumentEventListener.class,
-						UnShareDocumentMessage.class, base, message, gson);
 				fireEvents("insert", OpInsertEventListener.class,
 						OpInsertMessage.class, base, message, gson);
 				fireEvents("replace", OpReplaceEventListener.class,
 						OpReplaceMessage.class, base, message, gson);
 				fireEvents("delete", OpDeleteEventListener.class,
 						OpDeleteMessage.class, base, message, gson);
+				fireEvents("left", CollaboratorLeftEventListener.class,
+						CollaboratorLeftMessage.class, base, message, gson);
 			} else if ("chat".equals(base.getService())) {
 				fireEvents("receive", ChatReceivedEventListener.class,
 						ChatReceiveMessage.class, base, message, gson);
