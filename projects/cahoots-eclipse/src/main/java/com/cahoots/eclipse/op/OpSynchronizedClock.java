@@ -15,6 +15,7 @@ import com.cahoots.connection.http.tools.CahootsHttpMethodReturn;
 
 public class OpSynchronizedClock {
 
+	private static final String URL = "/op/clock";
 	private final long startTime;
 
 	public static Future<OpSynchronizedClock> fromConnection(
@@ -35,7 +36,7 @@ public class OpSynchronizedClock {
 			public OpSynchronizedClock call() throws Exception {
 				final long start = System.currentTimeMillis();
 				final CahootsHttpMethodReturn method = client.get(
-						connection.getServer(), "/op/clock", data);
+						connection.getServer(), URL, data);
 				final long latency = System.currentTimeMillis() - start;
 				
 				if (method.getStatusCode() == 200) {
