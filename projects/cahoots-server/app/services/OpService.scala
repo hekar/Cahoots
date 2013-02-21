@@ -58,14 +58,44 @@ class OpService(
         val tickStamp = (json \ "tickStamp").as[Long]
 
         delete(user, opId, start, end, tickStamp)
+      case "leave" =>
+        val user = (json \ "user").as[String]
+        val opId = (json \ "opId").as[String]
+
+        leave(user, opId)
       case _ =>
         throw new RuntimeException("Invalid message type for 'op': %s".format(t))
     }
   }
 
+  def leave(user:String, opId:String) {
+    if(ops.contains(opId)){
+
+      val session = ops(opId)
+      (session.collaborators).foreach {
+        collaborator =>
+          notifyOne(user, JsObject(Seq(
+            "service" -> JsString("op"),
+            "type" -> JsString("left"),
+            "opId" -> JsString(opId),
+            "user" -> JsString(user)
+          )))
+      }
+      session.collaborators.remove(user);
+      if (session.collaborators.size == 1){
+        notifyOne(user, JsObject(Seq(
+          "service" -> JsString("op"),
+          "type" -> JsString("left"),
+          "opId" -> JsString(opId),
+          "user" -> JsString(user)
+        )))
+      }
+    }
+  }
+
   def shareDocument(user: String, documentId: String, collaborators: List[String]) {
 
-    val nextOpSessionId = (if (ops.size > 0) ops.keys.map(_.toInt).toList.max else 0).toString
+    val nextOpSessionId = (if (ops.size > 0) ops.keys.map(_.toInt).toList.max + 1 else 0).toString
 
     /*
      * Always resend the notification, allow the client to deal with multiple notifications
