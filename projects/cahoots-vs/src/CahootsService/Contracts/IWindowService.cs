@@ -33,5 +33,12 @@ namespace Cahoots.Services.Contracts
         /// </summary>
         /// <param name="action">The action.</param>
         void InvokeOnUI(Action action);
+
+        /// <summary>
+        /// Gets the current tick stamp.
+        /// </summary>
+        /// <param name="opId">The op id.</param>
+        /// <returns>The current tick stamp.</returns>
+        long GetCurrentTick(string opId);
     }
 }

@@ -564,11 +564,18 @@ namespace Cahoots
                                 this.UserName,
                                 documentId,
                                 collaborators.ToList());
-                
-                //var view = this.ApplicationObject.GetEditorView(active.FullName);
-
-                //(this.CommunicationRelay.Services["op"] as OpService).AddSharedDocument(active.FullName, view);
             }
+        }
+
+        /// <summary>
+        /// Gets the current tick stamp.
+        /// </summary>
+        /// <param name="opId">The op id.</param>
+        /// <returns>The current tick stamp.</returns>
+        public long GetCurrentTick(string opId)
+        {
+            var start = (long)DateTime.Now.TimeOfDay.TotalMilliseconds;
+            return 0;
         }
 
         /// <summary>
