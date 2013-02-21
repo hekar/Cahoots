@@ -115,7 +115,16 @@ namespace Cahoots.Services
                             JsonHelper.Deserialize<ReceiveShareMessage>(json);
                     this.ReceiveShare(share);
                     break;
+                case "left":
+                    var left = JsonHelper.Deserialize<CollaboratorLeftMessage>(json);
+                    this.CollaboratorLeft(left);
+                    break;
             }
+        }
+
+        private void CollaboratorLeft(CollaboratorLeftMessage left)
+        {
+            //TODO
         }
 
         /// <summary>

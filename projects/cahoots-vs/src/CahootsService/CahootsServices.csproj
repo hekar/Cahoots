@@ -70,6 +70,8 @@
     <Compile Include="MessageModels\Chat\SendChatMessage.cs" />
     <Compile Include="MessageModels\MessageBase.cs" />
     <Compile Include="MessageModels\Ops\BaseOpMessage.cs" />
+    <Compile Include="MessageModels\Ops\CollaboratorLeftMessage.cs" />
+    <Compile Include="MessageModels\Ops\LeaveCollaborationMessage.cs" />
     <Compile Include="MessageModels\Ops\OpDeleteMessage.cs" />
     <Compile Include="MessageModels\Ops\OpInsertMessage.cs" />
     <Compile Include="MessageModels\Ops\OpReplaceMessage.cs" />
