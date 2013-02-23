@@ -15,6 +15,9 @@
               <groupBaseReferencesButtons Id="25d59971-a6c7-460b-8183-82ae01e7baf0">
                 <buttonMoniker Id="0de0fc79-649c-4424-aec7-6a47b36fcb26" />
               </groupBaseReferencesButtons>
+              <groupBaseReferencesButtons Id="f7e58d76-ab9a-40aa-9af2-989486eb9e2f">
+                <buttonMoniker Id="af92f973-f2c0-4d75-967d-4e6a69606e42" />
+              </groupBaseReferencesButtons>
             </buttons>
           </group>
           <externalGroup Id="36e540d8-c01e-4850-9bf0-3674356a600b" name="Tools Menu [Command Line]" idNumeric="13" parentData="guidSHLMainMenu,IDG_VS_TOOLS_CMDLINE,Group">
@@ -30,6 +33,9 @@
               </groupBaseReferencesButtons>
               <groupBaseReferencesButtons Id="f9d05b4e-2dd1-4baf-a137-151514097257">
                 <buttonMoniker Id="edea4f5d-cf56-4dac-9dbd-6d8450043902" />
+              </groupBaseReferencesButtons>
+              <groupBaseReferencesButtons Id="9bea94c6-9160-496d-81e7-e1efcc5e166e">
+                <buttonMoniker Id="af92f973-f2c0-4d75-967d-4e6a69606e42" />
               </groupBaseReferencesButtons>
             </buttons>
           </externalGroup>
@@ -52,6 +58,9 @@
           </commandTableHasButtons>
           <commandTableHasButtons Id="7a6e604b-e1cb-49a7-9012-001d2b7c9447">
             <button Id="edea4f5d-cf56-4dac-9dbd-6d8450043902" name="PreferenceButton" idNumeric="17" buttonText="Preferences" menuText="Preferences" commandName="cmdidPreferenceButton" toolTipText="Preferences" mod1="0" mod2="0" visibilityConstraints="0" icon="msotcidToolbox" commandFlags="0" />
+          </commandTableHasButtons>
+          <commandTableHasButtons Id="03ad23fc-af0c-42b6-ae8a-6b2e557b4bd4">
+            <button Id="af92f973-f2c0-4d75-967d-4e6a69606e42" name="LeaveCollaborationButton" idNumeric="18" buttonText="Leave Collaborations" menuText="Leave Collaborations" commandName="cmdidLeaveCollaborationButton" toolTipText="Leave Collaborations" mod1="0" mod2="0" visibilityConstraints="0" icon="msotcidDeleteAllInkAnnots" commandFlags="0" />
           </commandTableHasButtons>
         </buttons>
         <menuBases>

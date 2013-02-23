@@ -39,7 +39,8 @@ namespace Cahoots
         /// Initializes a new instance of the 
         /// <see cref="CahootsPackage" /> class.
         /// </summary>
-        public CahootsPackage() : base()
+        public CahootsPackage()
+            : base()
         {
             this.MenuService =
                     GetService(typeof(IMenuCommandService))
@@ -82,7 +83,7 @@ namespace Cahoots
                     new ChatService(this, this.Preferences),
                     new OpService(this));
         }
-        
+
         /// <summary>
         /// Sets up the context menus.
         /// </summary>
@@ -564,7 +565,7 @@ namespace Cahoots
                                 this.UserName,
                                 documentId,
                                 collaborators.ToList());
-                
+
                 //var view = this.ApplicationObject.GetEditorView(active.FullName);
 
                 //(this.CommunicationRelay.Services["op"] as OpService).AddSharedDocument(active.FullName, view);
@@ -687,6 +688,20 @@ namespace Cahoots
             }
 
             base.Dispose(disposing);
+        }
+
+        protected override void LeaveCollaborationButtonExecuteHandler(object sender, EventArgs e)
+        {
+
+            var service =
+                    this.CommunicationRelay.Services["op"] as OpService;
+            
+            var users =
+                    this.CommunicationRelay.Services["users"] as UsersService;
+            foreach (var id in service.GetOpIds())
+            {
+                service.LeaveCollaboration(users.UserName, id);
+            }
         }
     }
 }
