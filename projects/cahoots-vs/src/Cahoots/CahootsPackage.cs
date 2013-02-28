@@ -11,6 +11,7 @@ namespace Cahoots
     using System.ComponentModel.Design;
     using System.IO;
     using System.Linq;
+    using System.Net;
     using System.Runtime.InteropServices;
     using System.Threading;
     using System.Windows.Forms;
@@ -26,7 +27,6 @@ namespace Cahoots
     using Microsoft.VisualStudio.Shell.Interop;
     using Microsoft.VisualStudio.Text.Editor;
     using WebSocketSharp;
-    using System.Net;
 
     /// <summary>
     /// Cahoots VSPackage Extension class.
@@ -40,7 +40,8 @@ namespace Cahoots
         /// Initializes a new instance of the 
         /// <see cref="CahootsPackage" /> class.
         /// </summary>
-        public CahootsPackage() : base()
+        public CahootsPackage()
+            : base()
         {
             this.MenuService =
                     GetService(typeof(IMenuCommandService))
@@ -83,7 +84,7 @@ namespace Cahoots
                     new ChatService(this, this.Preferences),
                     new OpService(this));
         }
-        
+
         /// <summary>
         /// Sets up the context menus.
         /// </summary>
@@ -717,6 +718,20 @@ namespace Cahoots
             }
 
             base.Dispose(disposing);
+        }
+
+        protected override void LeaveCollaborationButtonExecuteHandler(object sender, EventArgs e)
+        {
+
+            var service =
+                    this.CommunicationRelay.Services["op"] as OpService;
+            
+            var users =
+                    this.CommunicationRelay.Services["users"] as UsersService;
+            foreach (var id in service.GetOpIds())
+            {
+                service.LeaveCollaboration(users.UserName, id);
+            }
         }
     }
 }

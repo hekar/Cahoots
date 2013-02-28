@@ -82,6 +82,10 @@ namespace Cahoots
                 commandId = new CommandID(GuidList.guidCahootsCmdSet, (int)PkgCmdIDList.PreferenceButton);
                 menuItem = new OleMenuCommand(PreferenceButtonExecuteHandler, PreferenceButtonChangeHandler, PreferenceButtonQueryStatusHandler, commandId);
                 mcs.AddCommand(menuItem);
+				// Create the command for button LeaveCollaborationButton
+                commandId = new CommandID(GuidList.guidCahootsCmdSet, (int)PkgCmdIDList.LeaveCollaborationButton);
+                menuItem = new OleMenuCommand(LeaveCollaborationButtonExecuteHandler, LeaveCollaborationButtonChangeHandler, LeaveCollaborationButtonQueryStatusHandler, commandId);
+                mcs.AddCommand(menuItem);
 
 			}
 		}
@@ -151,6 +155,23 @@ namespace Cahoots
 		}
 		
 		protected virtual void PreferenceButtonQueryStatusHandler(object sender, EventArgs e)
+		{
+		}
+
+		#endregion
+
+		#region Handlers for Button: LeaveCollaborationButton
+
+		protected virtual void LeaveCollaborationButtonExecuteHandler(object sender, EventArgs e)
+		{
+			ShowMessage("LeaveCollaborationButton clicked!");
+		}
+		
+		protected virtual void LeaveCollaborationButtonChangeHandler(object sender, EventArgs e)
+		{
+		}
+		
+		protected virtual void LeaveCollaborationButtonQueryStatusHandler(object sender, EventArgs e)
 		{
 		}
 

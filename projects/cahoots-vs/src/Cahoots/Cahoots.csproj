@@ -31,6 +31,21 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="DTEExtensions.cs" />
+    <Compile Include="GeneratedCode\Guids.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Guids.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GeneratedCode\Package.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Package.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GeneratedCode\PkgCmdID.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PkgCmdID.tt</DependentUpon>
+    </Compile>
     <Compile Include="Views\Custom\EditServerWindow.xaml.cs">
       <DependentUpon>EditServerWindow.xaml</DependentUpon>
     </Compile>
@@ -51,21 +66,6 @@
     <Compile Include="Views\Panes\UsersWindowToolWindow.cs" />
     <Compile Include="Views\Custom\ConnectWindow.xaml.cs">
       <DependentUpon>ConnectWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="GeneratedCode\Guids.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Guids.tt</DependentUpon>
-    </Compile>
-    <Compile Include="GeneratedCode\Package.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Package.tt</DependentUpon>
-    </Compile>
-    <Compile Include="GeneratedCode\PkgCmdID.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>PkgCmdID.tt</DependentUpon>
     </Compile>
     <Compile Include="GeneratedCode\ToolWindowBase.cs">
       <AutoGen>True</AutoGen>

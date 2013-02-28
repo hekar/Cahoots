@@ -3,7 +3,6 @@ package services
 import play.api._
 import play.api.libs.json._
 import collection.mutable.{HashMap, HashSet => MutableHashSet}
-import collection.mutable
 
 /**
  * Operational transformations service
@@ -27,12 +26,6 @@ class OpService(
         val collaborators = (json \ "collaborators").as[List[String]]
 
         shareDocument(user, documentId, collaborators)
-      case "unshare" =>
-        val user = (json \ "user").as[String]
-        val opId = (json \ "opId").as[String]
-        val collaborators = (json \ "collaborators").as[List[String]]
-
-        unshareDocument(user, opId, collaborators)
       case "insert" =>
         val user = (json \ "user").as[String]
         val opId = (json \ "opId").as[String]
@@ -58,8 +51,38 @@ class OpService(
         val tickStamp = (json \ "tickStamp").as[Long]
 
         delete(user, opId, start, end, tickStamp)
+      case "leave" =>
+        val user = (json \ "user").as[String]
+        val opId = (json \ "opId").as[String]
+
+        leave(user, opId)
       case _ =>
         throw new RuntimeException("Invalid message type for 'op': %s".format(t))
+    }
+  }
+
+  def leave(user: String, opId: String) {
+    if (ops.contains(opId)) {
+
+      val session = ops(opId)
+      session.collaborators.foreach {
+        collaborator =>
+          notifyOne(collaborator, JsObject(Seq(
+            "service" -> JsString("op"),
+            "type" -> JsString("left"),
+            "opId" -> JsString(opId),
+            "user" -> JsString(user)
+          )))
+      }
+      session.collaborators.remove(user);
+
+      Logger.debug("Removed: " + user + " From Op:" + opId)
+      if (session.collaborators.size == 1) {
+        leave(session.collaborators.head, opId)
+      } else if (session.collaborators.size == 0){
+        ops.remove(opId)
+        Logger.debug("Removed Op: " + opId)
+      }
     }
   }
 
@@ -93,37 +116,9 @@ class OpService(
         }
     }
 
-    val session = new OpSession(nextOpSessionId.toInt, documentId, user)
-    session.collaborators ++= collaborators
+    val session = new OpSession(nextOpSessionId.toInt, documentId)
+    session.collaborators ++= user :: collaborators
     ops += ((nextOpSessionId, session))
-  }
-
-  def unshareDocument(user: String, opId: String, collaborators: List[String]) {
-    if (ops.contains(opId)) {
-      val session = ops(opId)
-      if (session.userHost == user) {
-
-        // Notify the user and each of the collaborators
-        (user :: collaborators).foreach {
-          collaborator =>
-            notifyOne(user, JsObject(Seq(
-              "service" -> JsString("op"),
-              "type" -> JsString("unshared"),
-              "sharer" -> JsString(user),
-              "opId" -> JsString(opId),
-              "documentId" -> JsString(session.documentId)
-            )))
-        }
-
-        ops -= (session.opSessionId.toString)
-      }
-    } else {
-      notifyOne(user, JsObject(Seq(
-        "service" -> JsString("op"),
-        "type" -> JsString("nonExistentShared"),
-        "message" -> JsString("Shared %s does not exist".format(opId))
-      )))
-    }
   }
 
   /**
@@ -212,14 +207,14 @@ class OpService(
     if (ops.contains(opId)) {
       val opSession = ops(opId)
 
-      val validUser = opSession.userHost == user || opSession.collaborators.contains(user)
+      val validUser =  opSession.collaborators.contains(user)
 
       if (validUser) {
         /*
          * Notify all clients of this operational transformational session that an insert
          * operation has been performed
          */
-        (opSession.userHost :: opSession.collaborators.toList).foreach {
+        (opSession.collaborators.toList).foreach {
           collaborator => {
             Logger.info(collaborator)
             handle(collaborator, opSession)
@@ -249,7 +244,7 @@ class OpService(
 /**
  * A shared operational transformation session
  */
-class OpSession(val opSessionId: Int, val documentId: String, val userHost: String) {
+class OpSession(val opSessionId: Int, val documentId: String) {
 
   /**
    * Collaborator user ids

@@ -9,6 +9,7 @@ namespace Cahoots.Services
     using System.Collections.ObjectModel;
     using System.Diagnostics;
     using System.Windows;
+    using System.Linq;
     using Cahoots.Ext;
     using Cahoots.Ext.String;
     using Cahoots.Services.Contracts;
@@ -44,6 +45,11 @@ namespace Cahoots.Services
         /// </value>
         private IWindowService WindowService { get; set; }
 
+        public string[] GetOpIds()
+        {
+            return this.Documents.Values.Select(i => i.OpId).ToArray();
+        }
+
         /// <summary>
         /// Starts the collaboration.
         /// </summary>
@@ -66,6 +72,17 @@ namespace Cahoots.Services
 
             this.SendMessage(model);
         }
+
+        public void LeaveCollaboration(string user, string opId) {
+            var model = new LeaveCollaborationMessage(){
+                Service = "op",
+                MessageType = "leave",
+                User = user,
+                OpId = opId
+            };
+            this.SendMessage(model);
+        }
+
 
         /// <summary>
         /// Gets a view model for the service.
@@ -116,7 +133,16 @@ namespace Cahoots.Services
                             JsonHelper.Deserialize<ReceiveShareMessage>(json);
                     this.ReceiveShare(share);
                     break;
+                case "left":
+                    var left = JsonHelper.Deserialize<CollaboratorLeftMessage>(json);
+                    this.CollaboratorLeft(left);
+                    break;
             }
+        }
+
+        private void CollaboratorLeft(CollaboratorLeftMessage left)
+        {
+            //TODO
         }
 
         /// <summary>

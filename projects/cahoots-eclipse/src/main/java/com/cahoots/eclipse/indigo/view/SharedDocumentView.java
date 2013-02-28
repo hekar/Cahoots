@@ -1,7 +1,6 @@
 package com.cahoots.eclipse.indigo.view;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.jface.viewers.IStructuredContentProvider;
@@ -20,9 +19,7 @@ import org.eclipse.ui.part.ViewPart;
 import com.cahoots.eclipse.Activator;
 import com.cahoots.eclipse.collab.share.ShareDocumentSessionManager;
 import com.cahoots.eclipse.collab.share.ShareDocumentSessionRegisterListener;
-import com.cahoots.eclipse.collab.share.ShareDocumentSessionUnRegisterListener;
 import com.cahoots.json.receive.ShareDocumentMessage;
-import com.cahoots.json.receive.UnShareDocumentMessage;
 import com.google.inject.Injector;
 
 public class SharedDocumentView extends ViewPart {
@@ -36,13 +33,16 @@ public class SharedDocumentView extends ViewPart {
 	class ViewContentProvider implements IStructuredContentProvider {
 		private List<ShareDocumentMessage> elements = new ArrayList<ShareDocumentMessage>();
 
+		@Override
 		public void inputChanged(final Viewer v, final Object oldInput,
 				final Object newInput) {
 		}
 
+		@Override
 		public void dispose() {
 		}
 
+		@Override
 		public Object[] getElements(final Object parent) {
 			return elements.toArray();
 		}
@@ -50,32 +50,21 @@ public class SharedDocumentView extends ViewPart {
 		public void add(final ShareDocumentMessage message) {
 			elements.add(message);
 		}
-
-		public void remove(final UnShareDocumentMessage message) {
-			for (final Iterator<ShareDocumentMessage> it = elements.iterator(); it
-					.hasNext();) {
-				final ShareDocumentMessage sdm = it.next();
-
-				final boolean equals = sdm.getDocumentId().equals(
-						message.getDocumentId())
-						&& sdm.getOpId().equals(message.getOpId());
-				if (equals) {
-					it.remove();
-				}
-			}
-		}
 	}
 
 	class ViewLabelProvider extends LabelProvider implements
 			ITableLabelProvider {
+		@Override
 		public String getColumnText(final Object obj, final int index) {
 			return getText(obj);
 		}
 
+		@Override
 		public Image getColumnImage(final Object obj, final int index) {
 			return getImage(obj);
 		}
 
+		@Override
 		public Image getImage(final Object obj) {
 			return PlatformUI.getWorkbench().getSharedImages()
 					.getImage(ISharedImages.IMG_OBJ_ELEMENT);
@@ -91,6 +80,7 @@ public class SharedDocumentView extends ViewPart {
 				.getInstance(ShareDocumentSessionManager.class);
 	}
 
+	@Override
 	public void createPartControl(final Composite parent) {
 		viewer = new TableViewer(parent, SWT.MULTI | SWT.H_SCROLL
 				| SWT.V_SCROLL);
@@ -107,17 +97,10 @@ public class SharedDocumentView extends ViewPart {
 			}
 		};
 
-		final ShareDocumentSessionUnRegisterListener unregisterListener = new ShareDocumentSessionUnRegisterListener() {
-			@Override
-			public void onEvent(final UnShareDocumentMessage msg) {
-				source.remove(msg);
-			}
-		};
-
 		shareDocumentSessionManager.addOnRegisterListener(registerListener);
-		shareDocumentSessionManager.addOnUnRegisterListener(unregisterListener);
 	}
 
+	@Override
 	public void setFocus() {
 		viewer.getControl().setFocus();
 	}
