@@ -8,8 +8,8 @@ namespace Cahoots.Services
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Diagnostics;
-    using System.Windows;
     using System.Linq;
+    using System.Windows;
     using Cahoots.Ext;
     using Cahoots.Ext.String;
     using Cahoots.Services.Contracts;

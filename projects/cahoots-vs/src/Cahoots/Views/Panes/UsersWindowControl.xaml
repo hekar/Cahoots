@@ -21,6 +21,8 @@
     <Grid>
         <DataGrid RowStyle="{StaticResource DefaultRowStyle}"
                   CanUserAddRows="False"
+                  CanUserReorderColumns="False"
+                  CanUserSortColumns="True"
                   AutoGenerateColumns="False"
                   HorizontalAlignment="Stretch"
                   Name="dataGrid1"

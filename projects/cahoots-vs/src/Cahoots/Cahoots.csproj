@@ -30,6 +30,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Views\Panes\CollaborationsWindowControl.xaml.cs">
+      <DependentUpon>CollaborationsWindowControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Panes\CollaborationsWindowToolWindow.cs" />
     <Compile Include="DTEExtensions.cs" />
     <Compile Include="GeneratedCode\Guids.cs">
       <AutoGen>True</AutoGen>
@@ -227,6 +231,10 @@
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Views\Panes\CollaborationsWindowControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Views\Custom\EditServerWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
