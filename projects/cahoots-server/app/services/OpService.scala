@@ -3,6 +3,7 @@ package services
 import play.api._
 import play.api.libs.json._
 import collection.mutable.{HashMap, HashSet => MutableHashSet}
+import collection.mutable
 
 /**
  * Operational transformations service
@@ -17,6 +18,11 @@ class OpService(
   def processMessage(json: JsValue) {
     Logger.debug("Message received: ")
     Logger.debug(json.toString())
+
+    if (!(json \ "opId").isInstanceOf[JsUndefined]){
+      val session = ops((json \ "opId").as[String])
+      session.operations += json.toString()
+    }
 
     val t = (json \ "type").as[String]
     t match {
@@ -65,6 +71,7 @@ class OpService(
     if (ops.contains(opId)) {
 
       val session = ops(opId)
+
       session.collaborators.foreach {
         collaborator =>
           notifyOne(collaborator, JsObject(Seq(
@@ -74,7 +81,7 @@ class OpService(
             "user" -> JsString(user)
           )))
       }
-      session.collaborators.remove(user);
+      session.collaborators.remove(user)
 
       Logger.debug("Removed: " + user + " From Op:" + opId)
       if (session.collaborators.size == 1) {
@@ -250,6 +257,8 @@ class OpSession(val opSessionId: Int, val documentId: String) {
    * Collaborator user ids
    */
   val collaborators = new MutableHashSet[String]
+
+  val operations = new mutable.MutableList[String]
 
   private val _start = System.currentTimeMillis()
 
