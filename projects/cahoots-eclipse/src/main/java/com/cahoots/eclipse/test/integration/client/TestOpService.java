@@ -43,13 +43,16 @@ public class TestOpService {
 		shareDocument();
 	}
 
+	@SuppressWarnings("deprecation")
 	private ShareDocumentMessage shareDocument() {
 		final SendShareDocumentMessage shareDocumentMessage = new SendShareDocumentMessage(
-				"admin", "cahoots-eclipse/README.txt", Arrays.asList("admin"));
+				"admin", "cahoots-eclipse/README.txt", Arrays.asList("admin"),
+				"");
 		return socket.sendAndWaitForResponse(shareDocumentMessage,
 				ShareDocumentMessage.class, ShareDocumentEventListener.class);
 	}
 
+	@SuppressWarnings("deprecation")
 	@Test
 	public void testOpInsert() {
 		final ShareDocumentMessage document = shareDocument();
@@ -65,6 +68,7 @@ public class TestOpService {
 				OpInsertEventListener.class);
 	}
 
+	@SuppressWarnings("deprecation")
 	@Test
 	public void testOpReplace() {
 		final ShareDocumentMessage document = shareDocument();
@@ -82,6 +86,7 @@ public class TestOpService {
 				OpReplaceEventListener.class);
 	}
 
+	@SuppressWarnings("deprecation")
 	@Test
 	public void testOpDelete() {
 		final ShareDocumentMessage document = shareDocument();
@@ -99,11 +104,12 @@ public class TestOpService {
 	@Test
 	public void testSynchronizedClock() throws Exception {
 		final ShareDocumentMessage document = shareDocument();
-		
-		final Future<OpSynchronizedClock> clockFuture = OpSynchronizedClock.fromConnection(new CahootsHttpClient(), 
-				cahootsConnection, document.getOpId());
+
+		final Future<OpSynchronizedClock> clockFuture = OpSynchronizedClock
+				.fromConnection(new CahootsHttpClient(), cahootsConnection,
+						document.getOpId());
 		final OpSynchronizedClock clock = clockFuture.get();
-		
+
 		System.out.println(clock.getClock());
 	}
 }
