@@ -38,5 +38,15 @@ namespace Cahoots.Services.MessageModels.Ops
         /// </value>
         [DataMember(Name = "collaborators", IsRequired = true)]
         public Collection<string> Collaborators { get; set; }
+
+        /// <summary>
+        /// Gets or sets the file contents.
+        /// </summary>
+        /// <value>
+        /// The collaborators.
+        /// </value>
+        [DataMember(Name = "fileContents", IsRequired = true)]
+        public string Contents { get; set; }
+
     }
 }
