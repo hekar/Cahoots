@@ -18,6 +18,9 @@
               <groupBaseReferencesButtons Id="f7e58d76-ab9a-40aa-9af2-989486eb9e2f">
                 <buttonMoniker Id="af92f973-f2c0-4d75-967d-4e6a69606e42" />
               </groupBaseReferencesButtons>
+              <groupBaseReferencesButtons Id="376a1548-ff6f-4403-8d32-51fe8778e00a">
+                <buttonMoniker Id="b9bae8b5-95c6-474a-bae0-001102e5e81d" />
+              </groupBaseReferencesButtons>
             </buttons>
           </group>
           <externalGroup Id="36e540d8-c01e-4850-9bf0-3674356a600b" name="Tools Menu [Command Line]" idNumeric="13" parentData="guidSHLMainMenu,IDG_VS_TOOLS_CMDLINE,Group">
@@ -36,6 +39,9 @@
               </groupBaseReferencesButtons>
               <groupBaseReferencesButtons Id="9bea94c6-9160-496d-81e7-e1efcc5e166e">
                 <buttonMoniker Id="af92f973-f2c0-4d75-967d-4e6a69606e42" />
+              </groupBaseReferencesButtons>
+              <groupBaseReferencesButtons Id="e0259943-c0bd-468c-bf2d-a8c98f33b782">
+                <buttonMoniker Id="b9bae8b5-95c6-474a-bae0-001102e5e81d" />
               </groupBaseReferencesButtons>
             </buttons>
           </externalGroup>
@@ -60,7 +66,16 @@
             <button Id="edea4f5d-cf56-4dac-9dbd-6d8450043902" name="PreferenceButton" idNumeric="17" buttonText="Preferences" menuText="Preferences" commandName="cmdidPreferenceButton" toolTipText="Preferences" mod1="0" mod2="0" visibilityConstraints="0" icon="msotcidToolbox" commandFlags="0" />
           </commandTableHasButtons>
           <commandTableHasButtons Id="03ad23fc-af0c-42b6-ae8a-6b2e557b4bd4">
-            <button Id="af92f973-f2c0-4d75-967d-4e6a69606e42" name="LeaveCollaborationButton" idNumeric="18" buttonText="Leave Collaborations" menuText="Leave Collaborations" commandName="cmdidLeaveCollaborationButton" toolTipText="Leave Collaborations" mod1="0" mod2="0" visibilityConstraints="0" icon="msotcidDeleteAllInkAnnots" commandFlags="0" />
+            <button Id="af92f973-f2c0-4d75-967d-4e6a69606e42" name="LeaveCollaborationButton" idNumeric="18" buttonText="Leave Collaborations" menuText="Leave Collaborations" commandName="cmdidLeaveCollaborationButton" toolTipText="Leave Collaborations" mod1="0" mod2="0" visibilityConstraints="0" icon="msotcidSubscript" commandFlags="0" />
+          </commandTableHasButtons>
+          <commandTableHasButtons Id="b4d9641d-904a-4c9b-8eb7-22dc11e52ed8">
+            <button Id="b9bae8b5-95c6-474a-bae0-001102e5e81d" name="CollaborationsButton" idNumeric="19" buttonText="CollaborationsButton" menuText="View Collaborations" commandName="cmdidCollaborationsButton" toolTipText="View Collaborations" mod1="0" mod2="0" visibilityConstraints="0" icon="msotcidCodeWindow" commandFlags="0">
+              <toolWindows>
+                <buttonReferencesToolWindows Id="67493b55-b708-4b45-95c4-89d00e0d42f2">
+                  <toolWindowMoniker Id="cecc0b9e-4680-498f-8712-8bf9e23dcc77" />
+                </buttonReferencesToolWindows>
+              </toolWindows>
+            </button>
           </commandTableHasButtons>
         </buttons>
         <menuBases>
@@ -86,6 +101,9 @@
           </userInterfaceHasToolWindows>
           <userInterfaceHasToolWindows Id="4bfd425e-0b8f-4fe2-9d68-5fbba94b231b">
             <toolWindow Id="2bc45ccf-5461-4cc7-8996-8e2de22c717a" name="ChatWindow" idNumeric="16" caption="ChatWindow" userCodeGenerated="true" transient="false" multiInstance="false" visibilityConstraints="0" guid="0968dc05-0eee-4e07-b222-9a305fb2a016" />
+          </userInterfaceHasToolWindows>
+          <userInterfaceHasToolWindows Id="4726649f-2f1f-42e7-964e-c9cb82c6e9a9">
+            <toolWindow Id="cecc0b9e-4680-498f-8712-8bf9e23dcc77" name="CollaborationsWindow" idNumeric="20" caption="Collaborations" userCodeGenerated="true" transient="false" multiInstance="false" visibilityConstraints="0" guid="bcca61a3-a7c9-4423-abd0-28ecb548c11a" />
           </userInterfaceHasToolWindows>
         </toolWindows>
       </userInterface>

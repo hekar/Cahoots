@@ -31,6 +31,7 @@ target/
 /projects/cahoots-server/lib_managed/
 /projects/cahoots-server/src_managed/
 /projects/cahoots-server/project/boot/
+/projects/cahoots-server/RUNNING_PID
 
 
 # Database #

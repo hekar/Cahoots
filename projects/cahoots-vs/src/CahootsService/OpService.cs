@@ -4,11 +4,12 @@
 
 namespace Cahoots.Services
 {
+    using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Diagnostics;
-    using System.Windows;
     using System.Linq;
+    using System.Windows;
     using Cahoots.Ext;
     using Cahoots.Ext.String;
     using Cahoots.Services.Contracts;
@@ -239,12 +240,14 @@ namespace Cahoots.Services
 
                 var view = tuple.Item2;
 
-                var doc = new DocumentModel()
+                var tick = this.WindowService.GetCurrentTick(model.OpId);
+
+                var doc = new DocumentModel(tick)
                 {
                     DocumentId = model.DocumentId,
                     FullPath = tuple.Item1,
                     OpId = model.OpId,
-                    View = view,
+                    View = view
                 };
 
                 this.Documents.Add(model.DocumentId, doc);
@@ -263,6 +266,7 @@ namespace Cahoots.Services
         ///   The <see cref="TextContentChangedEventArgs" />
         ///   instance containing the event data.
         /// </param>
+        /// <param name="docId">The document id.</param>
         private void TextChanged(object sender, TextContentChangedEventArgs e, string docId)
         {
             var doc = this.Documents[docId];
@@ -292,7 +296,8 @@ namespace Cahoots.Services
                         Start = change.NewPosition,
                         Content = change.NewText,
                         DocumentId = docId,
-                        OpId = doc.OpId
+                        OpId = doc.OpId,
+                        TickStamp = doc.TickStamp
                     };
 
                     this.SendMessage(model);
@@ -315,7 +320,8 @@ namespace Cahoots.Services
                         Start = change.OldPosition,
                         End = change.OldPosition + change.OldLength,
                         DocumentId = docId,
-                        OpId = doc.OpId
+                        OpId = doc.OpId,
+                        TickStamp = doc.TickStamp
                     };
 
                     this.SendMessage(model);
@@ -343,7 +349,8 @@ namespace Cahoots.Services
                         End = change.OldPosition + change.OldLength,
                         Content = change.NewText,
                         DocumentId = docId,
-                        OpId = doc.OpId
+                        OpId = doc.OpId,
+                        TickStamp = doc.TickStamp
                     };
 
                     this.SendMessage(model);
@@ -359,7 +366,8 @@ namespace Cahoots.Services
         ///   The <see cref="System.EventArgs" />
         ///   instance containing the event data.
         /// </param>
-        private void EndCollaboration(object sender, System.EventArgs e, string documentId)
+        /// <param name="docId">The document id.</param>
+        private void EndCollaboration(object sender, EventArgs e, string documentId)
         {
             // end collaboration
         }

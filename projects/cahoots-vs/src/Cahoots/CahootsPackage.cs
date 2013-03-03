@@ -11,6 +11,7 @@ namespace Cahoots
     using System.ComponentModel.Design;
     using System.IO;
     using System.Linq;
+    using System.Net;
     using System.Runtime.InteropServices;
     using System.Threading;
     using System.Windows.Forms;
@@ -565,11 +566,40 @@ namespace Cahoots
                                 this.UserName,
                                 documentId,
                                 collaborators.ToList());
-
-                //var view = this.ApplicationObject.GetEditorView(active.FullName);
-
-                //(this.CommunicationRelay.Services["op"] as OpService).AddSharedDocument(active.FullName, view);
             }
+        }
+
+        /// <summary>
+        /// Gets the current tick stamp.
+        /// </summary>
+        /// <param name="opId">The op id.</param>
+        /// <returns>The current tick stamp.</returns>
+        public long GetCurrentTick(string opId)
+        {
+            var start = (long)DateTime.Now.TimeOfDay.TotalMilliseconds;
+            var request =
+                HttpWebRequest.Create(
+                    new Uri (
+                        this.AuthenticationService.ServerUrl, 
+                            string.Format(
+                                "/op/clock?auth_token={0}&opId={1}",
+                                this.AuthenticationService.Token,
+                                opId)));
+            var response = request.GetResponse() as HttpWebResponse;
+            var latency =
+                    (long)DateTime.Now.TimeOfDay.TotalMilliseconds - start;
+
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                using (var stream = response.GetResponseStream())
+                using (var reader = new StreamReader(stream))
+                {
+                    var str = reader.ReadToEnd();
+                    return long.Parse(str) + (latency / 2);
+                }
+            }
+
+            return 0;
         }
 
         /// <summary>

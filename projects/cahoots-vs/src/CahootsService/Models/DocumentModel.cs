@@ -5,13 +5,20 @@
 namespace Cahoots.Services.Models
 {
     using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
     using Microsoft.VisualStudio.Text.Editor;
 
     public class DocumentModel
     {
+        /// <summary>
+        /// Initializes a new instance of the
+        /// <see cref="DocumentModel" /> class.
+        /// </summary>
+        /// <param name="tick">The tick.</param>
+        public DocumentModel(long tick)
+        {
+            this.tickStart = tick;
+        }
+
         /// <summary>
         /// Gets or sets the view.
         /// </summary>
@@ -50,14 +57,16 @@ namespace Cahoots.Services.Models
         /// <value>
         /// The tick stamp.
         /// </value>
+        private long tickStart { get; set; }
         public long TickStamp
         {
             get
             {
-                // TODO: actually implement this...
-                return 0;
+                var now = (long)DateTime.Now.TimeOfDay.TotalMilliseconds;
+                return now - tickStart;
             }
         }
+
 
         private object locker = new object();
 

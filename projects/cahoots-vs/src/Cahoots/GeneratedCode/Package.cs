@@ -31,6 +31,7 @@ namespace Cahoots
     [ProvideMenuResource("Menus.ctmenu", 1)]
 	[ProvideToolWindow(typeof(UsersWindowToolWindow), Orientation=ToolWindowOrientation.Right, Style=VsDockStyle.Tabbed, MultiInstances = false, Transient = false, PositionX = 100 , PositionY = 100 , Width = 250 , Height = 400 )]
 	[ProvideToolWindow(typeof(ChatWindowToolWindow), Orientation=ToolWindowOrientation.Right, Style=VsDockStyle.Float, MultiInstances = false, Transient = false, PositionX = 100 , PositionY = 100 , Width = 300 , Height = 300 )]
+	[ProvideToolWindow(typeof(CollaborationsWindowToolWindow), Orientation=ToolWindowOrientation.Right, Style=VsDockStyle.Float, MultiInstances = false, Transient = false, PositionX = 100 , PositionY = 100 , Width = 300 , Height = 300 )]
 	[Guid(GuidList.guidCahootsPkgString)]
     public abstract class CahootsPackageBase : Package
     {
@@ -85,6 +86,10 @@ namespace Cahoots
 				// Create the command for button LeaveCollaborationButton
                 commandId = new CommandID(GuidList.guidCahootsCmdSet, (int)PkgCmdIDList.LeaveCollaborationButton);
                 menuItem = new OleMenuCommand(LeaveCollaborationButtonExecuteHandler, LeaveCollaborationButtonChangeHandler, LeaveCollaborationButtonQueryStatusHandler, commandId);
+                mcs.AddCommand(menuItem);
+				// Create the command for button CollaborationsButton
+                commandId = new CommandID(GuidList.guidCahootsCmdSet, (int)PkgCmdIDList.CollaborationsButton);
+                menuItem = new OleMenuCommand(CollaborationsButtonExecuteHandler, CollaborationsButtonChangeHandler, CollaborationsButtonQueryStatusHandler, commandId);
                 mcs.AddCommand(menuItem);
 
 			}
@@ -177,6 +182,23 @@ namespace Cahoots
 
 		#endregion
 
+		#region Handlers for Button: CollaborationsButton
+
+		protected virtual void CollaborationsButtonExecuteHandler(object sender, EventArgs e)
+		{
+			ShowToolWindowCollaborationsWindow(sender, e);
+		}
+		
+		protected virtual void CollaborationsButtonChangeHandler(object sender, EventArgs e)
+		{
+		}
+		
+		protected virtual void CollaborationsButtonQueryStatusHandler(object sender, EventArgs e)
+		{
+		}
+
+		#endregion
+
         /// <summary>
         /// This function is called when the user clicks the menu item that shows the 
         /// tool window. See the Initialize method to see how the menu item is associated to 
@@ -210,6 +232,25 @@ namespace Cahoots
             if ((null == window) || (null == window.Frame))
             {
                 throw new NotSupportedException(String.Format("Can not create Toolwindow: ChatWindow"));
+            }
+            IVsWindowFrame windowFrame = (IVsWindowFrame)window.Frame;
+            Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(windowFrame.Show());
+        }
+
+        /// <summary>
+        /// This function is called when the user clicks the menu item that shows the 
+        /// tool window. See the Initialize method to see how the menu item is associated to 
+        /// this function using the OleMenuCommandService service and the MenuCommand class.
+        /// </summary>
+        private void ShowToolWindowCollaborationsWindow(object sender, EventArgs e)
+        {
+            // Get the instance number 0 of this tool window. This window is single instance so this instance
+            // is actually the only one.
+            // The last flag is set to true so that if the tool window does not exists it will be created.
+            ToolWindowPane window = this.FindToolWindow(typeof(CollaborationsWindowToolWindow), 0, true);
+            if ((null == window) || (null == window.Frame))
+            {
+                throw new NotSupportedException(String.Format("Can not create Toolwindow: CollaborationsWindow"));
             }
             IVsWindowFrame windowFrame = (IVsWindowFrame)window.Frame;
             Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(windowFrame.Show());

@@ -65,7 +65,7 @@
             <buttonShapeMoniker Id="7d4414ff-a69b-4ba3-8400-9aeb65b3eafc" />
           </nodes>
         </containsConnector>
-        <containsConnector Id="cad0abb7-ea95-4243-a627-81c25b9c3452" edgePoints="[(5 : 3.874998); (5.625 : 3.874998); (5.625 : 3.5); (7.75 : 3.5); (7.75 : 3.125)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+        <containsConnector Id="cad0abb7-ea95-4243-a627-81c25b9c3452" edgePoints="[(5 : 4.0625); (5.02916666666667 : 4.0625 : JumpStart); (5.09583333333333 : 4.0625 : JumpEnd); (5.625 : 4.0625); (5.625 : 3.5); (7.75 : 3.5); (7.75 : 3.125)]" fixedFrom="Algorithm" fixedTo="Algorithm">
           <groupBaseReferencesButtonsMoniker Id="4846d26a-94ae-46d1-ac4a-6d37e8aa056a" />
           <nodes>
             <externalGroupShapeMoniker Id="34956bee-d455-4058-bc70-3eb0d9a1416a" />
@@ -75,7 +75,7 @@
         <buttonShape Id="197508b2-d589-4d1a-9c63-b4e292d20962" absoluteBounds="5.875, 3.75, 1.5, 0.625">
           <buttonMoniker Id="edea4f5d-cf56-4dac-9dbd-6d8450043902" />
         </buttonShape>
-        <containsConnector Id="15a13a3c-557a-430f-9a90-2863e9367330" edgePoints="[(5 : 4.0625); (5.875 : 4.0625)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+        <containsConnector Id="15a13a3c-557a-430f-9a90-2863e9367330" edgePoints="[(5 : 3.88125); (5.02916666666667 : 3.88125 : JumpStart); (5.09583333333333 : 3.88125 : JumpEnd); (5.59166666666667 : 3.88125 : JumpStart); (5.65833333333333 : 3.88125 : JumpEnd); (5.875 : 3.88125)]" fixedFrom="Algorithm" fixedTo="Algorithm">
           <groupBaseReferencesButtonsMoniker Id="f9d05b4e-2dd1-4baf-a137-151514097257" />
           <nodes>
             <externalGroupShapeMoniker Id="34956bee-d455-4058-bc70-3eb0d9a1416a" />
@@ -99,6 +99,23 @@
             <buttonShapeMoniker Id="e6ca1946-7dfa-4c81-8d97-8c8ab81f9060" />
           </nodes>
         </containsConnector>
+        <buttonShape Id="7e2f96a2-50a2-4c52-811b-86ec83e98818" absoluteBounds="5.125, 4.75, 1.5, 0.625">
+          <buttonMoniker Id="b9bae8b5-95c6-474a-bae0-001102e5e81d" />
+        </buttonShape>
+        <containsConnector Id="4cc3a875-dc53-4109-b3b7-31fcfa7d49eb" edgePoints="[(4.468752 : 2); (4.468752 : 2.4375); (4.3125 : 2.4375); (4.3125 : 3.6875); (4.43541866666667 : 3.6875 : JumpStart); (4.50208533333333 : 3.6875 : JumpEnd); (5.0625 : 3.6875); (5.0625 : 5.0625); (5.125 : 5.0625)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+          <groupBaseReferencesButtonsMoniker Id="376a1548-ff6f-4403-8d32-51fe8778e00a" />
+          <nodes>
+            <groupShapeMoniker Id="59a2c170-f5b5-41f0-ac45-3ea3567d83bd" />
+            <buttonShapeMoniker Id="7e2f96a2-50a2-4c52-811b-86ec83e98818" />
+          </nodes>
+        </containsConnector>
+        <containsConnector Id="6fd96535-f1f7-47da-a4c2-6d66b97ccfe8" edgePoints="[(4.25 : 4.375); (4.25 : 5.17916416666667); (4.83625 : 5.17916416666667); (4.83625 : 5.18200549450549); (5.125 : 5.18200549450549)]" manuallyRouted="true" fixedFrom="Algorithm" fixedTo="Caller">
+          <groupBaseReferencesButtonsMoniker Id="e0259943-c0bd-468c-bf2d-a8c98f33b782" />
+          <nodes>
+            <externalGroupShapeMoniker Id="34956bee-d455-4058-bc70-3eb0d9a1416a" />
+            <buttonShapeMoniker Id="7e2f96a2-50a2-4c52-811b-86ec83e98818" />
+          </nodes>
+        </containsConnector>
       </nestedChildShapes>
     </commandTableSwimlane>
     <toolwindowSwimlane Id="4f8ea066-fca6-41f8-8a77-c4ab4550634b" absoluteBounds="8.75, 0, 6.375, 8.5">
@@ -110,14 +127,25 @@
         <wpfToolWindowShape Id="6dc3bd5f-1eba-40a6-8676-5d9d447bce26" absoluteBounds="9.375, 1.375, 1.5, 0.625">
           <toolWindowMoniker Id="2bc45ccf-5461-4cc7-8996-8e2de22c717a" />
         </wpfToolWindowShape>
+        <wpfToolWindowShape Id="952b1114-e533-4697-b3b0-6c03884fd194" absoluteBounds="9.25, 4.75, 1.5, 0.625">
+          <toolWindowMoniker Id="cecc0b9e-4680-498f-8712-8bf9e23dcc77" />
+        </wpfToolWindowShape>
       </nestedChildShapes>
     </toolwindowSwimlane>
-    <launches Id="95353647-a524-42d0-b2f2-1ac2beea58b6" edgePoints="[(8.5 : 2.8125); (9.5 : 2.8125)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+    <launches Id="95353647-a524-42d0-b2f2-1ac2beea58b6" edgePoints="[(8.5 : 2.8125); (9.5 : 2.8125)]" fixedFrom="NotFixed" fixedTo="NotFixed">
       <buttonReferencesToolWindowsMoniker Id="4b69d999-1f74-4ee0-9378-6db12e4526e3" />
       <relativeChildShapes />
       <nodes>
         <buttonShapeMoniker Id="7d4414ff-a69b-4ba3-8400-9aeb65b3eafc" />
         <wpfToolWindowShapeMoniker Id="df4a25e1-076a-4e22-9d5e-f0e187581bed" />
+      </nodes>
+    </launches>
+    <launches Id="57acb31d-52eb-429b-84b2-6cc5e6db72ef" edgePoints="[(6.625 : 5.0625); (9.25 : 5.0625)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+      <buttonReferencesToolWindowsMoniker Id="67493b55-b708-4b45-95c4-89d00e0d42f2" />
+      <relativeChildShapes />
+      <nodes>
+        <buttonShapeMoniker Id="7e2f96a2-50a2-4c52-811b-86ec83e98818" />
+        <wpfToolWindowShapeMoniker Id="952b1114-e533-4697-b3b0-6c03884fd194" />
       </nodes>
     </launches>
   </nestedChildShapes>
