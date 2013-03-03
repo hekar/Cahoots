@@ -83,7 +83,6 @@ namespace Cahoots.Services
             this.SendMessage(model);
         }
 
-
         /// <summary>
         /// Gets a view model for the service.
         /// </summary>

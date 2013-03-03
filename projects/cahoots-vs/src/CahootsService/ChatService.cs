@@ -110,6 +110,10 @@ namespace Cahoots.Services
         /// Gets a view model for the service.
         /// </summary>
         /// <param name="parameters">The parameters.</param>
+        /// <remarks>
+        /// [0] - Collaborator
+        /// [1] - Local user name
+        /// </remarks>
         /// <returns>A view model.</returns>
         public override BaseViewModel GetViewModel(params object[] parameters)
         {
