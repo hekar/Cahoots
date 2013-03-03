@@ -10,5 +10,14 @@
              Name="CollaborationsWindow"
              Background="White">
     <Grid>
+        <ListView ItemsSource="{Binding Collaborations}">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="{Binding DocumentId}" />
+                    </StackPanel>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
     </Grid>
 </UserControl>

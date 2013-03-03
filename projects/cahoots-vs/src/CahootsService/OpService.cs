@@ -26,6 +26,7 @@ namespace Cahoots.Services
         public OpService(IWindowService windowService) : base("op")
         {
             this.Documents = new Dictionary<string, DocumentModel>();
+            this.ViewModel = new CollaborationsViewModel();
             this.WindowService = windowService;
         }
 
@@ -36,6 +37,14 @@ namespace Cahoots.Services
         /// The editors.
         /// </value>
         private Dictionary<string, DocumentModel> Documents { get; set; }
+
+        /// <summary>
+        /// Gets or sets the view model.
+        /// </summary>
+        /// <value>
+        /// The view model.
+        /// </value>
+        private CollaborationsViewModel ViewModel { get; set; }
 
         /// <summary>
         /// Gets or sets the window service.
@@ -98,7 +107,7 @@ namespace Cahoots.Services
         /// <returns></returns>
         public override BaseViewModel GetViewModel(params object[] parameters)
         {
-            return null;
+            return this.ViewModel;
         }
 
         /// <summary>
@@ -250,6 +259,13 @@ namespace Cahoots.Services
                 };
 
                 this.Documents.Add(model.DocumentId, doc);
+
+                this.ViewModel.Collaborations.Add(
+                    new CollaborationsViewModel.Collaboration()
+                    {
+                        DocumentId = model.DocumentId,
+                        OpId = model.OpId
+                    });
 
                 // attach events and stuff
                 view.TextBuffer.Changed += (s, e) => TextChanged(s, e, model.DocumentId);

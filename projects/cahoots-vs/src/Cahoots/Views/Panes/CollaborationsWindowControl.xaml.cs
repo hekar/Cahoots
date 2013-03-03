@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Cahoots.Services.ViewModels;
 
 namespace Cahoots
 {
@@ -23,14 +24,10 @@ namespace Cahoots
         public CollaborationsWindowControl()
         {
             InitializeComponent();
+            var vm = CahootsPackage.Instance.GetViewModel("op") as CollaborationsViewModel;
+            this.DataContext = vm;
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1300:SpecifyMessageBoxOptions")]
-        private void button1_Click(object sender, RoutedEventArgs e)
-        {
-            MessageBox.Show(string.Format(System.Globalization.CultureInfo.CurrentUICulture, "We are inside {0}.button1_Click()", this.ToString()),
-                            "CollaborationsWindow");
 
-        }
     }
 }
