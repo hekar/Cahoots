@@ -61,13 +61,21 @@ namespace Cahoots.Services
                 string documentId,
                 List<string> users)
         {
+
+            // find/open the document
+            var tuple = this.WindowService.OpenDocumentWindow(
+                                documentId);
+
+            var view = tuple.Item2;
+            
             var model = new SendShareMessage()
             {
                 Service = "op",
                 MessageType = "share",
                 User = user,
                 DocumentId = documentId,
-                Collaborators = new Collection<string>(users)
+                Collaborators = new Collection<string>(users),
+                Contents = view.TextBuffer.CurrentSnapshot.GetText()
             };
 
             this.SendMessage(model);

@@ -8,14 +8,16 @@ public class SendShareDocumentMessage {
 
 	private String user;
 	private String documentId;
+	private String fileContents;
 	private List<String> collaborators;
 
 	public SendShareDocumentMessage(final String user, final String documentId,
-			final List<String> collaborators) {
+			final List<String> collaborators, final String fileContents) {
 		super();
 		this.user = user;
 		this.documentId = documentId;
 		this.collaborators = collaborators;
+		this.fileContents = fileContents;
 	}
 
 	public String getUser() {
@@ -48,6 +50,10 @@ public class SendShareDocumentMessage {
 
 	public String getType() {
 		return type;
+	}
+
+	public String getFileContentes() {
+		return fileContents;
 	}
 
 }

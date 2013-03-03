@@ -3,6 +3,7 @@ package services
 import play.api._
 import play.api.libs.json._
 import collection.mutable.{HashMap, HashSet => MutableHashSet}
+import collection.mutable
 
 /**
  * Operational transformations service
@@ -18,14 +19,19 @@ class OpService(
     Logger.debug("Message received: ")
     Logger.debug(json.toString())
 
+    if (!(json \ "opId").isInstanceOf[JsUndefined]){
+      val session = ops((json \ "opId").as[String])
+      session.operations += json.toString()
+    }
+
     val t = (json \ "type").as[String]
     t match {
       case "share" =>
         val user = (json \ "user").as[String]
         val documentId = (json \ "documentId").as[String]
         val collaborators = (json \ "collaborators").as[List[String]]
-
-        shareDocument(user, documentId, collaborators)
+        val fileContents = (json \ "fileContents").as[String]
+        shareDocument(user, documentId, collaborators, fileContents)
       case "insert" =>
         val user = (json \ "user").as[String]
         val opId = (json \ "opId").as[String]
@@ -65,6 +71,7 @@ class OpService(
     if (ops.contains(opId)) {
 
       val session = ops(opId)
+
       session.collaborators.foreach {
         collaborator =>
           notifyOne(collaborator, JsObject(Seq(
@@ -74,7 +81,7 @@ class OpService(
             "user" -> JsString(user)
           )))
       }
-      session.collaborators.remove(user);
+      session.collaborators.remove(user)
 
       Logger.debug("Removed: " + user + " From Op:" + opId)
       if (session.collaborators.size == 1) {
@@ -86,7 +93,7 @@ class OpService(
     }
   }
 
-  def shareDocument(user: String, documentId: String, collaborators: List[String]) {
+  def shareDocument(user: String, documentId: String, collaborators: List[String], fileContents: String) {
 
     val nextOpSessionId = (if (ops.size > 0) ops.keys.map(_.toInt).toList.max + 1 else 0).toString
 
@@ -118,6 +125,10 @@ class OpService(
 
     val session = new OpSession(nextOpSessionId.toInt, documentId)
     session.collaborators ++= user :: collaborators
+    session.operations += JsObject(Seq(
+      "opId" -> JsNumber(nextOpSessionId.toInt),
+      "fileContents" -> JsString(fileContents)
+    )).toString()
     ops += ((nextOpSessionId, session))
   }
 
@@ -250,6 +261,8 @@ class OpSession(val opSessionId: Int, val documentId: String) {
    * Collaborator user ids
    */
   val collaborators = new MutableHashSet[String]
+
+  val operations = new mutable.MutableList[String]
 
   private val _start = System.currentTimeMillis()
 

@@ -34,7 +34,7 @@ import com.cahoots.json.send.SendShareDocumentMessage;
 public class ShareDocumentManager {
 
 	private boolean enabled = true;
-	
+
 	private final CahootsSocket cahootsSocket;
 	private final OpSessionRegister opSessionManager;
 	private final CahootsConnection connection;
@@ -73,9 +73,13 @@ public class ShareDocumentManager {
 		// Get resource for text editor
 		final IResource resource = ResourceUtil.getResource(editorInput);
 		final String documentId = resource.getFullPath().toString();
+		final IDocument document = textEditor.getDocumentProvider()
+				.getDocument(editorInput);
+		final String contents = document.get();
 
 		final SendShareDocumentMessage message = new SendShareDocumentMessage(
-				connection.getUsername(), documentId, collaboratorUsernames);
+				connection.getUsername(), documentId, collaboratorUsernames,
+				contents);
 
 		cahootsSocket.send(message);
 	}
