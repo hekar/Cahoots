@@ -50,6 +50,13 @@
     </view>
     <view
           category="cahoots-view"
+          class="com.cahoots.eclipse.indigo.view.CollaborationsView"
+          icon="icons/sample.gif"
+          id="com.cahoots.eclipse.indigo.view.CollaborationsView"
+          name="Cahoots - Collaborations">
+    </view>
+    <view
+          category="cahoots-view"
           class="com.cahoots.eclipse.indigo.view.SharedDocumentView"
           icon="icons/sample.gif"
           id="com.cahoots.eclipse.indigo.view.SharedDocumentView"

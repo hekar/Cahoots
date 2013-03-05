@@ -25,10 +25,10 @@ import com.cahoots.eclipse.op.OpSessionRegister;
 import com.cahoots.eclipse.swt.SwtDisplayUtils;
 import com.cahoots.events.ShareDocumentEventListener;
 import com.cahoots.json.receive.ShareDocumentMessage;
+import com.cahoots.json.send.JoinCollaborationMessage;
 
 public final class IncomingDocumentShare implements ShareDocumentEventListener {
 
-	private final OpSessionRegister opSessionRegister;
 	private final ShareDocumentManager shareDocumentManager;
 	private final CahootsSocket cahootsSocket;
 	private final TextEditorTools editorTools;
@@ -50,7 +50,6 @@ public final class IncomingDocumentShare implements ShareDocumentEventListener {
 			final CahootsSocket cahootsSocket,
 			final TextEditorTools editorTools,
 			final UserListViewContentProvider userList) {
-		this.opSessionRegister = opSessionRegister;
 		this.messageDialog = messageDialog;
 		this.cahootsConnection = cahootsConnection;
 		this.workbenchWindow = workbenchWindow;
@@ -86,14 +85,14 @@ public final class IncomingDocumentShare implements ShareDocumentEventListener {
 							return;
 						}
 					}
-
+					cahootsSocket.send(new JoinCollaborationMessage(
+							cahootsConnection.getUsername(), opId));
 					final ITextEditor textEditor = getSharedDocumentTextEditor(documentId);
-					addIncomingEventListeners(textEditor);
 
 					final IDocument doc = textEditor.getDocumentProvider()
 							.getDocument(textEditor.getEditorInput());
 					shareDocumentManager.addDocumentListener(doc, opId,
-							documentId);
+							documentId, textEditor);
 				}
 			};
 
@@ -149,22 +148,6 @@ public final class IncomingDocumentShare implements ShareDocumentEventListener {
 					.editorPartToTextEditor(editor);
 			return textEditor;
 		}
-	}
-
-	private void addIncomingEventListeners(final ITextEditor textEditor) {
-		if (textEditor == null) {
-			throw new IllegalArgumentException("textEditor cannot be null");
-		}
-
-		cahootsSocket.addOpInsertEventListener(new IncomingInsert(
-				opSessionRegister, shareDocumentManager, cahootsConnection,
-				textEditor));
-		cahootsSocket.addOpReplaceEventListener(new IncomingReplace(
-				opSessionRegister, shareDocumentManager, cahootsConnection,
-				textEditor));
-		cahootsSocket.addOpDeleteEventListener(new IncomingDelete(
-				opSessionRegister, shareDocumentManager, cahootsConnection,
-				textEditor));
 	}
 
 }

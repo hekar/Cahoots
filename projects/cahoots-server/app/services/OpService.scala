@@ -62,8 +62,35 @@ class OpService(
         val opId = (json \ "opId").as[String]
 
         leave(user, opId)
+
+      case "join" =>
+        val user = (json \ "user").as[String]
+        val opId = (json \ "opId").as[String]
+
+        join(user, opId)
+
+      case "invite" =>
+        val user = (json \ "user").as[String]
+        val opId = (json \ "opId").as[String]
+
+        invite(user, opId)
+
       case _ =>
         throw new RuntimeException("Invalid message type for 'op': %s".format(t))
+    }
+  }
+
+  def invite(user: String, opId: String){
+    val session = ops(opId)
+    if (!session.invited.contains(user)){
+      session.invited += user
+      notifyOne(user, JsObject(Seq(
+        "service" -> JsString("op"),
+        "type" -> JsString("shared"),
+        "sharer" -> JsString(user),
+        "documentId" -> JsString(session.documentId),
+        "opId" -> JsString(session.opSessionId.toString)
+      )))
     }
   }
 
@@ -91,6 +118,31 @@ class OpService(
         Logger.debug("Removed Op: " + opId)
       }
     }
+  }
+
+  def join(user: String, opId: String){
+    val session = ops(opId)
+
+    if (session.invited.contains(user) && !session.collaborators.contains(user)){
+      notifyOne(user, JsObject(Seq(
+        "service" -> JsString("op"),
+        "type" -> JsString("collaborators"),
+        "opId" -> JsString(opId),
+        "collaborators" -> JsArray(session.collaborators.map(t => JsString(t)).toSeq)
+      )))
+
+      session.collaborators += user
+      (session.collaborators.toList).foreach(
+        collaborator =>
+          notifyOne(collaborator, JsObject(Seq(
+          "service" -> JsString("op"),
+          "type" -> JsString("joined"),
+          "user" -> JsString(user),
+          "opId" -> JsString(opId)
+        )))
+      )
+    }
+
   }
 
   def shareDocument(user: String, documentId: String, collaborators: List[String], fileContents: String) {
@@ -124,7 +176,7 @@ class OpService(
     }
 
     val session = new OpSession(nextOpSessionId.toInt, documentId)
-    session.collaborators ++= user :: collaborators
+    session.invited ++= user :: collaborators
     session.operations += JsObject(Seq(
       "opId" -> JsNumber(nextOpSessionId.toInt),
       "fileContents" -> JsString(fileContents)
@@ -260,6 +312,8 @@ class OpSession(val opSessionId: Int, val documentId: String) {
   /**
    * Collaborator user ids
    */
+  val invited = new MutableHashSet[String]
+
   val collaborators = new MutableHashSet[String]
 
   val operations = new mutable.MutableList[String]

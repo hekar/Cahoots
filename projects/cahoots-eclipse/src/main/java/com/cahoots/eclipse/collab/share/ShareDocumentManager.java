@@ -4,7 +4,9 @@ import static ch.lambdaj.Lambda.extract;
 import static ch.lambdaj.Lambda.on;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 import javax.inject.Inject;
@@ -39,6 +41,8 @@ public class ShareDocumentManager {
 	private final OpSessionRegister opSessionManager;
 	private final CahootsConnection connection;
 	private final CahootsHttpClient cahootsHttpClient;
+	private final Map<String, ShareDocumentManager.Share> shares = new HashMap<String, ShareDocumentManager.Share>();
+	private final Map<String, String> documentIds = new HashMap<String, String>();
 
 	@Inject
 	public ShareDocumentManager(final CahootsConnection connection,
@@ -84,9 +88,37 @@ public class ShareDocumentManager {
 		cahootsSocket.send(message);
 	}
 
+	public void removeDocumentListner(final String opId) {
+		opSessionManager.removeSession(opId);
+		documentIds.remove(opId);
+		if (shares.containsKey(opId)) {
+			final Share s = shares.get(opId);
+			cahootsSocket.removeOpDeleteEventListener(s.getIncomingDelete());
+			cahootsSocket.removeOpInsertEventListener(s.getIncomingInsert());
+			cahootsSocket.removeOpReplaceEventListener(s.getIncomingReplace());
+			s.document.removeDocumentListener(s.documentListener);
+			shares.remove(opId);
+		}
+	}
+
 	public void addDocumentListener(final IDocument document,
-			final String opId, final String documentId) {
+			final String opId, final String documentId,
+			final ITextEditor textEditor) {
 		try {
+
+			final IncomingInsert insert = new IncomingInsert(opSessionManager,
+					this, connection, textEditor, documentId, opId);
+			final IncomingReplace replace = new IncomingReplace(
+					opSessionManager, this, connection, textEditor, documentId,
+					opId);
+			final IncomingDelete delete = new IncomingDelete(opSessionManager,
+					this, connection, textEditor, documentId, opId);
+
+			cahootsSocket.addOpInsertEventListener(insert);
+			cahootsSocket.addOpReplaceEventListener(replace);
+			cahootsSocket.addOpDeleteEventListener(delete);
+
+			documentIds.put(opId, documentId);
 			final OpSynchronizedClock clock = OpSynchronizedClock
 					.fromConnection(cahootsHttpClient, connection, opId).get();
 			final OpDocument opDocument = new OpDocument(opId, documentId);
@@ -122,13 +154,18 @@ public class ShareDocumentManager {
 				public void documentAboutToBeChanged(final DocumentEvent event) {
 				}
 			};
-
+			shares.put(opId, new Share(document, documentListener, delete,
+					insert, replace));
 			document.addDocumentListener(documentListener);
 		} catch (final InterruptedException e) {
 			e.printStackTrace();
 		} catch (final ExecutionException e) {
 			e.printStackTrace();
 		}
+	}
+
+	public String getDocumentId(final String opId) {
+		return documentIds.get(opId);
 	}
 
 	private void insert(final String opId, final String documentId,
@@ -189,5 +226,65 @@ public class ShareDocumentManager {
 
 	public void disableEvents() {
 		enabled = false;
+	}
+
+	public class Share {
+		private IDocument document;
+		private IDocumentListener documentListener;
+		private IncomingInsert incomingInsert;
+		private IncomingDelete incomingDelete;
+		private IncomingReplace incomingReplace;
+
+		public Share(final IDocument document,
+				final IDocumentListener documentListener,
+				final IncomingDelete incomingDelete,
+				final IncomingInsert incomingInsert,
+				final IncomingReplace incomingReplace) {
+			this.document = document;
+			this.documentListener = documentListener;
+			this.incomingDelete = incomingDelete;
+			this.incomingInsert = incomingInsert;
+			this.incomingReplace = incomingReplace;
+		}
+
+		public IncomingInsert getIncomingInsert() {
+			return incomingInsert;
+		}
+
+		public void setIncomingInsert(final IncomingInsert incomingInsert) {
+			this.incomingInsert = incomingInsert;
+		}
+
+		public IncomingDelete getIncomingDelete() {
+			return incomingDelete;
+		}
+
+		public void setIncomingDelete(final IncomingDelete incomingDelete) {
+			this.incomingDelete = incomingDelete;
+		}
+
+		public IncomingReplace getIncomingReplace() {
+			return incomingReplace;
+		}
+
+		public void setIncomingReplace(final IncomingReplace incomingReplace) {
+			this.incomingReplace = incomingReplace;
+		}
+
+		public IDocument getDocument() {
+			return document;
+		}
+
+		public void setDocument(final IDocument document) {
+			this.document = document;
+		}
+
+		public IDocumentListener getDocumentListener() {
+			return documentListener;
+		}
+
+		public void setDocumentListener(final IDocumentListener documentListener) {
+			this.documentListener = documentListener;
+		}
 	}
 }
