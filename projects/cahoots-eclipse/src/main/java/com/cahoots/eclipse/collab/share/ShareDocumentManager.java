@@ -28,6 +28,7 @@ import com.cahoots.eclipse.op.OpSession;
 import com.cahoots.eclipse.op.OpSessionRegister;
 import com.cahoots.eclipse.op.OpSynchronizedClock;
 import com.cahoots.json.Collaborator;
+import com.cahoots.json.send.InviteUserMessage;
 import com.cahoots.json.send.SendOpDeleteMessage;
 import com.cahoots.json.send.SendOpInsertMessage;
 import com.cahoots.json.send.SendOpReplaceMessage;
@@ -285,6 +286,16 @@ public class ShareDocumentManager {
 
 		public void setDocumentListener(final IDocumentListener documentListener) {
 			this.documentListener = documentListener;
+		}
+	}
+
+	public void inviteToShare(final String opId,
+			final List<Collaborator> collaborators) {
+		for (final Collaborator c : collaborators) {
+			final InviteUserMessage message = new InviteUserMessage(
+					connection.getUsername(), c.getUsername(), opId);
+
+			cahootsSocket.send(message);
 		}
 	}
 }

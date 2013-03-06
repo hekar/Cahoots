@@ -21,7 +21,7 @@ class OpService(
 
     if (!(json \ "opId").isInstanceOf[JsUndefined]){
       val session = ops((json \ "opId").as[String])
-      session.operations += json.toString()
+      session.operations += json
     }
 
     val t = (json \ "type").as[String]
@@ -72,22 +72,23 @@ class OpService(
       case "invite" =>
         val user = (json \ "user").as[String]
         val opId = (json \ "opId").as[String]
+        val sharer = (json \ "sharer").as[String]
 
-        invite(user, opId)
+        invite(sharer, user, opId)
 
       case _ =>
         throw new RuntimeException("Invalid message type for 'op': %s".format(t))
     }
   }
 
-  def invite(user: String, opId: String){
+  def invite(sharer:String, user: String, opId: String){
     val session = ops(opId)
-    if (!session.invited.contains(user)){
+    if (!session.collaborators.contains(user) && !session.invited.contains(user)){
       session.invited += user
       notifyOne(user, JsObject(Seq(
         "service" -> JsString("op"),
         "type" -> JsString("shared"),
-        "sharer" -> JsString(user),
+        "sharer" -> JsString(sharer),
         "documentId" -> JsString(session.documentId),
         "opId" -> JsString(session.opSessionId.toString)
       )))
@@ -131,7 +132,21 @@ class OpService(
         "collaborators" -> JsArray(session.collaborators.map(t => JsString(t)).toSeq)
       )))
 
+      notifyOne(user, JsObject(Seq(
+        "service" -> JsString("op"),
+        "type" -> JsString("replace"),
+        "user" -> session.operations.head \ "user",
+        "opId" -> JsString(opId),
+        "documentId" -> JsString(session.documentId),
+        "content" -> session.operations.head \ "fileContents",
+        "start" -> JsNumber(0),
+        "end" -> JsNumber(Integer.MAX_VALUE),
+        "tickStamp" -> JsNumber(0)
+      )))
+
       session.collaborators += user
+      session.invited -= user
+
       (session.collaborators.toList).foreach(
         collaborator =>
           notifyOne(collaborator, JsObject(Seq(
@@ -179,8 +194,9 @@ class OpService(
     session.invited ++= user :: collaborators
     session.operations += JsObject(Seq(
       "opId" -> JsNumber(nextOpSessionId.toInt),
-      "fileContents" -> JsString(fileContents)
-    )).toString()
+      "fileContents" -> JsString(fileContents),
+      "user" -> JsString(user)
+    ))
     ops += ((nextOpSessionId, session))
   }
 
@@ -316,7 +332,7 @@ class OpSession(val opSessionId: Int, val documentId: String) {
 
   val collaborators = new MutableHashSet[String]
 
-  val operations = new mutable.MutableList[String]
+  val operations = new mutable.MutableList[JsValue]
 
   private val _start = System.currentTimeMillis()
 

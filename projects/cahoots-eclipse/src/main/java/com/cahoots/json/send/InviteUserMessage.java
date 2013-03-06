@@ -6,13 +6,24 @@ public class InviteUserMessage extends MessageBase {
 
 	private String user;
 	private String opId;
+	private String sharer;
+
+	public String getSharer() {
+		return sharer;
+	}
+
+	public void setSharer(final String sharer) {
+		this.sharer = sharer;
+	}
 
 	public InviteUserMessage() {
 		super("op", "invite");
 	}
 
-	public InviteUserMessage(final String user, final String opId) {
+	public InviteUserMessage(final String sharer, final String user,
+			final String opId) {
 		this();
+		this.sharer = sharer;
 		this.user = user;
 		this.opId = opId;
 	}

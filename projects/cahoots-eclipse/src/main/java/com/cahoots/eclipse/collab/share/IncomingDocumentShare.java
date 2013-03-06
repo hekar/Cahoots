@@ -75,9 +75,9 @@ public final class IncomingDocumentShare implements ShareDocumentEventListener {
 					final OpDocument document = new OpDocument(opId, documentId);
 
 					if (!cahootsConnection.isLoggedInUser(sharer)) {
-						final String inviteMessage = String.format(
-								"%s is requesting to share document %s.", name,
-								document.getFilename());
+						final String inviteMessage = String
+								.format("%s is requesting to share document %s. File contents will be overwritten.",
+										name, document.getFilename());
 						final MessageDialogStatus prompt = messageDialog
 								.prompt(workbenchWindow.getShell(),
 										"Accept Invite", inviteMessage);

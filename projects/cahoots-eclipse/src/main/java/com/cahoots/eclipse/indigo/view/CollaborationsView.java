@@ -26,6 +26,7 @@ import com.cahoots.chat.Chat;
 import com.cahoots.connection.CahootsConnection;
 import com.cahoots.connection.websocket.CahootsSocket;
 import com.cahoots.eclipse.Activator;
+import com.cahoots.eclipse.collab.share.InviteDocumentDialog;
 import com.cahoots.eclipse.collab.share.ShareDocumentManager;
 import com.cahoots.eclipse.indigo.widget.CollaborationsViewContentProvider;
 import com.cahoots.eclipse.indigo.widget.CollaboratorsViewLabelProvider;
@@ -156,7 +157,14 @@ public class CollaborationsView extends ViewPart {
 		action2 = new Action() {
 			@Override
 			public void run() {
-				showMessage("Action 2 executed");
+				final ISelection selection = viewer.getSelection();
+				final Object obj = ((IStructuredSelection) selection)
+						.getFirstElement();
+				final Collaboration collab = (Collaboration) obj;
+				final InviteDocumentDialog dia = new InviteDocumentDialog(
+						CollaborationsView.this.getSite().getWorkbenchWindow()
+								.getShell(), collab.getOpId());
+				dia.open();
 			}
 		};
 		action2.setText("Invite");

@@ -54,7 +54,7 @@ public class IncomingReplace implements OpReplaceEventListener {
 
 					final int start = msg.getStart();
 					final String contents = msg.getContent();
-					final int length = msg.getEnd() - msg.getStart();
+					int length = msg.getEnd() - msg.getStart();
 
 					if (length == 0) {
 						throw new IllegalStateException(
@@ -68,6 +68,10 @@ public class IncomingReplace implements OpReplaceEventListener {
 							.getDocumentProvider();
 					final IDocument document = documentProvider
 							.getDocument(textEditor.getEditorInput());
+
+					if (length > document.getLength()) {
+						length = document.getLength();
+					}
 
 					// TODO: Do not apply
 					shareDocumentManager.disableEvents();
