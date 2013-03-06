@@ -2,6 +2,7 @@
 
 namespace Cahoots.Services.MessageModels.Ops
 {
+    [DataContract]
     class CollaboratorJoinedMessage : MessageBase
     {
         /// <summary>

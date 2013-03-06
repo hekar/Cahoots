@@ -2,6 +2,7 @@
 
 namespace Cahoots.Services.MessageModels.Ops
 {
+    [DataContract]
     class CollaboratorsListMessage : MessageBase
     {
         /// <summary>
@@ -10,7 +11,7 @@ namespace Cahoots.Services.MessageModels.Ops
         /// <value>
         /// The user.
         /// </value>
-        [DataMember(Name = "collaborators", IsRequired = true)]
+        [DataMember(Name = "collaborators")]
         public string[] Collaborators { get; set; }
 
         /// <summary>

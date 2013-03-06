@@ -205,7 +205,11 @@ namespace Cahoots.Services
                 var doc = this.Documents[model.DocumentId];
                 doc.BlockEvent = true;
                 var view = doc.View;
-                var span = new Span(model.Start, model.End - model.Start);
+                var end = model.End - model.Start;
+                if(end > view.TextSnapshot.Length){
+                    end = view.TextSnapshot.Length;
+                }
+                var span = new Span(model.Start, end);
                 this.WindowService.InvokeOnUI(
                     () => view.TextBuffer.Replace(span, model.Content));
             }
@@ -266,6 +270,16 @@ namespace Cahoots.Services
                         DocumentId = model.DocumentId,
                         OpId = model.OpId
                     });
+                
+                var joinMessage = new JoinCollaborationMessage()
+                {
+                    Service = "op",
+                    MessageType = "join",
+                    OpId = model.OpId,
+                    User = UserName
+                };
+
+                this.SendMessage(joinMessage);
 
                 // attach events and stuff
                 view.TextBuffer.Changed += (s, e) => TextChanged(s, e, model.DocumentId);
