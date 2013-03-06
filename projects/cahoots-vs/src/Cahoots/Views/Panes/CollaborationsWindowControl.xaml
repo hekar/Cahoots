@@ -15,6 +15,8 @@
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="{Binding DocumentId}" />
+                        <TextBlock Text=" - " />
+                        <TextBlock Text="List of Users should be here"/>
                     </StackPanel>
                 </DataTemplate>
             </ListView.ItemTemplate>

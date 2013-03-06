@@ -91,6 +91,7 @@ namespace Cahoots.Services
         }
 
         public void LeaveCollaboration(string user, string opId) {
+
             var model = new LeaveCollaborationMessage(){
                 Service = "op",
                 MessageType = "leave",
@@ -153,12 +154,46 @@ namespace Cahoots.Services
                     var left = JsonHelper.Deserialize<CollaboratorLeftMessage>(json);
                     this.CollaboratorLeft(left);
                     break;
+                case "joined":
+                    var joined = JsonHelper.Deserialize<CollaboratorJoinedMessage>(json);
+                    this.CollaboratorJoined(joined);
+                    break;
+                case "collaborators":
+                    var collaborators = JsonHelper.Deserialize<CollaboratorsListMessage>(json);
+                    this.COllaboratorsList(collaborators);
+                    break;
             }
+        }
+
+        private void COllaboratorsList(CollaboratorsListMessage collaborators)
+        {
+            var collab = (from c in this.ViewModel.Collaborations where c.OpId == collaborators.OpId select c).First();
+            foreach (var c in collaborators.Collaborators)
+            {
+                collab.Users.Add(c);
+            }
+        }
+
+        private void CollaboratorJoined(CollaboratorJoinedMessage joined)
+        {
+            var collab = (from c in this.ViewModel.Collaborations where c.OpId == joined.OpId select c).First();
+            collab.Users.Add(joined.User);
         }
 
         private void CollaboratorLeft(CollaboratorLeftMessage left)
         {
-            //TODO
+            var collab = (from c in this.ViewModel.Collaborations where c.OpId == left.OpId select c).First();
+            if (left.User == this.UserName)
+            {
+                this.ViewModel.Collaborations.Remove(collab);
+
+                //TODO remove document listeners, etc.
+            }
+            else
+            {
+                collab.Users.Remove(left.User);
+            }
+            
         }
 
         /// <summary>
