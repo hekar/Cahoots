@@ -20,13 +20,11 @@ import com.cahoots.connection.CahootsConnection;
 import com.cahoots.connection.websocket.CahootsSocket;
 import com.cahoots.eclipse.Activator;
 import com.cahoots.eclipse.indigo.popup.ConnectStuff;
-import com.cahoots.eclipse.op.OpSessionRegister;
 import com.cahoots.eclipse.swt.SwtDisplayUtils;
 import com.cahoots.events.ConnectEvent;
 import com.cahoots.events.ConnectEventListener;
 import com.cahoots.events.DisconnectEvent;
 import com.cahoots.events.DisconnectEventListener;
-import com.cahoots.json.send.LeaveCollaborationMessage;
 import com.google.inject.Injector;
 
 public class FastBar extends WorkbenchWindowControlContribution {
@@ -34,7 +32,6 @@ public class FastBar extends WorkbenchWindowControlContribution {
 	private Composite bar;
 	private Label barImg;
 	private Label usrImg;
-	private Label disconnectImg;
 	private Bundle bundle;
 	private Injector injector;
 	private CahootsConnection details;
@@ -52,7 +49,6 @@ public class FastBar extends WorkbenchWindowControlContribution {
 
 		barImg = new Label(bar, SWT.NONE);
 		usrImg = new Label(bar, SWT.NONE);
-		disconnectImg = new Label(bar, SWT.NONE);
 		try {
 			barImg.setImage(ImageDescriptor.createFromURL(
 					new URL(bundle.getEntry("/"), "icons/" + "black_logo.gif"))
@@ -65,14 +61,6 @@ public class FastBar extends WorkbenchWindowControlContribution {
 					new URL(bundle.getEntry("/"), "icons/" + "user.gif"))
 					.createImage());
 		} catch (final MalformedURLException e) {
-			// ignore
-		}
-
-		try {
-			disconnectImg.setImage(ImageDescriptor.createFromURL(
-					new URL(bundle.getEntry("/"), "icons/" + "disconnect.gif"))
-					.createImage());
-		} catch (final MalformedURLException e1) {
 			// ignore
 		}
 
@@ -124,40 +112,6 @@ public class FastBar extends WorkbenchWindowControlContribution {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-			}
-		});
-
-		disconnectImg.addMouseListener(new MouseListener() {
-
-			@Override
-			public void mouseUp(final MouseEvent arg0) {
-
-			}
-
-			@Override
-			public void mouseDown(final MouseEvent arg0) {
-
-			}
-
-			@Override
-			public void mouseDoubleClick(final MouseEvent arg0) {
-				try {
-					final CahootsConnection connection = Activator
-							.getInjector().getInstance(CahootsConnection.class);
-					final OpSessionRegister opSessionManager = Activator
-							.getInjector().getInstance(OpSessionRegister.class);
-
-					final CahootsSocket socket = Activator.getInjector()
-							.getInstance(CahootsSocket.class);
-
-					for (final String op : opSessionManager.getSessionKeys()) {
-						socket.send(new LeaveCollaborationMessage(connection
-								.getUsername(), op));
-					}
-				} catch (final Exception e) {
-					e.printStackTrace();
-				}
-
 			}
 		});
 
