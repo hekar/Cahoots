@@ -165,6 +165,20 @@ namespace Cahoots.Services
             }
         }
 
+        public void InviteUser(String user, String OpId)
+        {
+            var message = new InviteUserMessage()
+            {
+                MessageType="invite",
+                OpId=OpId,
+                Service="op",
+                Sharer=UserName,
+                User=user
+            };
+
+            this.SendMessage<InviteUserMessage>(message);
+        }
+
         private void COllaboratorsList(CollaboratorsListMessage collaborators)
         {
             var collab = (from c in this.ViewModel.Collaborations where c.OpId == collaborators.OpId select c).First();

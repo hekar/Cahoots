@@ -13,6 +13,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Cahoots.Services.ViewModels;
+using Cahoots.Services;
+using Cahoots.Views.Custom;
 
 namespace Cahoots
 {
@@ -28,6 +30,39 @@ namespace Cahoots
             this.DataContext = vm;
         }
 
+        private void LeaveItem_Click(object sender, RoutedEventArgs e)
+        {
+            MenuItem menu = sender as MenuItem;
+            CollaborationsViewModel item = menu.DataContext as CollaborationsViewModel;
 
+            //TODO get correct index
+            var collab = item.Collaborations[0];
+
+            var service = CahootsPackage.Instance.CommunicationRelay.Services["op"] as OpService;
+            service.LeaveCollaboration(CahootsPackage.Instance.UserName, collab.OpId);
+        }
+
+        private void InviteItem_Click(object sender, RoutedEventArgs e)
+        {
+            MenuItem menu = sender as MenuItem;
+            CollaborationsViewModel item = menu.DataContext as CollaborationsViewModel;
+
+            //TODO get correct index
+            var collab = item.Collaborations[0];
+
+            var service = CahootsPackage.Instance.CommunicationRelay.Services["op"] as OpService;
+
+            var users = CahootsPackage.Instance.CommunicationRelay.Service<UsersService>();
+            var window = new SelectCollaborators(users.GetCollaborators());
+
+            if (window.ShowDialog() == true)
+            {
+                var collaborators = window.Selected.Select(c => c.UserName);
+                foreach (var c in collaborators)
+                {
+                    service.InviteUser(c, collab.OpId);
+                }
+            }
+        }
     }
 }

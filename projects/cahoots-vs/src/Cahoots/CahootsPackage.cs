@@ -719,19 +719,5 @@ namespace Cahoots
 
             base.Dispose(disposing);
         }
-
-        protected override void LeaveCollaborationButtonExecuteHandler(object sender, EventArgs e)
-        {
-
-            var service =
-                    this.CommunicationRelay.Services["op"] as OpService;
-            
-            var users =
-                    this.CommunicationRelay.Services["users"] as UsersService;
-            foreach (var id in service.GetOpIds())
-            {
-                service.LeaveCollaboration(users.UserName, id);
-            }
-        }
     }
 }
