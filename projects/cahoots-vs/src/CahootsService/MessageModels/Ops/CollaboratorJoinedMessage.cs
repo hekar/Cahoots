@@ -2,7 +2,7 @@
 
 namespace Cahoots.Services.MessageModels.Ops
 {
-    class CollaboratorJoinedMessage
+    class CollaboratorJoinedMessage : MessageBase
     {
         /// <summary>
         /// Gets or sets the user.

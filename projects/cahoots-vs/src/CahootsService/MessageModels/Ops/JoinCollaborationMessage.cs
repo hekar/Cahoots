@@ -2,7 +2,7 @@
 
 namespace Cahoots.Services.MessageModels.Ops
 {
-    class JoinCollaborationMessage
+    class JoinCollaborationMessage : MessageBase
     {
         /// <summary>
         /// Gets or sets the opId

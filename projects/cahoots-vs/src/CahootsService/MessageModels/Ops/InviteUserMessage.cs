@@ -2,7 +2,7 @@
 
 namespace Cahoots.Services.MessageModels.Ops
 {
-    class InviteUserMessage
+    class InviteUserMessage : MessageBase
     {
 
         /// <summary>
