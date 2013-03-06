@@ -11,7 +11,7 @@ namespace Cahoots.Services.MessageModels.Ops
         /// The opId.
         /// </value>
         [DataMember(Name = "opId", IsRequired = true)]
-        public string opId { get; set; }
+        public string OpId { get; set; }
 
         /// <summary>
         /// Gets or sets the user
@@ -20,6 +20,6 @@ namespace Cahoots.Services.MessageModels.Ops
         /// The user.
         /// </value>
         [DataMember(Name = "user", IsRequired = true)]
-        public string user { get; set; }
+        public string User { get; set; }
     }
 }

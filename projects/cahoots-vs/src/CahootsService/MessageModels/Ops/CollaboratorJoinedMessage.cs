@@ -20,7 +20,7 @@ namespace Cahoots.Services.MessageModels.Ops
         /// The opId.
         /// </value>
         [DataMember(Name = "opId", IsRequired = true)]
-        public string opId { get; set; }
+        public string OpId { get; set; }
 
     }
 }
