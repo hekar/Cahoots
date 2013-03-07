@@ -13,10 +13,24 @@
         <ListView ItemsSource="{Binding Collaborations}">
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="{Binding DocumentId}" />
-                        <TextBlock Text=" - " />
-                        <TextBlock Text="List of Users should be here"/>
+                    <StackPanel Orientation="Vertical">
+                        <TextBlock Text="{Binding DocumentId}" >
+                            <TextBlock.ContextMenu>
+                                <ContextMenu>
+                                    <MenuItem Header="Leave" Click="LeaveItem_Click" />
+                                    <MenuItem Header="Invite" Click="InviteItem_Click" />
+                                </ContextMenu>
+                            </TextBlock.ContextMenu>
+                        </TextBlock>
+                        <ListView ItemsSource="{Binding Users}">
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="{Binding}" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
                     </StackPanel>
                 </DataTemplate>
             </ListView.ItemTemplate>
@@ -25,8 +39,6 @@
                     <Setter Property="ContextMenu">
                         <Setter.Value>
                             <ContextMenu>
-                                <MenuItem Header="Leave" Click="LeaveItem_Click" />
-                                <MenuItem Header="Invite" Click="InviteItem_Click" />
                             </ContextMenu>
                         </Setter.Value>
                     </Setter>

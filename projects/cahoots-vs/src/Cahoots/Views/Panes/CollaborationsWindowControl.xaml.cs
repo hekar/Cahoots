@@ -32,23 +32,18 @@ namespace Cahoots
 
         private void LeaveItem_Click(object sender, RoutedEventArgs e)
         {
+            
             MenuItem menu = sender as MenuItem;
-            CollaborationsViewModel item = menu.DataContext as CollaborationsViewModel;
-
-            //TODO get correct index
-            var collab = item.Collaborations[0];
+            CollaborationsViewModel.Collaboration item = menu.DataContext as CollaborationsViewModel.Collaboration;
 
             var service = CahootsPackage.Instance.CommunicationRelay.Services["op"] as OpService;
-            service.LeaveCollaboration(CahootsPackage.Instance.UserName, collab.OpId);
+            service.LeaveCollaboration(CahootsPackage.Instance.UserName, item.OpId);
         }
 
         private void InviteItem_Click(object sender, RoutedEventArgs e)
         {
             MenuItem menu = sender as MenuItem;
-            CollaborationsViewModel item = menu.DataContext as CollaborationsViewModel;
-
-            //TODO get correct index
-            var collab = item.Collaborations[0];
+            CollaborationsViewModel.Collaboration item = menu.DataContext as CollaborationsViewModel.Collaboration;
 
             var service = CahootsPackage.Instance.CommunicationRelay.Services["op"] as OpService;
 
@@ -60,7 +55,7 @@ namespace Cahoots
                 var collaborators = window.Selected.Select(c => c.UserName);
                 foreach (var c in collaborators)
                 {
-                    service.InviteUser(c, collab.OpId);
+                    service.InviteUser(c, item.OpId);
                 }
             }
         }
