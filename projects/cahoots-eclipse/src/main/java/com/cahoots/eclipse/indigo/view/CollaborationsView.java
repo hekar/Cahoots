@@ -6,7 +6,6 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelection;
@@ -37,8 +36,6 @@ import com.cahoots.json.send.LeaveCollaborationMessage;
 import com.google.inject.Injector;
 
 public class CollaborationsView extends ViewPart {
-
-	private static final String CAHOOTS_USERS_VIEW = "Cahoots - Collaborations";
 
 	public static final String ID = "com.cahoots.eclipse.indigo.view.CollaborationsView";
 
@@ -191,11 +188,6 @@ public class CollaborationsView extends ViewPart {
 				doubleClickAction.run();
 			}
 		});
-	}
-
-	private void showMessage(final String message) {
-		MessageDialog.openInformation(viewer.getControl().getShell(),
-				CAHOOTS_USERS_VIEW, message);
 	}
 
 	@Override

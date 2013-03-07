@@ -28,7 +28,6 @@ import com.cahoots.connection.websocket.CahootsSocket;
 import com.cahoots.eclipse.Activator;
 import com.cahoots.eclipse.indigo.job.BackgroundJob;
 import com.cahoots.eclipse.indigo.job.BackgroundJobScheduler;
-import com.cahoots.eclipse.indigo.widget.MessageDialog;
 import com.cahoots.eclipse.swt.SwtButtonUtils;
 import com.cahoots.eclipse.swt.SwtDisplayUtils;
 import com.cahoots.eclipse.swt.SwtKeyUtils;
@@ -39,7 +38,6 @@ public class ConnectDialog extends Window {
 
 	private final CahootsSocket socket;
 	private final BackgroundJobScheduler backgroundJobScheduler;
-	private final MessageDialog messageDialog;
 	private Combo servers;
 
 	/**
@@ -55,7 +53,6 @@ public class ConnectDialog extends Window {
 		socket = injector.getInstance(CahootsSocket.class);
 		backgroundJobScheduler = injector
 				.getInstance(BackgroundJobScheduler.class);
-		messageDialog = injector.getInstance(MessageDialog.class);
 		Activator.getActivator().getPreferenceStore()
 				.addPropertyChangeListener(new IPropertyChangeListener() {
 

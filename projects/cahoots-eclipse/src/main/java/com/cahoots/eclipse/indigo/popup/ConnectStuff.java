@@ -83,6 +83,7 @@ public class ConnectStuff {
 		dialog.open();
 	}
 
+	@SuppressWarnings("deprecation")
 	public void disconnect() {
 		final boolean authenticated = connection.isAuthenticated();
 		if (authenticated) {

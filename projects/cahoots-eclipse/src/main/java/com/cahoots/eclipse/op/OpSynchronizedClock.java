@@ -18,17 +18,20 @@ public class OpSynchronizedClock {
 	private static final String URL = "/op/clock";
 	private final long startTime;
 
+	@SuppressWarnings("deprecation")
 	public static Future<OpSynchronizedClock> fromConnection(
-			final CahootsHttpClient client, final CahootsConnection connection, final String opId) {
+			final CahootsHttpClient client, final CahootsConnection connection,
+			final String opId) {
 
 		if (!connection.isAuthenticated()) {
-			throw new IllegalArgumentException("Cahoots connection must be authenticated");
+			throw new IllegalArgumentException(
+					"Cahoots connection must be authenticated");
 		}
-		
+
 		final List<NameValuePair> data = new ArrayList<NameValuePair>();
 		data.add(new NameValuePair("auth_token", connection.getAuthToken()));
 		data.add(new NameValuePair("opId", opId));
-		
+
 		final ExecutorService executorService = Executors.newCachedThreadPool();
 
 		final Callable<OpSynchronizedClock> callable = new Callable<OpSynchronizedClock>() {
@@ -38,7 +41,7 @@ public class OpSynchronizedClock {
 				final CahootsHttpMethodReturn method = client.get(
 						connection.getServer(), URL, data);
 				final long latency = System.currentTimeMillis() - start;
-				
+
 				if (method.getStatusCode() == 200) {
 					final String response = method.getMethod()
 							.getResponseBodyAsString();
@@ -50,10 +53,10 @@ public class OpSynchronizedClock {
 				}
 			}
 		};
-		
+
 		final Future<OpSynchronizedClock> submit = executorService
 				.submit(callable);
-		
+
 		return submit;
 	}
 
