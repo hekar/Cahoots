@@ -60,7 +60,7 @@ public class ConnectDialog extends Window {
 				.addPropertyChangeListener(new IPropertyChangeListener() {
 
 					@Override
-					public void propertyChange(PropertyChangeEvent arg0) {
+					public void propertyChange(final PropertyChangeEvent arg0) {
 						if (arg0.getProperty().equals(
 								PreferenceConstants.P_SERVERS)
 								&& servers != null) {
@@ -118,7 +118,7 @@ public class ConnectDialog extends Window {
 		serverEdit.addListener(SWT.Selection, new Listener() {
 
 			@Override
-			public void handleEvent(Event arg0) {
+			public void handleEvent(final Event arg0) {
 				SwtDisplayUtils.async(new Runnable() {
 
 					@Override
@@ -192,28 +192,27 @@ public class ConnectDialog extends Window {
 				final BackgroundJob backgroundJob = new BackgroundJob() {
 					@Override
 					public IStatus run(final IProgressMonitor monitor) {
-						socket.connect(username, password, server);
+						try {
+							socket.connect(username, password, server);
+							SwtDisplayUtils.async(new Runnable() {
 
-						final Runnable runnable = new Runnable() {
-							@Override
-							public void run() {
-								try {
-									monitor.beginTask("Connecting...", 100);
-									monitor.worked(100);
-									setReturnCode(SWT.OK);
+								@Override
+								public void run() {
 									close();
-								} catch (final Exception e1) {
-									e1.printStackTrace();
-									final String message = String.format(
-											"Error connecting to server %s@%s",
-											username, server);
-									messageDialog.info(getShell(),
-											"Connection Error", message);
 								}
-							}
-						};
+							});
+						} catch (final Exception e) {
+							SwtDisplayUtils.async(new Runnable() {
 
-						SwtDisplayUtils.async(runnable);
+								@Override
+								public void run() {
+									org.eclipse.jface.dialogs.MessageDialog
+											.openInformation(null,
+													"Connection Error",
+													e.getMessage());
+								}
+							});
+						}
 
 						return Status.OK_STATUS;
 					}

@@ -152,9 +152,9 @@ public class CahootsSocket {
 			public void onReceive(final int statusCode,
 					final HttpMethodBase method) {
 				try {
+					final String response = method.getResponseBodyAsString();
 					if (statusCode == 200) {
-						final String authToken = method
-								.getResponseBodyAsString();
+						final String authToken = response;
 
 						cahootsConnection
 								.updateConnectionDetails(new ConnectionDetails(
@@ -162,9 +162,8 @@ public class CahootsSocket {
 
 						connect(server, authToken);
 					} else {
-						throw new RuntimeException(
-								"Error connecting to server: "
-										+ method.getResponseBodyAsString());
+						throw new RuntimeException(String.format(
+								"Error connecting to server: %s", response));
 					}
 				} catch (final IOException e) {
 					throw new RuntimeException("Error connecting to server", e);

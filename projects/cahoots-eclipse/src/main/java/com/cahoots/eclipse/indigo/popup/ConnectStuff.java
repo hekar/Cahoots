@@ -36,6 +36,7 @@ public class ConnectStuff {
 		shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
 	}
 
+	@SuppressWarnings("deprecation")
 	public void connect() {
 		final boolean connected = connection.isAuthenticated();
 
