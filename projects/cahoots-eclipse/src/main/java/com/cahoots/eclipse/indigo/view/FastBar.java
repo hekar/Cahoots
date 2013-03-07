@@ -109,8 +109,6 @@ public class FastBar extends WorkbenchWindowControlContribution {
 							.showView(
 									"com.cahoots.eclipse.indigo.view.UsersView");
 				} catch (final PartInitException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
 				}
 			}
 		});
@@ -125,7 +123,6 @@ public class FastBar extends WorkbenchWindowControlContribution {
 						barImg.setToolTipText(String.format(
 								"Connected as %s@%s", details.getUsername(),
 								details.getServer()));
-
 						try {
 							barImg.setImage(ImageDescriptor.createFromURL(
 									new URL(bundle.getEntry("/"), "icons/"
@@ -142,14 +139,10 @@ public class FastBar extends WorkbenchWindowControlContribution {
 
 			@Override
 			public void onEvent(final DisconnectEvent msg) {
-				final CahootsConnection details = injector
-						.getInstance(CahootsConnection.class);
 				SwtDisplayUtils.async(new Runnable() {
 					@Override
 					public void run() {
-						barImg.setToolTipText(String.format(
-								"Connected as %s@%s", details.getUsername(),
-								details.getServer()));
+						barImg.setToolTipText("");
 						try {
 							barImg.setImage(ImageDescriptor.createFromURL(
 									new URL(bundle.getEntry("/"), "icons/"

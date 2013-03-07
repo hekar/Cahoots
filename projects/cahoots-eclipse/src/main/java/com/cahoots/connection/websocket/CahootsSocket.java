@@ -182,7 +182,11 @@ public class CahootsSocket {
 					.get(DisconnectEventListener.class)) {
 				if (listener instanceof DisconnectEventListener) {
 					final DisconnectEventListener disconnectEventListener = (DisconnectEventListener) listener;
-					disconnectEventListener.onEvent(new DisconnectEvent());
+					try {
+						disconnectEventListener.onEvent(new DisconnectEvent());
+					} catch (final Exception e) {
+
+					}
 				} else {
 					throw new IllegalStateException(
 							"Non DisconnectEventListener in listeners");

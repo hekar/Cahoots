@@ -10,7 +10,6 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
-
 import org.eclipse.swt.widgets.Text;
 
 public class ServerDialog extends Window {
@@ -32,6 +31,7 @@ public class ServerDialog extends Window {
 	/**
 	 * Create contents of the dialog.
 	 */
+	@Override
 	protected Composite createContents(final Composite parent) {
 		final Shell shell = getShell();
 		shell.setText("Connect to Cahoots");
