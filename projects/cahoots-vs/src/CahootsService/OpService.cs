@@ -98,7 +98,20 @@ namespace Cahoots.Services
                 User = user,
                 OpId = opId
             };
+            RemoveDocument(opId);
             this.SendMessage(model);
+        }
+
+        private void RemoveDocument(string opId)
+        {
+            var docs = (from c in this.Documents.Values where c.OpId == opId select c).ToList();
+            foreach (var doc in docs)
+            {
+                doc.View.Closed -= doc.Closed;
+                doc.View.TextBuffer.Changed -= doc.Changed;
+
+                this.Documents.Remove(doc.DocumentId);
+            }
         }
 
         /// <summary>
@@ -200,8 +213,7 @@ namespace Cahoots.Services
             if (left.User == this.UserName)
             {
                 this.ViewModel.Collaborations.Remove(collab);
-
-                //TODO remove document listeners, etc.
+                RemoveDocument(left.OpId);
             }
             else
             {
@@ -302,13 +314,16 @@ namespace Cahoots.Services
                 var view = tuple.Item2;
 
                 var tick = this.WindowService.GetCurrentTick(model.OpId);
-
+                
                 var doc = new DocumentModel(tick)
                 {
                     DocumentId = model.DocumentId,
                     FullPath = tuple.Item1,
                     OpId = model.OpId,
-                    View = view
+                    View = view,
+                    Changed = (s, e) => TextChanged(s, e, model.DocumentId),
+                    Closed = (s, e) => EndCollaboration(s, e, model.DocumentId)
+
                 };
 
                 this.Documents.Add(model.DocumentId, doc);
@@ -331,8 +346,8 @@ namespace Cahoots.Services
                 this.SendMessage(joinMessage);
 
                 // attach events and stuff
-                view.TextBuffer.Changed += (s, e) => TextChanged(s, e, model.DocumentId);
-                view.Closed += (s, e) => EndCollaboration(s, e, model.DocumentId);
+                view.TextBuffer.Changed += doc.Changed;
+                view.Closed += doc.Closed;
             }
         }
 
@@ -447,7 +462,7 @@ namespace Cahoots.Services
         /// <param name="docId">The document id.</param>
         private void EndCollaboration(object sender, EventArgs e, string documentId)
         {
-            // end collaboration
+            this.LeaveCollaboration(this.UserName, this.Documents[documentId].OpId);
         }
 
         /// <summary>
