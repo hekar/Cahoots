@@ -1,8 +1,11 @@
 package com.cahoots.eclipse.collab.share;
 
+import java.io.ByteArrayInputStream;
+
 import javax.inject.Inject;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.ui.IEditorDescriptor;
 import org.eclipse.ui.IEditorInput;
@@ -105,6 +108,14 @@ public final class IncomingDocumentShare implements ShareDocumentEventListener {
 
 	private ITextEditor getSharedDocumentTextEditor(final String documentId) {
 		final IFile file = resourceFinder.findFileByDocumentId(documentId);
+		if (!file.exists()) {
+			try {
+				file.create(new ByteArrayInputStream(new byte[] {}), false,
+						null);
+			} catch (final CoreException e) {
+				// ignore
+			}
+		}
 		final IEditorPart editorPart = resourceFinder.findEditorByFile(file);
 
 		final boolean editorIsAlreadyOpen = (editorPart != null);
