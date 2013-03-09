@@ -4,7 +4,9 @@ import java.io.ByteArrayInputStream;
 
 import javax.inject.Inject;
 
+import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.ui.IEditorDescriptor;
@@ -106,10 +108,28 @@ public final class IncomingDocumentShare implements ShareDocumentEventListener {
 		}
 	}
 
+	private void createParent(final IFolder folder) {
+		final IContainer con = folder.getParent();
+		if (con != null && !con.exists()) {
+			if (con instanceof IFolder) {
+				createParent((IFolder) con);
+			}
+		}
+		try {
+			folder.create(false, true, null);
+		} catch (final CoreException ignore) {
+		}
+	}
+
 	private ITextEditor getSharedDocumentTextEditor(final String documentId) {
 		final IFile file = resourceFinder.findFileByDocumentId(documentId);
 		if (!file.exists()) {
 			try {
+				final IContainer parent = file.getParent();
+				if (parent != null && !parent.exists()
+						&& parent instanceof IFolder) {
+					createParent((IFolder) parent);
+				}
 				file.create(new ByteArrayInputStream(new byte[] {}), false,
 						null);
 			} catch (final CoreException e) {
@@ -160,5 +180,4 @@ public final class IncomingDocumentShare implements ShareDocumentEventListener {
 			return textEditor;
 		}
 	}
-
 }
