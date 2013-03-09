@@ -115,11 +115,18 @@ public final class IncomingDocumentShare implements ShareDocumentEventListener {
 			if (con instanceof IFolder) {
 				createParent((IFolder) con);
 			} else if (con instanceof IProject) {
+
+				final IProject proj = (IProject) con;
 				try {
-					final IProject proj = (IProject) con;
 					proj.create(null);
-					proj.open(null);
 				} catch (final CoreException ignore) {
+				}
+
+				if (!proj.isOpen()) {
+					try {
+						proj.open(null);
+					} catch (final CoreException ignore) {
+					}
 				}
 			}
 		}
@@ -132,6 +139,12 @@ public final class IncomingDocumentShare implements ShareDocumentEventListener {
 	private ITextEditor getSharedDocumentTextEditor(final String documentId) {
 		final IFile file = resourceFinder.findFileByDocumentId(documentId);
 		if (!file.exists()) {
+			if (file.getProject() != null && !file.getProject().isOpen()) {
+				try {
+					file.getProject().open(null);
+				} catch (final CoreException ignore) {
+				}
+			}
 			try {
 				final IContainer parent = file.getParent();
 				if (parent != null && !parent.exists()
