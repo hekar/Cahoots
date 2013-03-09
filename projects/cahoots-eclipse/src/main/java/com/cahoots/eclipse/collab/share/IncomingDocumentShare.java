@@ -7,6 +7,7 @@ import javax.inject.Inject;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.ui.IEditorDescriptor;
@@ -113,6 +114,13 @@ public final class IncomingDocumentShare implements ShareDocumentEventListener {
 		if (con != null && !con.exists()) {
 			if (con instanceof IFolder) {
 				createParent((IFolder) con);
+			} else if (con instanceof IProject) {
+				try {
+					final IProject proj = (IProject) con;
+					proj.create(null);
+					proj.open(null);
+				} catch (final CoreException ignore) {
+				}
 			}
 		}
 		try {
