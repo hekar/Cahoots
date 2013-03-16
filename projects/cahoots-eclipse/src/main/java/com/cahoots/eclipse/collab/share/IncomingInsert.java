@@ -20,16 +20,21 @@ public class IncomingInsert implements OpInsertEventListener {
 	private final ShareDocumentManager shareDocumentManager;
 	private final CahootsConnection cahootsConnection;
 	private final ITextEditor textEditor;
+	private String opId;
+	private String documentId;
 
 	@Inject
 	public IncomingInsert(final OpSessionRegister opSessionRegister,
 			final ShareDocumentManager shareDocumentManager,
 			final CahootsConnection cahootsConnection,
-			final ITextEditor textEditor) {
+			final ITextEditor textEditor, final String documentId,
+			final String opId) {
 		this.opSessionRegister = opSessionRegister;
 		this.cahootsConnection = cahootsConnection;
 		this.shareDocumentManager = shareDocumentManager;
 		this.textEditor = textEditor;
+		this.opId = opId;
+		this.documentId = documentId;
 	}
 
 	@Override
@@ -38,6 +43,10 @@ public class IncomingInsert implements OpInsertEventListener {
 			@Override
 			public void run() {
 				try {
+					if (!msg.getOpId().equals(opId)
+							|| !msg.getDocumentId().equals(documentId)) {
+						return;
+					}
 					if (msg.getUser().equals(cahootsConnection.getUsername())) {
 						return;
 					}

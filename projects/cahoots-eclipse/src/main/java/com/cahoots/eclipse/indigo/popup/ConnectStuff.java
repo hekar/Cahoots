@@ -6,8 +6,6 @@ import java.util.List;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.NameValuePair;
 import org.apache.commons.httpclient.methods.PostMethod;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 
 import com.cahoots.connection.CahootsConnection;
@@ -22,7 +20,6 @@ import com.google.inject.Inject;
 public class ConnectStuff {
 
 	CahootsConnection connection;
-	Shell shell;
 	MessageDialog messageDialog;
 	CahootsSocket socket;
 
@@ -32,16 +29,17 @@ public class ConnectStuff {
 		this.connection = details;
 		this.messageDialog = dialog;
 		this.socket = socket;
-
-		shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
 	}
 
+	@SuppressWarnings("deprecation")
 	public void connect() {
 		final boolean connected = connection.isAuthenticated();
 
 		if (connected) {
 			final MessageDialogStatus prompt = messageDialog
-					.prompt(shell, "Already Connected?",
+					.prompt(PlatformUI.getWorkbench()
+							.getActiveWorkbenchWindow().getShell(),
+							"Already Connected?",
 							"Would you like to disconnect before connecting to another server?");
 
 			if (prompt == MessageDialogStatus.OK) {
@@ -67,7 +65,6 @@ public class ConnectStuff {
 								.openInformation(null, "Disconnect Error",
 										"Error disconnecting from server");
 					}
-
 				} catch (final Exception ex) {
 					org.eclipse.jface.dialogs.MessageDialog.openInformation(
 							null,
@@ -78,15 +75,17 @@ public class ConnectStuff {
 			}
 		}
 
-		final ConnectDialog dialog = new ConnectDialog(shell);
+		final ConnectDialog dialog = new ConnectDialog(PlatformUI
+				.getWorkbench().getActiveWorkbenchWindow().getShell());
 		dialog.open();
 	}
 
+	@SuppressWarnings("deprecation")
 	public void disconnect() {
 		final boolean authenticated = connection.isAuthenticated();
 		if (authenticated) {
-			final DisconnectDialog dialog = new DisconnectDialog(shell,
-					SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL);
+			final DisconnectDialog dialog = new DisconnectDialog(PlatformUI
+					.getWorkbench().getActiveWorkbenchWindow().getShell());
 			dialog.open();
 		}
 

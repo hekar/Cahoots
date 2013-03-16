@@ -14,14 +14,17 @@ public class UserListViewLabelProvider extends LabelProvider implements
 	public UserListViewLabelProvider() {
 	}
 
+	@Override
 	public String getColumnText(final Object obj, final int index) {
 		return getText(obj);
 	}
 
+	@Override
 	public Image getColumnImage(final Object obj, final int index) {
 		return getImage(obj);
 	}
 
+	@Override
 	public Image getImage(final Object obj) {
 		if (obj instanceof Collaborator) {
 			final Collaborator collaborator = (Collaborator) obj;

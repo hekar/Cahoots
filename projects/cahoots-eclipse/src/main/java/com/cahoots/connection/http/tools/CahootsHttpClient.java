@@ -9,10 +9,11 @@ import org.apache.commons.httpclient.methods.PostMethod;
 
 public class CahootsHttpClient {
 
-	public CahootsHttpMethodReturn get(final String server, final String path, final List<NameValuePair> data) {
+	public CahootsHttpMethodReturn get(final String server, final String path,
+			final List<NameValuePair> data) {
 		final HttpClient client = new HttpClient();
 		final GetMethod method = new GetMethod("http://" + server + path);
-		
+
 		method.setQueryString(data.toArray(new NameValuePair[] {}));
 		try {
 			final int statusCode = client.executeMethod(method);
@@ -21,7 +22,7 @@ public class CahootsHttpClient {
 			throw new RuntimeException("Error connecting to server", ex);
 		}
 	}
-	
+
 	public void get(final String server, final String path,
 			final List<NameValuePair> data,
 			final CahootsHttpResponseReceivedListener listener) {
@@ -48,6 +49,9 @@ public class CahootsHttpClient {
 			final int statusCode = client.executeMethod(method);
 			listener.onReceive(statusCode, method);
 		} catch (final Exception ex) {
+			if (ex instanceof RuntimeException) {
+				throw (RuntimeException) ex;
+			}
 			throw new RuntimeException("Error connecting to server", ex);
 		}
 	}

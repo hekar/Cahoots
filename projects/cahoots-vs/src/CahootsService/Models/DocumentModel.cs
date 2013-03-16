@@ -6,6 +6,7 @@ namespace Cahoots.Services.Models
 {
     using System;
     using Microsoft.VisualStudio.Text.Editor;
+    using Microsoft.VisualStudio.Text;
 
     public class DocumentModel
     {
@@ -50,6 +51,9 @@ namespace Cahoots.Services.Models
         /// The full path.
         /// </value>
         public string FullPath { get; set; }
+
+        public EventHandler<TextContentChangedEventArgs> Changed { get; set; }
+        public EventHandler Closed { get; set; }
 
         /// <summary>
         /// Gets the tick stamp.

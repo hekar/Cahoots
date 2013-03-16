@@ -91,13 +91,27 @@ namespace Cahoots.Services
         }
 
         public void LeaveCollaboration(string user, string opId) {
+
             var model = new LeaveCollaborationMessage(){
                 Service = "op",
                 MessageType = "leave",
                 User = user,
                 OpId = opId
             };
+            RemoveDocument(opId);
             this.SendMessage(model);
+        }
+
+        private void RemoveDocument(string opId)
+        {
+            var docs = (from c in this.Documents.Values where c.OpId == opId select c).ToList();
+            foreach (var doc in docs)
+            {
+                doc.View.Closed -= doc.Closed;
+                doc.View.TextBuffer.Changed -= doc.Changed;
+
+                this.Documents.Remove(doc.DocumentId);
+            }
         }
 
         /// <summary>
@@ -153,12 +167,59 @@ namespace Cahoots.Services
                     var left = JsonHelper.Deserialize<CollaboratorLeftMessage>(json);
                     this.CollaboratorLeft(left);
                     break;
+                case "joined":
+                    var joined = JsonHelper.Deserialize<CollaboratorJoinedMessage>(json);
+                    this.CollaboratorJoined(joined);
+                    break;
+                case "collaborators":
+                    var collaborators = JsonHelper.Deserialize<CollaboratorsListMessage>(json);
+                    this.COllaboratorsList(collaborators);
+                    break;
             }
+        }
+
+        public void InviteUser(String user, String OpId)
+        {
+            var message = new InviteUserMessage()
+            {
+                MessageType="invite",
+                OpId=OpId,
+                Service="op",
+                Sharer=UserName,
+                User=user
+            };
+
+            this.SendMessage<InviteUserMessage>(message);
+        }
+
+        private void COllaboratorsList(CollaboratorsListMessage collaborators)
+        {
+            var collab = (from c in this.ViewModel.Collaborations where c.OpId == collaborators.OpId select c).First();
+            foreach (var c in collaborators.Collaborators)
+            {
+                collab.Users.Add(c);
+            }
+        }
+
+        private void CollaboratorJoined(CollaboratorJoinedMessage joined)
+        {
+            var collab = (from c in this.ViewModel.Collaborations where c.OpId == joined.OpId select c).First();
+            collab.Users.Add(joined.User);
         }
 
         private void CollaboratorLeft(CollaboratorLeftMessage left)
         {
-            //TODO
+            var collab = (from c in this.ViewModel.Collaborations where c.OpId == left.OpId select c).First();
+            if (left.User == this.UserName)
+            {
+                this.ViewModel.Collaborations.Remove(collab);
+                RemoveDocument(left.OpId);
+            }
+            else
+            {
+                collab.Users.Remove(left.User);
+            }
+            
         }
 
         /// <summary>
@@ -205,7 +266,11 @@ namespace Cahoots.Services
                 var doc = this.Documents[model.DocumentId];
                 doc.BlockEvent = true;
                 var view = doc.View;
-                var span = new Span(model.Start, model.End - model.Start);
+                var end = model.End - model.Start;
+                if(end > view.TextSnapshot.Length){
+                    end = view.TextSnapshot.Length;
+                }
+                var span = new Span(model.Start, end);
                 this.WindowService.InvokeOnUI(
                     () => view.TextBuffer.Replace(span, model.Content));
             }
@@ -249,13 +314,16 @@ namespace Cahoots.Services
                 var view = tuple.Item2;
 
                 var tick = this.WindowService.GetCurrentTick(model.OpId);
-
+                
                 var doc = new DocumentModel(tick)
                 {
                     DocumentId = model.DocumentId,
                     FullPath = tuple.Item1,
                     OpId = model.OpId,
-                    View = view
+                    View = view,
+                    Changed = (s, e) => TextChanged(s, e, model.DocumentId),
+                    Closed = (s, e) => EndCollaboration(s, e, model.DocumentId)
+
                 };
 
                 this.Documents.Add(model.DocumentId, doc);
@@ -266,10 +334,20 @@ namespace Cahoots.Services
                         DocumentId = model.DocumentId,
                         OpId = model.OpId
                     });
+                
+                var joinMessage = new JoinCollaborationMessage()
+                {
+                    Service = "op",
+                    MessageType = "join",
+                    OpId = model.OpId,
+                    User = UserName
+                };
+
+                this.SendMessage(joinMessage);
 
                 // attach events and stuff
-                view.TextBuffer.Changed += (s, e) => TextChanged(s, e, model.DocumentId);
-                view.Closed += (s, e) => EndCollaboration(s, e, model.DocumentId);
+                view.TextBuffer.Changed += doc.Changed;
+                view.Closed += doc.Closed;
             }
         }
 
@@ -384,7 +462,7 @@ namespace Cahoots.Services
         /// <param name="docId">The document id.</param>
         private void EndCollaboration(object sender, EventArgs e, string documentId)
         {
-            // end collaboration
+            this.LeaveCollaboration(this.UserName, this.Documents[documentId].OpId);
         }
 
         /// <summary>

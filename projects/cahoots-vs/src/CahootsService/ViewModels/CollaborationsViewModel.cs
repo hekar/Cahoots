@@ -34,7 +34,7 @@ namespace Cahoots.Services.ViewModels
 
             public Collaboration()
             {
-                this.Users = new Collection<string>();
+                this.Users = new ViewModelCollection<string>();
             }
 
             /// <summary>
@@ -59,7 +59,7 @@ namespace Cahoots.Services.ViewModels
             /// <value>
             /// The users.
             /// </value>
-            public Collection<string> Users { get; set; }
+            public ViewModelCollection<string> Users { get; set; }
         }
     }
 }

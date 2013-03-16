@@ -676,21 +676,28 @@ namespace Cahoots
         /// <param name="filePath">The file path.</param>
         public Tuple<string, IWpfTextView> OpenDocumentWindow(string filePath)
         {
-            try
-            {
-                var solution = this.ApplicationObject.Solution.FullName;
-                var solutionPath = solution.Substring(
-                        0,
-                        solution.LastIndexOf('\\'));
+            var sol = this.ApplicationObject.Solution;
+            var solution = sol.FullName;
+            var solutionPath = solution.Substring(
+                    0,
+                    solution.LastIndexOf('\\'));
 
-                var path = solutionPath + filePath.Replace('/', '\\');
+            var path = solutionPath + filePath.Replace('/', '\\');
 
-                return new Tuple<string, IWpfTextView>(path, this.ApplicationObject.GetEditorView(path));
-            }
-            catch
+            var dir = path.Substring(0, path.LastIndexOf('\\'));
+
+            if (!Directory.Exists(dir))
             {
-                return null;
+                Directory.CreateDirectory(dir);
             }
+
+            if (!File.Exists(path))
+            {
+                using (File.Create(path)) { }
+            }
+
+
+            return new Tuple<string, IWpfTextView>(path, this.ApplicationObject.GetEditorView(path));
         }
 
         /// <summary>
@@ -718,20 +725,6 @@ namespace Cahoots
             }
 
             base.Dispose(disposing);
-        }
-
-        protected override void LeaveCollaborationButtonExecuteHandler(object sender, EventArgs e)
-        {
-
-            var service =
-                    this.CommunicationRelay.Services["op"] as OpService;
-            
-            var users =
-                    this.CommunicationRelay.Services["users"] as UsersService;
-            foreach (var id in service.GetOpIds())
-            {
-                service.LeaveCollaboration(users.UserName, id);
-            }
         }
     }
 }

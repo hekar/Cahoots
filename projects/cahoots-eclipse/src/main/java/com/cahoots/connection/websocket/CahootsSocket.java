@@ -24,7 +24,9 @@ import com.cahoots.connection.http.tools.CahootsHttpResponseReceivedListener;
 import com.cahoots.eclipse.indigo.log.Log;
 import com.cahoots.eclipse.indigo.widget.TextEditorTools;
 import com.cahoots.events.ChatReceivedEventListener;
+import com.cahoots.events.CollaboratorJoinedEventListener;
 import com.cahoots.events.CollaboratorLeftEventListener;
+import com.cahoots.events.CollaboratorsListEventListener;
 import com.cahoots.events.ConnectEvent;
 import com.cahoots.events.ConnectEventListener;
 import com.cahoots.events.DisconnectEvent;
@@ -38,7 +40,9 @@ import com.cahoots.events.UserChangeEventListener;
 import com.cahoots.json.Collaborator;
 import com.cahoots.json.MessageBase;
 import com.cahoots.json.receive.ChatReceiveMessage;
+import com.cahoots.json.receive.CollaboratorJoinedMessage;
 import com.cahoots.json.receive.CollaboratorLeftMessage;
+import com.cahoots.json.receive.CollaboratorsListMessage;
 import com.cahoots.json.receive.OpDeleteMessage;
 import com.cahoots.json.receive.OpInsertMessage;
 import com.cahoots.json.receive.OpReplaceMessage;
@@ -85,6 +89,10 @@ public class CahootsSocket {
 					new ArrayList<ChatReceivedEventListener>());
 			put(CollaboratorLeftEventListener.class,
 					new ArrayList<CollaboratorLeftEventListener>());
+			put(CollaboratorJoinedEventListener.class,
+					new ArrayList<CollaboratorJoinedEventListener>());
+			put(CollaboratorsListEventListener.class,
+					new ArrayList<CollaboratorsListEventListener>());
 		}
 	};
 	private final List<ConnectEventListener> connectListeners = new ArrayList<ConnectEventListener>();
@@ -144,9 +152,9 @@ public class CahootsSocket {
 			public void onReceive(final int statusCode,
 					final HttpMethodBase method) {
 				try {
+					final String response = method.getResponseBodyAsString();
 					if (statusCode == 200) {
-						final String authToken = method
-								.getResponseBodyAsString();
+						final String authToken = response;
 
 						cahootsConnection
 								.updateConnectionDetails(new ConnectionDetails(
@@ -154,9 +162,8 @@ public class CahootsSocket {
 
 						connect(server, authToken);
 					} else {
-						throw new RuntimeException(
-								"Error connecting to server: "
-										+ method.getResponseBodyAsString());
+						throw new RuntimeException(String.format(
+								"Error connecting to server: %s", response));
 					}
 				} catch (final IOException e) {
 					throw new RuntimeException("Error connecting to server", e);
@@ -175,7 +182,11 @@ public class CahootsSocket {
 					.get(DisconnectEventListener.class)) {
 				if (listener instanceof DisconnectEventListener) {
 					final DisconnectEventListener disconnectEventListener = (DisconnectEventListener) listener;
-					disconnectEventListener.onEvent(new DisconnectEvent());
+					try {
+						disconnectEventListener.onEvent(new DisconnectEvent());
+					} catch (final Exception e) {
+
+					}
 				} else {
 					throw new IllegalStateException(
 							"Non DisconnectEventListener in listeners");
@@ -301,6 +312,19 @@ public class CahootsSocket {
 		listeners.get(OpDeleteEventListener.class).add(listener);
 	}
 
+	public void removeOpInsertEventListener(final OpInsertEventListener listener) {
+		listeners.get(OpInsertEventListener.class).remove(listener);
+	}
+
+	public void removeOpReplaceEventListener(
+			final OpReplaceEventListener listener) {
+		listeners.get(OpReplaceEventListener.class).remove(listener);
+	}
+
+	public void removeOpDeleteEventListener(final OpDeleteEventListener listener) {
+		listeners.get(OpDeleteEventListener.class).remove(listener);
+	}
+
 	public void addShareDocumentEventListener(
 			final ShareDocumentEventListener listener) {
 		listeners.get(ShareDocumentEventListener.class).add(listener);
@@ -314,6 +338,16 @@ public class CahootsSocket {
 	public void addCollaboratorLeftEventLisener(
 			final CollaboratorLeftEventListener listener) {
 		listeners.get(CollaboratorLeftEventListener.class).add(listener);
+	}
+
+	public void addCollaboratorJoinedEventListener(
+			final CollaboratorJoinedEventListener listener) {
+		listeners.get(CollaboratorJoinedEventListener.class).add(listener);
+	}
+
+	public void addCollaboratorsListEventListener(
+			final CollaboratorsListEventListener listener) {
+		listeners.get(CollaboratorsListEventListener.class).add(listener);
 	}
 
 	/**
@@ -353,6 +387,11 @@ public class CahootsSocket {
 							UserChangeMessage.class, base, message, gson);
 				}
 			} else if ("op".equals(base.getService())) {
+				fireEvents("collaborators",
+						CollaboratorsListEventListener.class,
+						CollaboratorsListMessage.class, base, message, gson);
+				fireEvents("joined", CollaboratorJoinedEventListener.class,
+						CollaboratorJoinedMessage.class, base, message, gson);
 				fireEvents("shared", ShareDocumentEventListener.class,
 						ShareDocumentMessage.class, base, message, gson);
 				fireEvents("insert", OpInsertEventListener.class,
