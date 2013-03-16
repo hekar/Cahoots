@@ -1,0 +1,9 @@
+http://corengen.wordpress.com/2012/11/29/how-to-set-selected-text-in-visual-studio-extensibility-add-ins/
+
+http://stackoverflow.com/questions/6751086/visual-studio-text-editor-extension
+
+http://msdn.microsoft.com/en-ca/library/microsoft.visualstudio.text.textcontentchangedeventargs.aspx
+
+http://stackoverflow.com/questions/2413530/find-an-ivstextview-or-iwpftextview-for-a-given-projectitem-in-vs-2010-rc-exten
+
+http://msdn.microsoft.com/en-us/library/microsoft.visualstudio.shell.interop.ivswindowframe(v=vs.80).aspx
