@@ -412,6 +412,7 @@ namespace Cahoots.Services
                         User = this.UserName,
                         Start = change.OldPosition,
                         End = change.OldPosition + change.OldLength,
+                        OldContent = change.OldText,
                         DocumentId = docId,
                         OpId = doc.OpId,
                         TickStamp = doc.TickStamp
@@ -441,6 +442,7 @@ namespace Cahoots.Services
                         Start = change.OldPosition,
                         End = change.OldPosition + change.OldLength,
                         Content = change.NewText,
+                        OldContent = change.OldText,
                         DocumentId = docId,
                         OpId = doc.OpId,
                         TickStamp = doc.TickStamp

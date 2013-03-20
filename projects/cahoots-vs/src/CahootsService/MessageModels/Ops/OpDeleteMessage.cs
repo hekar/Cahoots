@@ -25,6 +25,15 @@ namespace Cahoots.Services.MessageModels.Ops
         /// The end.
         /// </value>
         [DataMember(Name = "end", IsRequired = true)]
-        public int End{ get; set; }
+        public int End { get; set; }
+
+        /// <summary>
+        /// Gets or sets the old content.
+        /// </summary>
+        /// <value>
+        /// The old content.
+        /// </value>
+        [DataMember(Name = "oldContent", IsRequired = true)]
+        public string OldContent { get; set; }
     }
 }

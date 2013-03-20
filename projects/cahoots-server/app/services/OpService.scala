@@ -39,19 +39,21 @@ class OpService(
         val user = (json \ "user").as[String]
         val opId = (json \ "opId").as[String]
         val content = (json \ "content").as[String]
+        val oldContent = (json \ "oldContent").as[String]
         val start = (json \ "start").as[Int]
         val end = (json \ "end").as[Int]
         val tickStamp = (json \ "tickStamp").as[Long]
 
-        replace(user, opId, content, start, end, tickStamp)
+        replace(user, opId, content, start, end, oldContent, tickStamp)
       case "delete" =>
         val user = (json \ "user").as[String]
         val opId = (json \ "opId").as[String]
         val start = (json \ "start").as[Int]
         val end = (json \ "end").as[Int]
+        val oldContent = (json \ "oldContent").as[String]
         val tickStamp = (json \ "tickStamp").as[Long]
 
-        delete(user, opId, start, end, tickStamp)
+        delete(user, opId, start, end, oldContent, tickStamp)
       case "leave" =>
         val user = (json \ "user").as[String]
         val opId = (json \ "opId").as[String]
@@ -224,7 +226,7 @@ class OpService(
     replicateOp(user, opId, handle)
   }
 
-  def replace(user: String, opId: String, content: String, start: Int, end: Int, tickStamp: Long) {
+  def replace(user: String, opId: String, content: String, start: Int, end: Int, oldContent: String, tickStamp: Long) {
     def handle(opSession: OpSession) : JsValue = {
       JsObject(Seq(
           "service" -> JsString("op"),
@@ -233,6 +235,7 @@ class OpService(
           "opId" -> JsString(opId),
           "documentId" -> JsString(opSession.documentId),
           "content" -> JsString(content),
+          "oldContent" -> JsString(oldContent),
           "start" -> JsNumber(start),
           "end" -> JsNumber(end),
           "tickStamp" -> JsNumber(tickStamp)
@@ -242,7 +245,7 @@ class OpService(
     replicateOp(user, opId, handle)
   }
 
-  def delete(user: String, opId: String, start: Int, end: Int, tickStamp: Long) {
+  def delete(user: String, opId: String, start: Int, end: Int, oldContent: String, tickStamp: Long) {
     def handle(opSession: OpSession) : JsValue = {
         JsObject(Seq(
           "service" -> JsString("op"),
@@ -250,6 +253,7 @@ class OpService(
           "user" -> JsString(user),
           "opId" -> JsString(opId),
           "documentId" -> JsString(opSession.documentId),
+          "oldContent" -> JsString(oldContent),
           "start" -> JsNumber(start),
           "end" -> JsNumber(end),
           "tickStamp" -> JsNumber(tickStamp)
