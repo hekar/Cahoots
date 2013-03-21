@@ -27,7 +27,6 @@ import com.cahoots.eclipse.indigo.widget.MessageDialogStatus;
 import com.cahoots.eclipse.indigo.widget.TextEditorTools;
 import com.cahoots.eclipse.indigo.widget.UserListViewContentProvider;
 import com.cahoots.eclipse.op.OpDocument;
-import com.cahoots.eclipse.op.OpSessionRegister;
 import com.cahoots.eclipse.swt.SwtDisplayUtils;
 import com.cahoots.events.ShareDocumentEventListener;
 import com.cahoots.json.receive.ShareDocumentMessage;
@@ -46,7 +45,7 @@ public final class IncomingDocumentShare implements ShareDocumentEventListener {
 	private final UserListViewContentProvider userList;
 
 	@Inject
-	public IncomingDocumentShare(final OpSessionRegister opSessionRegister,
+	public IncomingDocumentShare(
 			final MessageDialog messageDialog,
 			final CahootsConnection cahootsConnection,
 			final IWorkbenchWindow workbenchWindow,

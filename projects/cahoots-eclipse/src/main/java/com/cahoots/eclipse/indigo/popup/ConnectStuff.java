@@ -19,9 +19,9 @@ import com.google.inject.Inject;
 
 public class ConnectStuff {
 
-	CahootsConnection connection;
-	MessageDialog messageDialog;
-	CahootsSocket socket;
+	private CahootsConnection connection;
+	private MessageDialog messageDialog;
+	private CahootsSocket socket;
 
 	@Inject
 	public ConnectStuff(final CahootsConnection details,

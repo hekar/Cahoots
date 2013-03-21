@@ -39,7 +39,7 @@ public class ShareDocumentManager {
 	private boolean enabled = true;
 
 	private final CahootsSocket cahootsSocket;
-	private final OpSessionRegister opSessionManager;
+	private final OpSessionRegister opSessionRegistrar;
 	private final CahootsConnection connection;
 	private final CahootsHttpClient cahootsHttpClient;
 	private final Map<String, ShareDocumentManager.Share> shares = new HashMap<String, ShareDocumentManager.Share>();
@@ -53,7 +53,7 @@ public class ShareDocumentManager {
 		this.connection = connection;
 		this.cahootsHttpClient = cahootsHttpClient;
 		this.cahootsSocket = cahootsSocket;
-		this.opSessionManager = opSessionManager;
+		this.opSessionRegistrar = opSessionManager;
 	}
 
 	public void shareDocument(final ITextEditor textEditor,
@@ -90,7 +90,7 @@ public class ShareDocumentManager {
 	}
 
 	public void removeDocumentListner(final String opId) {
-		opSessionManager.removeSession(opId);
+		opSessionRegistrar.removeSession(opId);
 		documentIds.remove(opId);
 		if (shares.containsKey(opId)) {
 			final Share s = shares.get(opId);
@@ -99,6 +99,7 @@ public class ShareDocumentManager {
 			cahootsSocket.removeOpReplaceEventListener(s.getIncomingReplace());
 			s.document.removeDocumentListener(s.documentListener);
 			shares.remove(opId);
+			opSessionRegistrar.removeSession(opId);
 		}
 	}
 
@@ -107,12 +108,12 @@ public class ShareDocumentManager {
 			final ITextEditor textEditor) {
 		try {
 
-			final IncomingInsert insert = new IncomingInsert(opSessionManager,
+			final IncomingInsert insert = new IncomingInsert(opSessionRegistrar,
 					this, connection, textEditor, documentId, opId);
 			final IncomingReplace replace = new IncomingReplace(
-					opSessionManager, this, connection, textEditor, documentId,
+					opSessionRegistrar, this, connection, textEditor, documentId,
 					opId);
-			final IncomingDelete delete = new IncomingDelete(opSessionManager,
+			final IncomingDelete delete = new IncomingDelete(opSessionRegistrar,
 					this, connection, textEditor, documentId, opId);
 
 			cahootsSocket.addOpInsertEventListener(insert);
@@ -125,7 +126,7 @@ public class ShareDocumentManager {
 			final OpDocument opDocument = new OpDocument(opId, documentId);
 			final OpMemento opMemento = new OpMemento(opDocument);
 			final OpSession opSession = new OpSession(opMemento, clock);
-			opSessionManager.addSession(opId, opSession);
+			opSessionRegistrar.addSession(opId, opSession);
 
 			final IDocumentListener documentListener = new IDocumentListener() {
 
@@ -172,7 +173,7 @@ public class ShareDocumentManager {
 	private void insert(final String opId, final String documentId,
 			final int start, final String content) {
 		final String username = connection.getUsername();
-		final OpSession session = opSessionManager.getSession(opId);
+		final OpSession session = opSessionRegistrar.getSession(opId);
 		final OpSynchronizedClock clock = session.getClock();
 		final long nextTickStamp = clock.currentStamp();
 
@@ -189,7 +190,7 @@ public class ShareDocumentManager {
 	private void replace(final String opId, final String documentId,
 			final int start, final int end, final String content) {
 		final String username = connection.getUsername();
-		final OpSession session = opSessionManager.getSession(opId);
+		final OpSession session = opSessionRegistrar.getSession(opId);
 		final OpSynchronizedClock clock = session.getClock();
 		final long nextTickStamp = clock.currentStamp();
 
@@ -207,7 +208,7 @@ public class ShareDocumentManager {
 	private void delete(final String opId, final String documentId,
 			final int start, final int end) {
 		final String username = connection.getUsername();
-		final OpSession session = opSessionManager.getSession(opId);
+		final OpSession session = opSessionRegistrar.getSession(opId);
 		final OpSynchronizedClock clock = session.getClock();
 		final long nextTickStamp = clock.currentStamp();
 

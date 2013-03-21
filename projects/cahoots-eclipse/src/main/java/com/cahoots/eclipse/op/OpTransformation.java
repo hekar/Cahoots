@@ -39,7 +39,7 @@ public class OpTransformation implements Comparable<OpTransformation> {
 
 	@Override
 	public int compareTo(final OpTransformation o) {
-		return o.tickStamp.compareTo(tickStamp);
+		return tickStamp.compareTo(o.tickStamp);
 	}
 
 }

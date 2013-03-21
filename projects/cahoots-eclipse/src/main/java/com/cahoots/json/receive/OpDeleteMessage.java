@@ -11,6 +11,7 @@ public class OpDeleteMessage extends OpTransformation {
 	private String documentId;
 	private Integer start;
 	private Integer end;
+	private String oldContent;
 
 	public String getService() {
 		return service;
@@ -58,6 +59,14 @@ public class OpDeleteMessage extends OpTransformation {
 
 	public void setEnd(final Integer end) {
 		this.end = end;
+	}
+
+	public String getOldContent() {
+		return oldContent;
+	}
+
+	public void setOldContent(final String oldContent) {
+		this.oldContent = oldContent;
 	}
 
 }
