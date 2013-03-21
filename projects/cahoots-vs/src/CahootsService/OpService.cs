@@ -54,11 +54,6 @@ namespace Cahoots.Services
         /// </value>
         private IWindowService WindowService { get; set; }
 
-        public string[] GetOpIds()
-        {
-            return this.Documents.Values.Select(i => i.OpId).ToArray();
-        }
-
         /// <summary>
         /// Starts the collaboration.
         /// </summary>
@@ -90,6 +85,11 @@ namespace Cahoots.Services
             this.SendMessage(model);
         }
 
+        /// <summary>
+        /// Leaves the collaboration.
+        /// </summary>
+        /// <param name="user">The user.</param>
+        /// <param name="opId">The op id.</param>
         public void LeaveCollaboration(string user, string opId) {
 
             var model = new LeaveCollaborationMessage(){
@@ -102,6 +102,10 @@ namespace Cahoots.Services
             this.SendMessage(model);
         }
 
+        /// <summary>
+        /// Removes the document.
+        /// </summary>
+        /// <param name="opId">The op id.</param>
         private void RemoveDocument(string opId)
         {
             var docs = (from c in this.Documents.Values where c.OpId == opId select c).ToList();
@@ -163,21 +167,29 @@ namespace Cahoots.Services
                             JsonHelper.Deserialize<ReceiveShareMessage>(json);
                     this.ReceiveShare(share);
                     break;
+
                 case "left":
                     var left = JsonHelper.Deserialize<CollaboratorLeftMessage>(json);
                     this.CollaboratorLeft(left);
                     break;
+
                 case "joined":
                     var joined = JsonHelper.Deserialize<CollaboratorJoinedMessage>(json);
                     this.CollaboratorJoined(joined);
                     break;
+
                 case "collaborators":
                     var collaborators = JsonHelper.Deserialize<CollaboratorsListMessage>(json);
-                    this.COllaboratorsList(collaborators);
+                    this.CollaboratorsList(collaborators);
                     break;
             }
         }
 
+        /// <summary>
+        /// Invites the user.
+        /// </summary>
+        /// <param name="user">The user.</param>
+        /// <param name="OpId">The op id.</param>
         public void InviteUser(String user, String OpId)
         {
             var message = new InviteUserMessage()
@@ -189,27 +201,39 @@ namespace Cahoots.Services
                 User=user
             };
 
-            this.SendMessage<InviteUserMessage>(message);
+            this.SendMessage(message);
         }
 
-        private void COllaboratorsList(CollaboratorsListMessage collaborators)
+        /// <summary>
+        /// Collaboratorses the list.
+        /// </summary>
+        /// <param name="collaborators">The collaborators.</param>
+        private void CollaboratorsList(CollaboratorsListMessage collaborators)
         {
-            var collab = (from c in this.ViewModel.Collaborations where c.OpId == collaborators.OpId select c).First();
+            var collab = this.ViewModel.Collaborations.First(c => c.OpId == collaborators.OpId);
             foreach (var c in collaborators.Collaborators)
             {
                 collab.Users.Add(c);
             }
         }
 
+        /// <summary>
+        /// Collaborators the joined.
+        /// </summary>
+        /// <param name="joined">The joined.</param>
         private void CollaboratorJoined(CollaboratorJoinedMessage joined)
         {
-            var collab = (from c in this.ViewModel.Collaborations where c.OpId == joined.OpId select c).First();
+            var collab = this.ViewModel.Collaborations.First(c => c.OpId == joined.OpId);
             collab.Users.Add(joined.User);
         }
 
+        /// <summary>
+        /// Collaborators the left.
+        /// </summary>
+        /// <param name="left">The left.</param>
         private void CollaboratorLeft(CollaboratorLeftMessage left)
         {
-            var collab = (from c in this.ViewModel.Collaborations where c.OpId == left.OpId select c).First();
+            var collab = this.ViewModel.Collaborations.First(c => c.OpId == left.OpId);
             if (left.User == this.UserName)
             {
                 this.ViewModel.Collaborations.Remove(collab);
@@ -231,6 +255,7 @@ namespace Cahoots.Services
             if (this.Documents.ContainsKey(model.DocumentId))
             {
                 var doc = this.Documents[model.DocumentId];
+                doc.Changes.Add(model);
                 doc.BlockEvent = true;
                 var view = doc.View;
                 this.WindowService.InvokeOnUI(
@@ -247,6 +272,7 @@ namespace Cahoots.Services
             if (this.Documents.ContainsKey(model.DocumentId))
             {
                 var doc = this.Documents[model.DocumentId];
+                doc.Changes.Add(model);
                 doc.BlockEvent = true;
                 var view = doc.View;
                 var span = new Span(model.Start, model.End - model.Start);
@@ -264,6 +290,7 @@ namespace Cahoots.Services
             if (this.Documents.ContainsKey(model.DocumentId))
             {
                 var doc = this.Documents[model.DocumentId];
+                doc.Changes.Add(model);
                 doc.BlockEvent = true;
                 var view = doc.View;
                 var end = model.End - model.Start;
@@ -340,7 +367,7 @@ namespace Cahoots.Services
                     Service = "op",
                     MessageType = "join",
                     OpId = model.OpId,
-                    User = UserName
+                    User = this.UserName
                 };
 
                 this.SendMessage(joinMessage);
@@ -390,9 +417,11 @@ namespace Cahoots.Services
                         Content = change.NewText,
                         DocumentId = docId,
                         OpId = doc.OpId,
-                        TickStamp = doc.TickStamp
+                        TickStamp = doc.TickStamp,
+                        IsApplied = true
                     };
 
+                    doc.Changes.Add(model);
                     this.SendMessage(model);
                 }
                 else if (!change.OldText.IsNullOrEmpty() && change.NewText.IsNullOrEmpty())
@@ -415,9 +444,11 @@ namespace Cahoots.Services
                         OldContent = change.OldText,
                         DocumentId = docId,
                         OpId = doc.OpId,
-                        TickStamp = doc.TickStamp
+                        TickStamp = doc.TickStamp,
+                        IsApplied = true
                     };
 
+                    doc.Changes.Add(model);
                     this.SendMessage(model);
                 }
                 else
@@ -445,9 +476,11 @@ namespace Cahoots.Services
                         OldContent = change.OldText,
                         DocumentId = docId,
                         OpId = doc.OpId,
-                        TickStamp = doc.TickStamp
+                        TickStamp = doc.TickStamp,
+                        IsApplied = true
                     };
 
+                    doc.Changes.Add(model);
                     this.SendMessage(model);
                 }
             }
@@ -472,6 +505,10 @@ namespace Cahoots.Services
         /// </summary>
         public override void Disconnect()
         {
+            foreach (var doc in this.Documents.Values)
+            {
+                this.LeaveCollaboration(this.UserName, doc.OpId);
+            }
         }
     }
 }

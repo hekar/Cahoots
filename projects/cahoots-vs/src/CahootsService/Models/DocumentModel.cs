@@ -5,8 +5,10 @@
 namespace Cahoots.Services.Models
 {
     using System;
-    using Microsoft.VisualStudio.Text.Editor;
+    using System.Collections.ObjectModel;
+    using Cahoots.Services.MessageModels.Ops;
     using Microsoft.VisualStudio.Text;
+    using Microsoft.VisualStudio.Text.Editor;
 
     public class DocumentModel
     {
@@ -18,6 +20,7 @@ namespace Cahoots.Services.Models
         public DocumentModel(long tick)
         {
             this.tickStart = tick;
+            this.Changes = new Collection<BaseOpMessage>();
         }
 
         /// <summary>
@@ -52,8 +55,29 @@ namespace Cahoots.Services.Models
         /// </value>
         public string FullPath { get; set; }
 
+        /// <summary>
+        /// Gets or sets the changed.
+        /// </summary>
+        /// <value>
+        /// The changed.
+        /// </value>
         public EventHandler<TextContentChangedEventArgs> Changed { get; set; }
+
+        /// <summary>
+        /// Gets or sets the closed.
+        /// </summary>
+        /// <value>
+        /// The closed.
+        /// </value>
         public EventHandler Closed { get; set; }
+
+        /// <summary>
+        /// Gets or sets the changes.
+        /// </summary>
+        /// <value>
+        /// The changes.
+        /// </value>
+        public Collection<BaseOpMessage> Changes { get; set; }
 
         /// <summary>
         /// Gets the tick stamp.
@@ -71,9 +95,17 @@ namespace Cahoots.Services.Models
             }
         }
 
-
+        /// <summary>
+        /// The lock object.
+        /// </summary>
         private object locker = new object();
 
+        /// <summary>
+        /// Gets or sets a value indicating whether [block event].
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if [block event]; otherwise, <c>false</c>.
+        /// </value>
         private int blocks = 0;
         public bool BlockEvent
         {

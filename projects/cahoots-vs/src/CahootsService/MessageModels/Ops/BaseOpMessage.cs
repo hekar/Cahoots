@@ -17,7 +17,7 @@ namespace Cahoots.Services.MessageModels.Ops
         /// </value>
         [DataMember(Name = "tickStamp", IsRequired = true)]
         public long TickStamp { get; set; }
-
+        
         /// <summary>
         /// Gets or sets a value indicating whether this op is applied.
         /// </summary>

@@ -696,7 +696,6 @@ namespace Cahoots
                 using (File.Create(path)) { }
             }
 
-
             return new Tuple<string, IWpfTextView>(path, this.ApplicationObject.GetEditorView(path));
         }
 
