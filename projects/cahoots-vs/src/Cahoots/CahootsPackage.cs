@@ -574,9 +574,9 @@ namespace Cahoots
         /// </summary>
         /// <param name="opId">The op id.</param>
         /// <returns>The current tick stamp.</returns>
-        public long GetCurrentTick(string opId)
+        public double GetCurrentTick(string opId)
         {
-            var start = (long)DateTime.Now.TimeOfDay.TotalMilliseconds;
+            var start = DateTime.Now.TimeOfDay.TotalMilliseconds;
             var request =
                 HttpWebRequest.Create(
                     new Uri (
@@ -587,7 +587,7 @@ namespace Cahoots
                                 opId)));
             var response = request.GetResponse() as HttpWebResponse;
             var latency =
-                    (long)DateTime.Now.TimeOfDay.TotalMilliseconds - start;
+                    DateTime.Now.TimeOfDay.TotalMilliseconds - start;
 
             if (response.StatusCode == HttpStatusCode.OK)
             {

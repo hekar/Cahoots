@@ -39,6 +39,6 @@ namespace Cahoots.Services.Contracts
         /// </summary>
         /// <param name="opId">The op id.</param>
         /// <returns>The current tick stamp.</returns>
-        long GetCurrentTick(string opId);
+        double GetCurrentTick(string opId);
     }
 }

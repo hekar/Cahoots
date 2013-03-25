@@ -90,8 +90,8 @@ namespace Cahoots.Services
         /// </summary>
         /// <param name="user">The user.</param>
         /// <param name="opId">The op id.</param>
-        public void LeaveCollaboration(string user, string opId) {
-
+        public void LeaveCollaboration(string user, string opId)
+        {
             var model = new LeaveCollaborationMessage(){
                 Service = "op",
                 MessageType = "leave",
@@ -138,28 +138,9 @@ namespace Cahoots.Services
             switch (type)
             {
                 case "insert":
-                    var insert = JsonHelper.Deserialize<OpInsertMessage>(json);
-                    if (insert.User != this.UserName)
-                    {
-                        this.Insert(insert);
-                    }
-                    break;
-
                 case "delete":
-                    var delete = JsonHelper.Deserialize<OpDeleteMessage>(json);
-                    if (delete.User != this.UserName)
-                    {
-                        this.Delete(delete);
-                    }
-                    break;
-
                 case "replace":
-                    var replace =
-                            JsonHelper.Deserialize<OpReplaceMessage>(json);
-                    if (replace.User != this.UserName)
-                    {
-                        this.Replace(replace);
-                    }
+                    this.ApplyOp(json, type);
                     break;
 
                 case "shared":
@@ -182,6 +163,110 @@ namespace Cahoots.Services
                     var collaborators = JsonHelper.Deserialize<CollaboratorsListMessage>(json);
                     this.CollaboratorsList(collaborators);
                     break;
+            }
+        }
+
+        /// <summary>
+        /// Applies the op.
+        /// </summary>
+        /// <param name="json">The json.</param>
+        /// <param name="type">The type.</param>
+        private void ApplyOp(string json, string type)
+        {
+            var op = JsonHelper.Deserialize<BaseOpMessage>(json);
+
+            if (this.Documents.ContainsKey(op.DocumentId))
+            {
+                var doc = this.Documents[op.DocumentId];
+
+                doc.Lock();
+
+                var future = doc.Changes.Where(c => c.TickStamp > op.TickStamp);
+
+                foreach (var change in future)
+                {
+                    var len = 0;
+
+                    switch(change.MessageType)
+                    {
+                        case "insert":
+                            var insert = (OpInsertMessage)change;
+                            this.UndoInsert(doc, insert);
+                            len = insert.Content.Length;
+                            break;
+
+                        case "delete":
+                            var delete = (OpDeleteMessage)change;
+                            this.UndoDelete(doc, delete);
+                            len = delete.Start - delete.End;
+                            break;
+
+                        case "replace":
+                            var replace = (OpReplaceMessage)change;
+                            this.UndoReplace(doc, replace);
+                            len = replace.OldContent.Length - replace.Content.Length;
+                            break;
+                    }
+
+                    if (change.Start >= op.Start)
+                    {
+                        change.Start += len;
+                    }
+                }
+
+                switch (type)
+                {
+                    case "insert":
+                        var insert = JsonHelper.Deserialize<OpInsertMessage>(json);
+                        if (insert.User != this.UserName)
+                        {
+                            doc.Changes.Add(insert);
+                            this.Insert(doc, insert);
+                        }
+                        break;
+
+                    case "delete":
+                        var delete = JsonHelper.Deserialize<OpDeleteMessage>(json);
+                        if (delete.User != this.UserName)
+                        {
+                            doc.Changes.Add(delete);
+                            this.Delete(doc, delete);
+                        }
+                        break;
+
+                    case "replace":
+                        var replace =
+                                JsonHelper.Deserialize<OpReplaceMessage>(json);
+                        if (replace.User != this.UserName)
+                        {
+                            doc.Changes.Add(replace);
+                            this.Replace(doc, replace);
+                        }
+                        break;
+                }
+
+                foreach (var change in future)
+                {
+                    switch (change.MessageType)
+                    {
+                        case "insert":
+                            var insert = (OpInsertMessage)change;
+                            this.UndoInsert(doc, insert);
+                            break;
+
+                        case "delete":
+                            var delete = (OpDeleteMessage)change;
+                            this.UndoDelete(doc, delete);
+                            break;
+
+                        case "replace":
+                            var replace = (OpReplaceMessage)change;
+                            this.UndoReplace(doc, replace);
+                            break;
+                    }
+                }
+
+                doc.Unlock();
             }
         }
 
@@ -243,64 +328,87 @@ namespace Cahoots.Services
             {
                 collab.Users.Remove(left.User);
             }
-            
         }
 
         /// <summary>
         /// Performs an insert in a document.
         /// </summary>
         /// <param name="model">The model.</param>
-        private void Insert(OpInsertMessage model)
+        private void Insert(DocumentModel doc, OpInsertMessage model)
         {
-            if (this.Documents.ContainsKey(model.DocumentId))
-            {
-                var doc = this.Documents[model.DocumentId];
-                doc.Changes.Add(model);
-                doc.BlockEvent = true;
-                var view = doc.View;
-                this.WindowService.InvokeOnUI(
-                    () => view.TextBuffer.Insert(model.Start, model.Content));
-            }
+            doc.BlockEvent = true;
+            var view = doc.View;
+            this.WindowService.InvokeOnUI(
+                () => view.TextBuffer.Insert(model.Start, model.Content));
+        }
+
+        /// <summary>
+        /// Undoes an insert operation.
+        /// </summary>
+        /// <param name="model">The model.</param>
+        private void UndoInsert(DocumentModel doc, OpInsertMessage model)
+        {
+            doc.BlockEvent = true;
+            var view = doc.View;
+            var span = new Span(model.Start, model.Content.Length);
+            this.WindowService.InvokeOnUI(
+                () => view.TextBuffer.Delete(span));
         }
 
         /// <summary>
         /// Performs a delete in a document.
         /// </summary>
         /// <param name="model">The model.</param>
-        private void Delete(OpDeleteMessage model)
+        private void Delete(DocumentModel doc, OpDeleteMessage model)
         {
-            if (this.Documents.ContainsKey(model.DocumentId))
-            {
-                var doc = this.Documents[model.DocumentId];
-                doc.Changes.Add(model);
-                doc.BlockEvent = true;
-                var view = doc.View;
-                var span = new Span(model.Start, model.End - model.Start);
-                this.WindowService.InvokeOnUI(
-                    () => view.TextBuffer.Delete(span));
-            }
+            doc.BlockEvent = true;
+            var view = doc.View;
+            var span = new Span(model.Start, model.End - model.Start);
+            this.WindowService.InvokeOnUI(
+                () => view.TextBuffer.Delete(span));
+        }
+
+        /// <summary>
+        /// Undoes a delete operation.
+        /// </summary>
+        /// <param name="model">The model.</param>
+        private void UndoDelete(DocumentModel doc, OpDeleteMessage model)
+        {
+            doc.BlockEvent = true;
+            var view = doc.View;
+            this.WindowService.InvokeOnUI(
+                () => view.TextBuffer.Insert(model.Start, model.OldContent));
         }
 
         /// <summary>
         /// Performs a replace in a document.
         /// </summary>
         /// <param name="model">The model.</param>
-        private void Replace(OpReplaceMessage model)
+        private void Replace(DocumentModel doc, OpReplaceMessage model)
         {
-            if (this.Documents.ContainsKey(model.DocumentId))
+            doc.BlockEvent = true;
+            var view = doc.View;
+            var end = model.End - model.Start;
+            if(end > view.TextSnapshot.Length)
             {
-                var doc = this.Documents[model.DocumentId];
-                doc.Changes.Add(model);
-                doc.BlockEvent = true;
-                var view = doc.View;
-                var end = model.End - model.Start;
-                if(end > view.TextSnapshot.Length){
-                    end = view.TextSnapshot.Length;
-                }
-                var span = new Span(model.Start, end);
-                this.WindowService.InvokeOnUI(
-                    () => view.TextBuffer.Replace(span, model.Content));
+                end = view.TextSnapshot.Length;
             }
+            var span = new Span(model.Start, end);
+            this.WindowService.InvokeOnUI(
+                () => view.TextBuffer.Replace(span, model.Content));
+        }
+
+        /// <summary>
+        /// Undoes a replace operation.
+        /// </summary>
+        /// <param name="model">The model.</param>
+        private void UndoReplace(DocumentModel doc, OpReplaceMessage model)
+        {
+            doc.BlockEvent = true;
+            var view = doc.View;
+            var span = new Span(model.Start, model.Content.Length);
+            this.WindowService.InvokeOnUI(
+                () => view.TextBuffer.Replace(span, model.OldContent));
         }
 
         /// <summary>
@@ -400,14 +508,6 @@ namespace Cahoots.Services
 
                 if (change.OldText.IsNullOrEmpty() && !change.NewText.IsNullOrEmpty())
                 {
-                    // insert
-                    Debug.WriteLine(
-                            "INSERT {0} to {1}",
-                            change.NewPosition,
-                            change.NewPosition + change.NewLength);
-                    Debug.WriteLine(change.NewText);
-                    Debug.WriteLine("");
-
                     var model = new OpInsertMessage()
                     {
                         Service = "op",
@@ -417,7 +517,7 @@ namespace Cahoots.Services
                         Content = change.NewText,
                         DocumentId = docId,
                         OpId = doc.OpId,
-                        TickStamp = doc.TickStamp,
+                        TickStamp = (long)doc.TickStamp,
                         IsApplied = true
                     };
 
@@ -426,14 +526,6 @@ namespace Cahoots.Services
                 }
                 else if (!change.OldText.IsNullOrEmpty() && change.NewText.IsNullOrEmpty())
                 {
-                    // delete
-                    Debug.WriteLine(
-                            "DELETE {0} to {1}",
-                            change.OldPosition, 
-                            change.OldPosition + change.OldLength);
-                    Debug.WriteLine(change.OldText);
-                    Debug.WriteLine("");
-
                     var model = new OpDeleteMessage()
                     {
                         Service = "op",
@@ -444,7 +536,7 @@ namespace Cahoots.Services
                         OldContent = change.OldText,
                         DocumentId = docId,
                         OpId = doc.OpId,
-                        TickStamp = doc.TickStamp,
+                        TickStamp = (long)doc.TickStamp,
                         IsApplied = true
                     };
 
@@ -453,18 +545,6 @@ namespace Cahoots.Services
                 }
                 else
                 {
-                    // replace
-                    Debug.WriteLine(
-                        "REPLACE {0} to {1} with {2} to {3}",
-                        change.OldPosition,
-                        change.OldPosition + change.OldLength,
-                        change.NewPosition,
-                        change.NewPosition + change.NewLength);
-                    Debug.WriteLine(change.OldText);
-                    Debug.WriteLine("-------------------------------------------");
-                    Debug.WriteLine(change.NewText);
-                    Debug.WriteLine("");
-
                     var model = new OpReplaceMessage()
                     {
                         Service = "op",
@@ -476,7 +556,7 @@ namespace Cahoots.Services
                         OldContent = change.OldText,
                         DocumentId = docId,
                         OpId = doc.OpId,
-                        TickStamp = doc.TickStamp,
+                        TickStamp = (long)doc.TickStamp,
                         IsApplied = true
                     };
 
@@ -505,10 +585,6 @@ namespace Cahoots.Services
         /// </summary>
         public override void Disconnect()
         {
-            foreach (var doc in this.Documents.Values)
-            {
-                this.LeaveCollaboration(this.UserName, doc.OpId);
-            }
         }
     }
 }

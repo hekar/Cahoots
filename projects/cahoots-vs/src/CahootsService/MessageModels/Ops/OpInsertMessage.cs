@@ -10,15 +10,6 @@ namespace Cahoots.Services.MessageModels.Ops
     public class OpInsertMessage : BaseOpMessage
     {
         /// <summary>
-        /// Gets or sets the start.
-        /// </summary>
-        /// <value>
-        /// The start.
-        /// </value>
-        [DataMember(Name = "start", IsRequired = true)]
-        public int Start { get; set; }
-
-        /// <summary>
         /// Gets or sets the content.
         /// </summary>
         /// <value>

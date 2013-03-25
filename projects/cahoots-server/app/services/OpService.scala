@@ -188,6 +188,7 @@ class OpService(
       "opId" -> JsString(nextOpSessionId),
       "documentId" -> JsString(documentId),
       "content" -> JsString(fileContents),
+      "oldContent" -> JsString(""),
       "start" -> JsNumber(0),
       "end" -> JsNumber(Integer.MAX_VALUE),
       "tickStamp" -> JsNumber(0)

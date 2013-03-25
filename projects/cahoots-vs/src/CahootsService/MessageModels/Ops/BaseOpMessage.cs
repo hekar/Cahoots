@@ -7,7 +7,7 @@ namespace Cahoots.Services.MessageModels.Ops
     using System.Runtime.Serialization;
 
     [DataContract]
-    public abstract class BaseOpMessage : MessageBase
+    public class BaseOpMessage : MessageBase
     {
         /// <summary>
         /// Gets or sets the tick stamp.
@@ -44,6 +44,15 @@ namespace Cahoots.Services.MessageModels.Ops
         /// </value>
         [DataMember(Name = "documentId", IsRequired = true)]
         public string DocumentId { get; set; }
+
+        /// <summary>
+        /// Gets or sets the start.
+        /// </summary>
+        /// <value>
+        /// The start.
+        /// </value>
+        [DataMember(Name = "start", IsRequired = true)]
+        public int Start { get; set; }
 
         /// <summary>
         /// Gets or sets the user.

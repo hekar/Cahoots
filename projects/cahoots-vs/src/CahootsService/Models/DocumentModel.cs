@@ -9,6 +9,7 @@ namespace Cahoots.Services.Models
     using Cahoots.Services.MessageModels.Ops;
     using Microsoft.VisualStudio.Text;
     using Microsoft.VisualStudio.Text.Editor;
+    using System.Threading;
 
     public class DocumentModel
     {
@@ -17,7 +18,7 @@ namespace Cahoots.Services.Models
         /// <see cref="DocumentModel" /> class.
         /// </summary>
         /// <param name="tick">The tick.</param>
-        public DocumentModel(long tick)
+        public DocumentModel(double tick)
         {
             this.tickStart = tick;
             this.Changes = new Collection<BaseOpMessage>();
@@ -85,20 +86,41 @@ namespace Cahoots.Services.Models
         /// <value>
         /// The tick stamp.
         /// </value>
-        private long tickStart { get; set; }
-        public long TickStamp
+        private double tickStart { get; set; }
+        public double TickStamp
         {
             get
             {
-                var now = (long)DateTime.Now.TimeOfDay.TotalMilliseconds;
+                var now = DateTime.Now.TimeOfDay.TotalMilliseconds;
                 return now - tickStart;
             }
         }
 
         /// <summary>
-        /// The lock object.
+        /// The op lock object.
         /// </summary>
-        private object locker = new object();
+        private object opLocker = new object();
+
+        /// <summary>
+        /// Locks this instance.
+        /// </summary>
+        public void Lock()
+        {
+            Monitor.Enter(this.opLocker);
+        }
+
+        /// <summary>
+        /// Unlocks this instance.
+        /// </summary>
+        public void Unlock()
+        {
+            Monitor.Exit(this.opLocker);
+        }
+
+        /// <summary>
+        /// The event lock object.
+        /// </summary>
+        private object eventLocker = new object();
 
         /// <summary>
         /// Gets or sets a value indicating whether [block event].
@@ -111,7 +133,7 @@ namespace Cahoots.Services.Models
         {
             get
             {
-                lock (locker)
+                lock (eventLocker)
                 {
                     var b = blocks > 0;
                     if (b)
@@ -126,7 +148,7 @@ namespace Cahoots.Services.Models
             {
                 if (value)
                 {
-                    lock (locker)
+                    lock (eventLocker)
                     {
                         blocks++;
                     }
