@@ -1,4 +1,4 @@
-@(myForm: Form[Tuple4[String, String, String, String]], roles:java.util.List[String])
+@(myForm: Form[Tuple4[String, String, String, String]], roles:java.util.List[String], users:Seq[ActiveUser])
 
 @import helper._
 
@@ -25,6 +25,11 @@
 
         <input type="submit" value="Create" />
         }
+        <ul>
+            @users.map { user =>
+            <li>@user.name</li>
+            }
+        </ul>
 
-    }
+}
 }

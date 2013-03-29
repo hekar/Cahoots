@@ -1,7 +1,5 @@
 package controllers
 
-import play.api._
-import play.api.libs.json._
 import scala.collection.mutable._
 import play.cache.Cache
 import models._
@@ -9,10 +7,12 @@ import play.api.mvc._
 import play.db.DB
 import org.jooq.impl.Factory
 import org.jooq.SQLDialect
-import org.jooq.Record
 import com.cahoots.jooq.tables.Users._
 import com.cahoots.jooq.tables.Roles._
 import scala.collection.JavaConversions._
+
+import play.api._
+import play.api.libs.json._
 
 object Application extends Controller with Secured {
 

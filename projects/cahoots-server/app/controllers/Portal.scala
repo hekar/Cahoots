@@ -11,6 +11,22 @@ import org.jooq.impl.Factory
 import org.jooq.SQLDialect
 import com.cahoots.jooq.tables.Users._
 import com.cahoots.jooq.tables.Roles._
+import collection.mutable.ListBuffer
+import models.ActiveUser
+import scala.collection.mutable._
+import play.cache.Cache
+import models._
+import play.api.mvc._
+import play.db.DB
+import org.jooq.impl.Factory
+import org.jooq.SQLDialect
+import com.cahoots.jooq.tables.Users._
+import com.cahoots.jooq.tables.Roles._
+import scala.collection.JavaConversions._
+
+import play.api._
+import play.api.libs.json._
+import collection.mutable
 
 object Portal extends Controller with Secured {
 
@@ -26,12 +42,31 @@ object Portal extends Controller with Secured {
   )
 
   def index = IsAuthenticated { username => implicit request =>
-    Ok(html.portal.index(createUserForm, roles))
+
+    val c = DB.getConnection
+    val f = new Factory(c, SQLDialect.POSTGRES)
+
+    val users = new ListBuffer[ActiveUser]
+    for(r <- (f.select(USERS.USERNAME, USERS.NAME, ROLES.NAME).from(USERS).join(ROLES).on(ROLES.ID equal USERS.ROLE).fetch))
+    {
+      users.append(new ActiveUser(r.getValue(USERS.USERNAME), r.getValue(USERS.NAME), r.getValue(ROLES.NAME), null, "offline"))
+    }
+    val u = users.toSeq
+    Ok(html.portal.index(createUserForm, roles, u))
   }
 
   def createUser = IsAuthenticated { username => implicit request =>
+
+    val c = DB.getConnection
+    val f = new Factory(c, SQLDialect.POSTGRES)
+    val users = new ListBuffer[ActiveUser]
+    for(r <- (f.select(USERS.USERNAME, USERS.NAME, ROLES.NAME).from(USERS).join(ROLES).on(ROLES.ID equal USERS.ROLE).fetch))
+    {
+      users.append(new ActiveUser(r.getValue(USERS.USERNAME), r.getValue(USERS.NAME), r.getValue(ROLES.NAME), null, "offline"))
+    }
+    val u = users.toSeq
     createUserForm.bindFromRequest.fold(
-      formWithErrors => BadRequest(html.portal.index(createUserForm, roles )),
+      formWithErrors => BadRequest(html.portal.index(createUserForm, roles, u)),
       user => Redirect(routes.Auth.login)
     )
   }
@@ -53,7 +88,7 @@ object Portal extends Controller with Secured {
     f.insertInto(USERS, USERS.PASSWORD, USERS.NAME, USERS.USERNAME, USERS.ROLE)
       .values(pass, username, username, roleId).execute()
 
-    (-4  == 1)
+    false
   }
 
 }
