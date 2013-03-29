@@ -1,17 +1,17 @@
 @(myForm: Form[Tuple2[String, String]])
 
 @main("Cahoots - Login") {
-
+<div class="login">
+    <div>Cahoots</div>
     @helper.form(action = routes.Auth.checkCredentials) {
         @myForm.globalError.map { error =>
         <p class="error">
             @error.message
         </p>
         }
-
         @helper.inputText(myForm("username"))
-        @helper.inputText(myForm("password"))
-
-        <input type="submit" value="Login" />
+        @helper.inputPassword(myForm("password"))
+        <input type="submit" value="Login" class="button"/>
     }
+</div>
 }
