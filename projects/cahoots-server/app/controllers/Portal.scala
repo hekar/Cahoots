@@ -32,13 +32,6 @@ object Portal extends Controller with Secured {
     })
   )
 
-  val deleteUserForm = Form(
-      "id" -> text
-    .verifying ("Failed to create user", result => result match {
-      case (id) => delete(id)
-    })
-  )
-
   def index = IsAuthenticated { username => implicit request =>
 
     val c = DB.getConnection
@@ -49,40 +42,7 @@ object Portal extends Controller with Secured {
     {
       users.append(new ActiveUser(r.getValue(USERS.USERNAME), r.getValue(USERS.NAME), r.getValue(ROLES.NAME), null, "offline", r.getValue(USERS.ID)))
     }
-    val u = users.toSeq
-    Ok(html.portal.index(createUserForm, deleteUserForm, roles, u))
-  }
-
-  def createUser = IsAuthenticated { username => implicit request =>
-
-    val c = DB.getConnection
-    val f = new Factory(c, SQLDialect.POSTGRES)
-    val users = new ListBuffer[ActiveUser]
-    for(r <- (f.select(USERS.ID, USERS.USERNAME, USERS.NAME, ROLES.NAME).from(USERS).join(ROLES).on(ROLES.ID equal USERS.ROLE).fetch))
-    {
-      users.append(new ActiveUser(r.getValue(USERS.USERNAME), r.getValue(USERS.NAME), r.getValue(ROLES.NAME), null, "offline", r.getValue(USERS.ID)))
-    }
-    val u = users.toSeq
-    deleteUserForm.bindFromRequest.fold(
-      formWithErrors => BadRequest(html.portal.index(createUserForm, deleteUserForm, roles, u)),
-      user => Redirect(routes.Auth.login)
-    )
-  }
-
-  def deleteUser = IsAuthenticated { username => implicit request =>
-
-    val c = DB.getConnection
-    val f = new Factory(c, SQLDialect.POSTGRES)
-    val users = new ListBuffer[ActiveUser]
-    for(r <- (f.select(USERS.ID, USERS.USERNAME, USERS.NAME, ROLES.NAME).from(USERS).join(ROLES).on(ROLES.ID equal USERS.ROLE).fetch))
-    {
-      users.append(new ActiveUser(r.getValue(USERS.USERNAME), r.getValue(USERS.NAME), r.getValue(ROLES.NAME), null, "offline", r.getValue(USERS.ID)))
-    }
-    val u = users.toSeq
-    deleteUserForm.bindFromRequest.fold(
-      formWithErrors => BadRequest(html.portal.index(createUserForm, deleteUserForm, roles, u)),
-      user => Redirect(routes.Auth.login)
-    )
+    Ok(html.portal.index(createUserForm, roles, users))
   }
 
   def roles= {
@@ -92,8 +52,17 @@ object Portal extends Controller with Secured {
 
   }
 
-  def delete(id: String): Boolean = {
-    false
+
+  def deleteUser(id: Int) = Action {
+    delete(id)
+    Redirect(routes.Portal.index)
+  }
+
+  def delete(id: Int): Boolean = {
+    val c = DB.getConnection
+    val f = new Factory(c, SQLDialect.POSTGRES)
+  
+    f.delete(USERS).where(USERS.ID equal id ).execute() == 1
   }
 
   def create(username: String, password: String, email:String, role:String) : Boolean= {

@@ -1,10 +1,13 @@
-@(myForm: Form[Tuple4[String, String, String, String]], deleteForm:Form[String],  roles:java.util.List[String], users:Seq[ActiveUser])
+@(myForm: Form[Tuple4[String, String, String, String]], roles:java.util.List[String], users:Seq[ActiveUser])
 
 @import helper._
 
 @portalBase("Index") {
 
-        @form(action = routes.Portal.createUser) {
+<fieldset>
+
+    <legend>Create User</legend>
+        @form(action = routes.Portal.index) {
         @myForm.globalError.map { error =>
         <p class="error">
             @error.message
@@ -25,6 +28,11 @@
 
         }
 
+</fieldset>
+
+<fieldset>
+
+    <legend>Current Users</legend>
     <table id="user_table">
         <thead>
             <tr>
@@ -44,9 +52,7 @@
             <th>@user.name</th>
             <th>@user.role</th>
             <th>
-                @form(action = routes.Portal.deleteUser) {
-
-                <input type="hidden" value="id_field" value="@user.id"/>
+                @form(action = routes.Portal.deleteUser(user.id)) {
                 <input type="submit" value="Delete" />
 
                 }
@@ -55,11 +61,10 @@
         }
         </tbody>
     </table>
-
-
+</fieldset>
 <script type="text/javascript">
     $(document).ready(function(){
-    $('#user_table').dataTable();
+        $('#user_table').dataTable();
     });
 </script>
 }

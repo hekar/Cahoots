@@ -2,7 +2,10 @@
 
 @main("Cahoots - Login") {
 <div class="login">
-    <div>Cahoots</div>
+
+    <fieldset>
+
+        <legend>Sign In</legend>
     @helper.form(action = routes.Auth.checkCredentials) {
         @myForm.globalError.map { error =>
         <p class="error">
@@ -13,5 +16,7 @@
         @helper.inputPassword(myForm("password"))
         <input type="submit" value="Login" class="button"/>
     }
+
+        </fieldset>
 </div>
 }
