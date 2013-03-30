@@ -3,7 +3,6 @@
 @import helper._
 
 @portalBase("Index") {
-        @main("Cahoots - Login") {
 
         @form(action = routes.Portal.createUser) {
         @myForm.globalError.map { error =>
@@ -24,12 +23,35 @@
         )
 
         <input type="submit" value="Create" />
-        }
-        <ul>
-            @users.map { user =>
-            <li>@user.name</li>
-            }
-        </ul>
 
-}
+        }
+
+    <table id="user_table">
+        <thead>
+            <tr>
+                <th>id</th>
+                <th>username</th>
+                <th>name</th>
+                <th>role</th>
+            </tr>
+        </thead>
+        <tbody>
+
+        @users.map { user =>
+        <tr>
+            <th>@user.id</th>
+            <th>@user.username</th>
+            <th>@user.name</th>
+            <th>@user.role</th>
+        </tr>
+        }
+        </tbody>
+    </table>
+
+
+<script type="javascript">
+    $(document).ready(function(){
+    $('#user_table').dataTable();
+    });
+</script>
 }

@@ -47,9 +47,9 @@ object Portal extends Controller with Secured {
     val f = new Factory(c, SQLDialect.POSTGRES)
 
     val users = new ListBuffer[ActiveUser]
-    for(r <- (f.select(USERS.USERNAME, USERS.NAME, ROLES.NAME).from(USERS).join(ROLES).on(ROLES.ID equal USERS.ROLE).fetch))
+    for(r <- (f.select(USERS.ID, USERS.USERNAME, USERS.NAME, ROLES.NAME).from(USERS).join(ROLES).on(ROLES.ID equal USERS.ROLE).fetch))
     {
-      users.append(new ActiveUser(r.getValue(USERS.USERNAME), r.getValue(USERS.NAME), r.getValue(ROLES.NAME), null, "offline"))
+      users.append(new ActiveUser(r.getValue(USERS.USERNAME), r.getValue(USERS.NAME), r.getValue(ROLES.NAME), null, "offline", r.getValue(USERS.ID)))
     }
     val u = users.toSeq
     Ok(html.portal.index(createUserForm, roles, u))
