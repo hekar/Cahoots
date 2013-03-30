@@ -2,19 +2,9 @@ package controllers
 
 
 import play.api.Play._
-import play.api.mvc._
 import play.api.data._
-import play.api.data.Forms._
 import views._
-import play.db.DB
-import org.jooq.impl.Factory
-import org.jooq.SQLDialect
-import com.cahoots.jooq.tables.Users._
-import com.cahoots.jooq.tables.Roles._
-import collection.mutable.ListBuffer
-import models.ActiveUser
 import scala.collection.mutable._
-import play.cache.Cache
 import models._
 import play.api.mvc._
 import play.db.DB
@@ -25,8 +15,9 @@ import com.cahoots.jooq.tables.Roles._
 import scala.collection.JavaConversions._
 
 import play.api._
-import play.api.libs.json._
-import collection.mutable
+import data.Forms.email
+import data.Forms.text
+import data.Forms.tuple
 
 object Portal extends Controller with Secured {
 
@@ -41,6 +32,13 @@ object Portal extends Controller with Secured {
     })
   )
 
+  val deleteUserForm = Form(
+      "id" -> text
+    .verifying ("Failed to create user", result => result match {
+      case (id) => delete(id)
+    })
+  )
+
   def index = IsAuthenticated { username => implicit request =>
 
     val c = DB.getConnection
@@ -52,7 +50,7 @@ object Portal extends Controller with Secured {
       users.append(new ActiveUser(r.getValue(USERS.USERNAME), r.getValue(USERS.NAME), r.getValue(ROLES.NAME), null, "offline", r.getValue(USERS.ID)))
     }
     val u = users.toSeq
-    Ok(html.portal.index(createUserForm, roles, u))
+    Ok(html.portal.index(createUserForm, deleteUserForm, roles, u))
   }
 
   def createUser = IsAuthenticated { username => implicit request =>
@@ -60,13 +58,29 @@ object Portal extends Controller with Secured {
     val c = DB.getConnection
     val f = new Factory(c, SQLDialect.POSTGRES)
     val users = new ListBuffer[ActiveUser]
-    for(r <- (f.select(USERS.USERNAME, USERS.NAME, ROLES.NAME).from(USERS).join(ROLES).on(ROLES.ID equal USERS.ROLE).fetch))
+    for(r <- (f.select(USERS.ID, USERS.USERNAME, USERS.NAME, ROLES.NAME).from(USERS).join(ROLES).on(ROLES.ID equal USERS.ROLE).fetch))
     {
-      users.append(new ActiveUser(r.getValue(USERS.USERNAME), r.getValue(USERS.NAME), r.getValue(ROLES.NAME), null, "offline"))
+      users.append(new ActiveUser(r.getValue(USERS.USERNAME), r.getValue(USERS.NAME), r.getValue(ROLES.NAME), null, "offline", r.getValue(USERS.ID)))
     }
     val u = users.toSeq
-    createUserForm.bindFromRequest.fold(
-      formWithErrors => BadRequest(html.portal.index(createUserForm, roles, u)),
+    deleteUserForm.bindFromRequest.fold(
+      formWithErrors => BadRequest(html.portal.index(createUserForm, deleteUserForm, roles, u)),
+      user => Redirect(routes.Auth.login)
+    )
+  }
+
+  def deleteUser = IsAuthenticated { username => implicit request =>
+
+    val c = DB.getConnection
+    val f = new Factory(c, SQLDialect.POSTGRES)
+    val users = new ListBuffer[ActiveUser]
+    for(r <- (f.select(USERS.ID, USERS.USERNAME, USERS.NAME, ROLES.NAME).from(USERS).join(ROLES).on(ROLES.ID equal USERS.ROLE).fetch))
+    {
+      users.append(new ActiveUser(r.getValue(USERS.USERNAME), r.getValue(USERS.NAME), r.getValue(ROLES.NAME), null, "offline", r.getValue(USERS.ID)))
+    }
+    val u = users.toSeq
+    deleteUserForm.bindFromRequest.fold(
+      formWithErrors => BadRequest(html.portal.index(createUserForm, deleteUserForm, roles, u)),
       user => Redirect(routes.Auth.login)
     )
   }
@@ -76,6 +90,10 @@ object Portal extends Controller with Secured {
     val f = new Factory(c, SQLDialect.POSTGRES)
     f.select(ROLES.NAME).from(ROLES).fetch().getValues(ROLES.NAME)
 
+  }
+
+  def delete(id: String): Boolean = {
+    false
   }
 
   def create(username: String, password: String, email:String, role:String) : Boolean= {

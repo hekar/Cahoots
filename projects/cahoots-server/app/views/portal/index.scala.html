@@ -1,4 +1,4 @@
-@(myForm: Form[Tuple4[String, String, String, String]], roles:java.util.List[String], users:Seq[ActiveUser])
+@(myForm: Form[Tuple4[String, String, String, String]], deleteForm:Form[String],  roles:java.util.List[String], users:Seq[ActiveUser])
 
 @import helper._
 
@@ -21,7 +21,6 @@
             '_label -> "Role",
             '_error -> myForm("profile.roles").error.map(_.withMessage("Please select a role"))
         )
-
         <input type="submit" value="Create" />
 
         }
@@ -29,10 +28,11 @@
     <table id="user_table">
         <thead>
             <tr>
-                <th>id</th>
-                <th>username</th>
-                <th>name</th>
-                <th>role</th>
+                <th>ID</th>
+                <th>Username</th>
+                <th>Name</th>
+                <th>Role</th>
+                <th>Action</th>
             </tr>
         </thead>
         <tbody>
@@ -43,13 +43,21 @@
             <th>@user.username</th>
             <th>@user.name</th>
             <th>@user.role</th>
+            <th>
+                @form(action = routes.Portal.deleteUser) {
+
+                <input type="hidden" value="id_field" value="@user.id"/>
+                <input type="submit" value="Delete" />
+
+                }
+            </th>
         </tr>
         }
         </tbody>
     </table>
 
 
-<script type="javascript">
+<script type="text/javascript">
     $(document).ready(function(){
     $('#user_table').dataTable();
     });
