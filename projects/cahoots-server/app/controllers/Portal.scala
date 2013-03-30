@@ -53,7 +53,7 @@ object Portal extends Controller with Secured {
   }
 
 
-  def deleteUser(id: Int) = Action {
+  def deleteUser(id: Int) =  IsAuthenticated { username => implicit request =>
     delete(id)
     Redirect(routes.Portal.index)
   }
@@ -61,7 +61,7 @@ object Portal extends Controller with Secured {
   def delete(id: Int): Boolean = {
     val c = DB.getConnection
     val f = new Factory(c, SQLDialect.POSTGRES)
-  
+
     f.delete(USERS).where(USERS.ID equal id ).execute() == 1
   }
 
