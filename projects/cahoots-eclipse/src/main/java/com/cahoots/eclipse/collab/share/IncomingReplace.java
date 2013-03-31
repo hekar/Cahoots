@@ -2,12 +2,16 @@ package com.cahoots.eclipse.collab.share;
 
 import javax.inject.Inject;
 
+import org.eclipse.core.commands.operations.UndoContext;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.ITextEditor;
+import org.eclipse.text.undo.DocumentUndoManagerRegistry;
+import org.eclipse.text.undo.IDocumentUndoManager;
 
 import com.cahoots.connection.CahootsConnection;
+import com.cahoots.eclipse.op.OpMemento;
 import com.cahoots.eclipse.op.OpSession;
 import com.cahoots.eclipse.op.OpSessionRegister;
 import com.cahoots.eclipse.swt.SwtDisplayUtils;
@@ -73,15 +77,23 @@ public class IncomingReplace implements OpReplaceEventListener {
 						length = document.getLength();
 					}
 
-					// TODO: Do not apply
-					shareDocumentManager.disableEvents();
-					document.replace(start, length, contents);
-					shareDocumentManager.enableEvents();
-
 					final OpSession session = opSessionRegister.getSession(msg
 							.getOpId());
-					session.getMemento().addTransformation(msg);
-
+					final OpMemento memento = session.getMemento();
+					
+					DocumentUndoManagerRegistry.disconnect(document);
+					shareDocumentManager.disableEvents();
+					if (memento.getLatestTimestamp() < msg.getTickStamp()) {
+						document.replace(start, length, contents);
+					} else {
+						memento.addTransformation(msg);
+						final String content = memento.getContent();
+						document.replace(0, content.length(), content);
+					}
+					shareDocumentManager.enableEvents();
+					
+					DocumentUndoManagerRegistry.connect(document);
+					
 				} catch (final BadLocationException e) {
 					e.printStackTrace();
 				}

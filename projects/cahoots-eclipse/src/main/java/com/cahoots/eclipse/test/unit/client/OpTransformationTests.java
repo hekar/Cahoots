@@ -1,11 +1,8 @@
 package com.cahoots.eclipse.test.unit.client;
 
-import static org.junit.Assert.*;
-
 import org.junit.Test;
 
 import com.cahoots.eclipse.op.OpMemento;
-import com.cahoots.eclipse.op.OpSession;
 import com.cahoots.eclipse.op.OpSynchronizedClock;
 import com.cahoots.eclipse.op.OpTransformation;
 import com.cahoots.json.receive.OpDeleteMessage;

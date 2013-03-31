@@ -70,6 +70,11 @@ public class OpMemento {
 		return transformations;
 	}
 	
+	public long getLatestTimestamp() {
+		final Long timestamp = transformations.first().getTickStamp();
+		return (timestamp == null) ? 0 : timestamp.longValue();
+	}
+	
 	public synchronized String getContent() {
 		final StringBuilder sb = new StringBuilder();
 		for (final OpTransformation transformation : transformations) {
