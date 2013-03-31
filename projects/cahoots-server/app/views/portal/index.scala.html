@@ -1,4 +1,4 @@
-@(myForm: Form[Tuple4[String, String, String, String]], roles:java.util.List[String], users:Seq[ActiveUser])
+@( roles:java.util.List[String], users:Seq[ActiveUser])
 
 @import helper._
 
@@ -7,26 +7,24 @@
 <fieldset>
 
     <legend>Create User</legend>
-        @form(action = routes.Portal.index) {
-        @myForm.globalError.map { error =>
-        <p class="error">
-            @error.message
-        </p>
-        }
 
-        @inputText(myForm("username"))
-        @inputPassword(myForm("password"))
-        @inputText(myForm("email"))
-        @select(
-            myForm("role"),
-            options = options(roles),
-            '_default -> "--- Choose a role ---",
-            '_label -> "Role",
-            '_error -> myForm("profile.roles").error.map(_.withMessage("Please select a role"))
-        )
-        <input type="submit" value="Create" />
-
-        }
+        <form method="POST" action="/portal/createUser">
+            Username:<br />
+            <input type="text" name="username"><br />
+            Name:<br />
+            <input type="text" name="name"><br />
+            Email:<br />
+            <input type="text" name="email"><br />
+            Role:<br />
+            <select name="role">
+                <option value="user">user</option>
+                <option value="admin">admin</option>
+            </select>
+            <br />
+            Password:<br />
+            <input type="password" name="password"><br />
+            <input type="submit" value="Create" />
+        </form>
 
 </fieldset>
 

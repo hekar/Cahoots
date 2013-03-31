@@ -21,17 +21,6 @@ import data.Forms.tuple
 
 object Portal extends Controller with Secured {
 
-  val createUserForm = Form(
-    tuple(
-      "username" -> text,
-      "password" -> text,
-      "email" -> email,
-      "role" -> text
-    ).verifying ("Failed to create user", result => result match {
-      case (username, password, email, role) => create(username, password, email, role)
-    })
-  )
-
   def index = IsAuthenticated { username => implicit request =>
 
     val c = DB.getConnection
@@ -42,19 +31,27 @@ object Portal extends Controller with Secured {
     {
       users.append(new ActiveUser(r.getValue(USERS.USERNAME), r.getValue(USERS.NAME), r.getValue(ROLES.NAME), null, "offline", r.getValue(USERS.ID)))
     }
-    Ok(html.portal.index(createUserForm, roles, users))
+    Ok(html.portal.index( roles, users))
   }
 
   def roles= {
     val c = DB.getConnection
     val f = new Factory(c, SQLDialect.POSTGRES)
     f.select(ROLES.NAME).from(ROLES).fetch().getValues(ROLES.NAME)
-
   }
 
-
-  def deleteUser(id: Int) =  IsAuthenticated { username => implicit request =>
+  def deleteUser(id: Int) =  IsAuthenticated { username => implicit request  =>
     delete(id)
+    Redirect(routes.Portal.index)
+  }
+
+  def createUser() =  IsAuthenticated { username => implicit request  =>
+
+    val username = request.body.asFormUrlEncoded.get.get("username").get.apply(0)
+    val password = request.body.asFormUrlEncoded.get.get("password").get.apply(0)
+    val email= request.body.asFormUrlEncoded.get.get("email").get.apply(0)
+    val role = request.body.asFormUrlEncoded.get.get("role").get.apply(0)
+    create(username, password, email, role)
     Redirect(routes.Portal.index)
   }
 
@@ -73,9 +70,7 @@ object Portal extends Controller with Secured {
     val roleId = f.select(ROLES.ID).from(ROLES).where(ROLES.NAME equal role).fetchOne(ROLES.ID)
 
     f.insertInto(USERS, USERS.PASSWORD, USERS.NAME, USERS.USERNAME, USERS.ROLE)
-      .values(pass, username, username, roleId).execute()
-
-    false
+      .values(pass, username, username, roleId).execute() == 1
   }
 
 }
