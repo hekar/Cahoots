@@ -202,6 +202,8 @@ public class ShareDocumentManager {
 		message.setUser(username);
 		message.setTickStamp(nextTickStamp);
 		message.setContent(content);
+		// TODO: Get old content
+		message.setOldContent("");
 		cahootsSocket.send(message);
 	}
 
@@ -219,6 +221,8 @@ public class ShareDocumentManager {
 		message.setEnd(end);
 		message.setUser(username);
 		message.setTickStamp(nextTickStamp);
+		// TODO: Get old content
+		message.setOldContent("");
 		cahootsSocket.send(message);
 	}
 

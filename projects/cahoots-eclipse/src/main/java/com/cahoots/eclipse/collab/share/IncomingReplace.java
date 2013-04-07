@@ -46,56 +46,63 @@ public class IncomingReplace implements OpReplaceEventListener {
 		final Runnable runnable = new Runnable() {
 			@Override
 			public void run() {
-				try {
-					if (!msg.getOpId().equals(opId)
-							|| !msg.getDocumentId().equals(documentId)) {
-						return;
+				synchronized (opId) {
+					try {
+						if (!msg.getOpId().equals(opId)
+								|| !msg.getDocumentId().equals(documentId)) {
+							return;
+						}
+
+						if (msg.getUser().equals(
+								cahootsConnection.getUsername())) {
+							return;
+						}
+
+						final int start = msg.getStart();
+						final String contents = msg.getContent();
+						int length = msg.getEnd() - msg.getStart();
+
+						if (length == 0) {
+							throw new IllegalStateException(
+									"Length of replace message cannot be 0");
+						} else if (length < 0) {
+							throw new IllegalStateException(
+									"Length of replace message cannot be less than 0");
+						}
+
+						final IDocumentProvider documentProvider = textEditor
+								.getDocumentProvider();
+						final IDocument document = documentProvider
+								.getDocument(textEditor.getEditorInput());
+
+						if (length > document.getLength()) {
+							length = document.getLength();
+						}
+
+						final OpSession session = opSessionRegister
+								.getSession(msg.getOpId());
+						final OpMemento memento = session.getMemento();
+
+						try {
+							DocumentUndoManagerRegistry.disconnect(document);
+						} catch (final Exception e) {
+						}
+
+						shareDocumentManager.disableEvents();
+						if (memento.getLatestTimestamp() < msg.getTickStamp()) {
+							document.replace(start, length, contents);
+						} else {
+							memento.addTransformation(msg);
+							final String content = memento.getContent();
+							document.replace(0, content.length(), content);
+						}
+						shareDocumentManager.enableEvents();
+
+						DocumentUndoManagerRegistry.connect(document);
+
+					} catch (final BadLocationException e) {
+						e.printStackTrace();
 					}
-
-					if (msg.getUser().equals(cahootsConnection.getUsername())) {
-						return;
-					}
-
-					final int start = msg.getStart();
-					final String contents = msg.getContent();
-					int length = msg.getEnd() - msg.getStart();
-
-					if (length == 0) {
-						throw new IllegalStateException(
-								"Length of replace message cannot be 0");
-					} else if (length < 0) {
-						throw new IllegalStateException(
-								"Length of replace message cannot be less than 0");
-					}
-
-					final IDocumentProvider documentProvider = textEditor
-							.getDocumentProvider();
-					final IDocument document = documentProvider
-							.getDocument(textEditor.getEditorInput());
-
-					if (length > document.getLength()) {
-						length = document.getLength();
-					}
-
-					final OpSession session = opSessionRegister.getSession(msg
-							.getOpId());
-					final OpMemento memento = session.getMemento();
-					
-					DocumentUndoManagerRegistry.disconnect(document);
-					shareDocumentManager.disableEvents();
-					if (memento.getLatestTimestamp() < msg.getTickStamp()) {
-						document.replace(start, length, contents);
-					} else {
-						memento.addTransformation(msg);
-						final String content = memento.getContent();
-						document.replace(0, content.length(), content);
-					}
-					shareDocumentManager.enableEvents();
-					
-					DocumentUndoManagerRegistry.connect(document);
-					
-				} catch (final BadLocationException e) {
-					e.printStackTrace();
 				}
 			}
 		};

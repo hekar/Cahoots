@@ -1,5 +1,6 @@
 package com.cahoots.eclipse.op;
 
+import java.util.NoSuchElementException;
 import java.util.TreeSet;
 
 import com.cahoots.json.receive.OpDeleteMessage;
@@ -71,8 +72,11 @@ public class OpMemento {
 	}
 	
 	public long getLatestTimestamp() {
-		final Long timestamp = transformations.first().getTickStamp();
-		return (timestamp == null) ? 0 : timestamp.longValue();
+		try {
+			return transformations.first().getTickStamp();
+		} catch (final NoSuchElementException e) {
+			return 0L;
+		}
 	}
 	
 	public synchronized String getContent() {
