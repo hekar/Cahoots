@@ -92,7 +92,7 @@ public class IncomingReplace implements OpReplaceEventListener {
 					} else {
 						memento.addTransformation(msg);
 						final String content = memento.getContent();
-						document.replace(0, content.length(), content);
+						document.replace(0, document.getLength(), content);
 					}
 					shareDocumentManager.enableEvents();
 

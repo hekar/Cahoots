@@ -44,45 +44,46 @@ public class IncomingDelete implements OpDeleteEventListener {
 		final Runnable runnable = new Runnable() {
 			@Override
 			public void run() {
-				try {
-					if (!msg.getOpId().equals(opId)
-							|| !msg.getDocumentId().equals(documentId)) {
-						return;
-					}
-					if (msg.getUser().equals(cahootsConnection.getUsername())) {
-						return;
-					}
-
-					final int start = msg.getStart();
-					final int length = msg.getEnd() - msg.getStart();
-
-					final IDocumentProvider documentProvider = textEditor
-							.getDocumentProvider();
-					final IDocument document = documentProvider
-							.getDocument(textEditor.getEditorInput());
-
-					final OpSession session = opSessionRegister.getSession(msg
-							.getOpId());
-					final OpMemento memento = session.getMemento();
-
 					try {
-						DocumentUndoManagerRegistry.disconnect(document);
-					} catch (final Exception e) {
-					}
+						if (!msg.getOpId().equals(opId)
+								|| !msg.getDocumentId().equals(documentId)) {
+							return;
+						}
+						if (msg.getUser().equals(
+								cahootsConnection.getUsername())) {
+							return;
+						}
 
-					shareDocumentManager.disableEvents();
-					if (memento.getLatestTimestamp() < msg.getTickStamp()) {
-						document.replace(start, length, "");
-					} else {
-						memento.addTransformation(msg);
-						final String content = memento.getContent();
-						document.replace(0, content.length(), content);
+						final int start = msg.getStart();
+						final int length = msg.getEnd() - msg.getStart();
+
+						final IDocumentProvider documentProvider = textEditor
+								.getDocumentProvider();
+						final IDocument document = documentProvider
+								.getDocument(textEditor.getEditorInput());
+
+						final OpSession session = opSessionRegister
+								.getSession(msg.getOpId());
+						final OpMemento memento = session.getMemento();
+
+						try {
+							DocumentUndoManagerRegistry.disconnect(document);
+						} catch (final Exception e) {
+						}
+
+						shareDocumentManager.disableEvents();
+						if (memento.getLatestTimestamp() < msg.getTickStamp()) {
+							document.replace(start, length, "");
+						} else {
+							memento.addTransformation(msg);
+							final String content = memento.getContent();
+							document.replace(0, document.getLength(), content);
+						}
+						shareDocumentManager.enableEvents();
+						DocumentUndoManagerRegistry.connect(document);
+					} catch (final BadLocationException e) {
+						e.printStackTrace();
 					}
-					shareDocumentManager.enableEvents();
-					DocumentUndoManagerRegistry.connect(document);
-				} catch (final BadLocationException e) {
-					e.printStackTrace();
-				}
 			}
 		};
 

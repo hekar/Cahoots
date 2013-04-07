@@ -75,7 +75,7 @@ public class IncomingInsert implements OpInsertEventListener {
 					} else {
 						memento.addTransformation(msg);
 						final String content = memento.getContent();
-						document.replace(0, content.length(), content);
+						document.replace(0, document.getLength(), content);
 					}
 					shareDocumentManager.enableEvents();
 
