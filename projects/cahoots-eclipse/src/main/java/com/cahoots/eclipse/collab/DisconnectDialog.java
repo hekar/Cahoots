@@ -79,16 +79,7 @@ public class DisconnectDialog extends Window {
 						.size()]));
 				try {
 					final int statusCode = client.executeMethod(method);
-					if (statusCode == 200) {
-						cahootsConnection
-								.updateConnectionDetails(new ConnectionDetails(
-										"", "", "", ""));
-						cahootsSocket.disconnect();
-						close();
-					} else {
-						MessageDialog.openInformation(null, "Disconnect Error",
-								"Error disconnecting from server");
-					}
+					performDisconnect();
 				} catch (final HttpException ex) {
 					MessageDialog.openInformation(
 							null,
@@ -96,13 +87,20 @@ public class DisconnectDialog extends Window {
 							"Error disconnecting from server. "
 									+ ex.getMessage());
 				} catch (final IOException ex) {
-
 					MessageDialog.openInformation(
 							null,
 							"Disconnect Error",
 							"Error disconnecting from server. "
 									+ ex.getMessage());
 				}
+			}
+
+			private void performDisconnect() {
+				final ConnectionDetails details = new ConnectionDetails("", "", "",
+						"");
+				cahootsConnection.updateConnectionDetails(details);
+				cahootsSocket.disconnect();
+				close();
 			}
 		});
 

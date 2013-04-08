@@ -185,7 +185,7 @@ public class CahootsSocket {
 					try {
 						disconnectEventListener.onEvent(new DisconnectEvent());
 					} catch (final Exception e) {
-
+						e.printStackTrace();
 					}
 				} else {
 					throw new IllegalStateException(
