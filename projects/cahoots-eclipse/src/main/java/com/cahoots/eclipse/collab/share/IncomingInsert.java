@@ -4,10 +4,12 @@ import javax.inject.Inject;
 
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
+import org.eclipse.text.undo.DocumentUndoManagerRegistry;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 import com.cahoots.connection.CahootsConnection;
+import com.cahoots.eclipse.op.OpMemento;
 import com.cahoots.eclipse.op.OpSession;
 import com.cahoots.eclipse.op.OpSessionRegister;
 import com.cahoots.eclipse.swt.SwtDisplayUtils;
@@ -59,21 +61,31 @@ public class IncomingInsert implements OpInsertEventListener {
 					final IDocument document = documentProvider
 							.getDocument(textEditor.getEditorInput());
 
-					// TODO: Do not apply
-					shareDocumentManager.disableEvents();
-					document.replace(start, 0, contents);
-					shareDocumentManager.enableEvents();
-
 					final OpSession session = opSessionRegister.getSession(msg
 							.getOpId());
-					session.getMemento().addTransformation(msg);
+					final OpMemento memento = session.getMemento();
 
+					try {
+						DocumentUndoManagerRegistry.disconnect(document);
+					} catch (final Exception e) {
+					}
+					shareDocumentManager.disableEvents();
+					if (memento.getLatestTimestamp() < msg.getTickStamp()) {
+						document.replace(start, 0, contents);
+					} else {
+						memento.addTransformation(msg);
+						final String content = memento.getContent();
+						document.replace(0, document.getLength(), content);
+					}
+					shareDocumentManager.enableEvents();
+
+					DocumentUndoManagerRegistry.connect(document);
 				} catch (final BadLocationException e) {
 					e.printStackTrace();
 				}
 			}
 		};
 
-		SwtDisplayUtils.async(runnable);
+		SwtDisplayUtils.sync(runnable);
 	}
 }

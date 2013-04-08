@@ -1,30 +1,68 @@
-@(myForm: Form[Tuple4[String, String, String, String]], roles:java.util.List[String])
+@( roles:java.util.List[String], users:Seq[ActiveUser])
 
 @import helper._
 
 @portalBase("Index") {
-        @main("Cahoots - Login") {
 
-        @form(action = routes.Portal.createUser) {
-        @myForm.globalError.map { error =>
-        <p class="error">
-            @error.message
-        </p>
+<fieldset>
+
+    <legend>Create User</legend>
+
+        <form method="POST" action="/portal/createUser">
+            Username:<br />
+            <input type="text" name="username"><br />
+            Name:<br />
+            <input type="text" name="name"><br />
+            Email:<br />
+            <input type="text" name="email"><br />
+            Role:<br />
+            <select name="role">
+                <option value="user">user</option>
+                <option value="admin">admin</option>
+            </select>
+            <br />
+            Password:<br />
+            <input type="password" name="password"><br />
+            <input type="submit" value="Create" />
+        </form>
+
+</fieldset>
+
+<fieldset>
+
+    <legend>Current Users</legend>
+    <table id="user_table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Username</th>
+                <th>Name</th>
+                <th>Role</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+
+        @users.map { user =>
+        <tr>
+            <th>@user.id</th>
+            <th>@user.username</th>
+            <th>@user.name</th>
+            <th>@user.role</th>
+            <th>
+                @form(action = routes.Portal.deleteUser(user.id)) {
+                <input type="submit" value="Delete" />
+
+                }
+            </th>
+        </tr>
         }
-
-        @inputText(myForm("username"))
-        @inputPassword(myForm("password"))
-        @inputText(myForm("email"))
-        @select(
-            myForm("role"),
-            options = options(roles),
-            '_default -> "--- Choose a role ---",
-            '_label -> "Role",
-            '_error -> myForm("profile.roles").error.map(_.withMessage("Please select a role"))
-        )
-
-        <input type="submit" value="Create" />
-        }
-
-    }
+        </tbody>
+    </table>
+</fieldset>
+<script type="text/javascript">
+    $(document).ready(function(){
+        $('#user_table').dataTable();
+    });
+</script>
 }

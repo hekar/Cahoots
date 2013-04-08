@@ -88,15 +88,20 @@ class MessageRelay extends Actor {
     }
 
     case Relay(username, json) => {
-      /*
-       * This method is the main message relay center to pass the puck to other
-       * classes which will handle things (operational transactions, chat, collabs, etc...)
-       */
+      try {
+          /*
+           * This method is the main message relay center to pass the puck to other
+           * classes which will handle things (operational transactions, chat, collabs, etc...)
+           */
 
-      val service = this.services((json \ "service").as[String])
+          val service = this.services((json \ "service").as[String])
 
-      if (service != null) {
-        service.processMessage(json)
+          if (service != null) {
+            service.processMessage(json)
+          }
+      } catch {
+        case e: Exception =>
+            e.printStackTrace()
       }
     }
 
@@ -110,11 +115,16 @@ class MessageRelay extends Actor {
 
   def notifyAll(msg: JsValue) {
     members.foreach {
-      case (_, channel) => channel.push(msg)
+      case (_, channel) => {
+        Logger.debug(msg.toString())
+        channel.push(msg)
+      }
     }
   }
 
   def notifyOne(username: String, msg: JsValue) {
+    Logger.debug(username)
+    Logger.debug(msg.toString())
     val channel = members(username)
     channel.push(msg)
   }

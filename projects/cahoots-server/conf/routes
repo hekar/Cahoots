@@ -33,6 +33,7 @@ POST    /auth/login                             controllers.Auth.checkCredential
 GET     /auth/logout                            controllers.Auth.logout
 GET     /portal/index                           controllers.Portal.index
 POST    /portal/createUser                      controllers.Portal.createUser
+POST    /portal/deleteUser                      controllers.Portal.deleteUser(id:Int)
 
 
 # ~~~~~~~~~~~

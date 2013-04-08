@@ -62,6 +62,17 @@
           id="com.cahoots.eclipse.indigo.view.SharedDocumentView"
           name="Cahoots - Shared Documents">
     </view>
+    <category
+          id="cahoots-eclipse"
+          name="Cahoots">
+    </category>
+    <view
+          category="cahoots-eclipse"
+          class="cahootseclipse.views.RevisionView"
+          icon="icons/sample.gif"
+          id="cahootseclipse.views.RevisionView"
+          name="Cahoots - Revisions">
+    </view>
  </extension>
  <extension
        point="org.eclipse.ui.perspectiveExtensions">
@@ -83,9 +94,21 @@
              relative="org.eclipse.ui.views.TaskList">
        </view>
     </perspectiveExtension>
+    <perspectiveExtension
+          targetID="org.eclipse.jdt.ui.JavaPerspective">
+       <view
+             id="cahootseclipse.views.RevisionView"
+             ratio="0.5"
+             relationship="right"
+             relative="org.eclipse.ui.views.TaskList">
+       </view>
+    </perspectiveExtension>
  </extension>
  <extension
        point="org.eclipse.help.contexts">
+    <contexts
+          file="contexts.xml">
+    </contexts>
     <contexts
           file="contexts.xml">
     </contexts>
