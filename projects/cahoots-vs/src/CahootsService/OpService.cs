@@ -178,9 +178,9 @@ namespace Cahoots.Services
             if (this.Documents.ContainsKey(op.DocumentId))
             {
                 var doc = this.Documents[op.DocumentId];
-
                 doc.Lock();
 
+                /*
                 var future = doc.Changes.Where(c => c.TickStamp > op.TickStamp);
 
                 foreach (var change in future)
@@ -213,6 +213,7 @@ namespace Cahoots.Services
                         change.Start += len;
                     }
                 }
+                */
 
                 switch (type)
                 {
@@ -245,6 +246,7 @@ namespace Cahoots.Services
                         break;
                 }
 
+                /*
                 foreach (var change in future)
                 {
                     switch (change.MessageType)
@@ -265,6 +267,7 @@ namespace Cahoots.Services
                             break;
                     }
                 }
+                */
 
                 doc.Unlock();
             }
