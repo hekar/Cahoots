@@ -1,6 +1,6 @@
 package com.cahoots.connection.serialize.receive;
 
-import com.cahoots.eclipse.op.OpTransformation;
+import com.cahoots.eclipse.optransformation.OpTransformation;
 
 public class OpDeleteMessage extends OpTransformation {
 	private final String service = "op";

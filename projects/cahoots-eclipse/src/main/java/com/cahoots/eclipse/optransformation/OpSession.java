@@ -1,4 +1,4 @@
-package com.cahoots.eclipse.op;
+package com.cahoots.eclipse.optransformation;
 
 
 public class OpSession {

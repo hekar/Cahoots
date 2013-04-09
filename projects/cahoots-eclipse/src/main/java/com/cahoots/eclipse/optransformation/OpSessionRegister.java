@@ -1,4 +1,4 @@
-package com.cahoots.eclipse.op;
+package com.cahoots.eclipse.optransformation;
 
 import java.util.HashMap;
 import java.util.Map;

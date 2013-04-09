@@ -19,7 +19,7 @@ import com.cahoots.connection.serialize.send.SendOpReplaceMessage;
 import com.cahoots.connection.serialize.send.SendShareDocumentMessage;
 import com.cahoots.connection.websocket.CahootsSocket;
 import com.cahoots.eclipse.indigo.misc.TextEditorTools;
-import com.cahoots.eclipse.op.OpSynchronizedClock;
+import com.cahoots.eclipse.optransformation.OpSynchronizedClock;
 import com.cahoots.event.OpDeleteEventListener;
 import com.cahoots.event.OpInsertEventListener;
 import com.cahoots.event.OpReplaceEventListener;

@@ -28,11 +28,11 @@ import com.cahoots.connection.serialize.send.SendOpInsertMessage;
 import com.cahoots.connection.serialize.send.SendOpReplaceMessage;
 import com.cahoots.connection.serialize.send.SendShareDocumentMessage;
 import com.cahoots.connection.websocket.CahootsSocket;
-import com.cahoots.eclipse.op.OpDocument;
-import com.cahoots.eclipse.op.OpMemento;
-import com.cahoots.eclipse.op.OpSession;
-import com.cahoots.eclipse.op.OpSessionRegister;
-import com.cahoots.eclipse.op.OpSynchronizedClock;
+import com.cahoots.eclipse.optransformation.OpDocument;
+import com.cahoots.eclipse.optransformation.OpMemento;
+import com.cahoots.eclipse.optransformation.OpSession;
+import com.cahoots.eclipse.optransformation.OpSessionRegister;
+import com.cahoots.eclipse.optransformation.OpSynchronizedClock;
 
 public class ShareDocumentManager {
 

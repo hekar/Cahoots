@@ -5,8 +5,6 @@ import org.osgi.framework.BundleContext;
 
 import com.cahoots.connection.websocket.CahootsSocket;
 import com.cahoots.eclipse.collab.share.IncomingDocumentShare;
-import com.cahoots.eclipse.guice.IndigoModule;
-import com.cahoots.eclipse.guice.MainModule;
 import com.cahoots.util.Log;
 import com.google.inject.Guice;
 import com.google.inject.Injector;

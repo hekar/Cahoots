@@ -29,7 +29,7 @@ import com.cahoots.eclipse.indigo.misc.ResourceFinder;
 import com.cahoots.eclipse.indigo.misc.SwtDisplayUtils;
 import com.cahoots.eclipse.indigo.misc.TextEditorTools;
 import com.cahoots.eclipse.indigo.misc.UserListViewContentProvider;
-import com.cahoots.eclipse.op.OpDocument;
+import com.cahoots.eclipse.optransformation.OpDocument;
 import com.cahoots.event.ShareDocumentEventListener;
 
 public final class IncomingDocumentShare implements ShareDocumentEventListener {

@@ -1,4 +1,4 @@
-package com.cahoots.eclipse.guice;
+package com.cahoots.eclipse;
 
 import org.eclipse.jetty.websocket.WebSocketClientFactory;
 
@@ -8,7 +8,7 @@ import com.cahoots.connection.http.CahootsHttpClient;
 import com.cahoots.connection.websocket.CahootsSocket;
 import com.cahoots.eclipse.collab.share.ShareDocumentSessionManager;
 import com.cahoots.eclipse.collab.share.ShareDocumentManager;
-import com.cahoots.eclipse.op.OpSessionRegister;
+import com.cahoots.eclipse.optransformation.OpSessionRegister;
 import com.google.inject.Binder;
 import com.google.inject.Module;
 import com.google.inject.Singleton;
