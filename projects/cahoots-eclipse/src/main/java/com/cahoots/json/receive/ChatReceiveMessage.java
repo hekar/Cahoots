@@ -2,7 +2,7 @@ package com.cahoots.json.receive;
 
 import java.util.Date;
 
-import com.cahoots.json.MessageBase;
+import com.cahoots.serialize.json.MessageBase;
 
 public class ChatReceiveMessage extends MessageBase {
 

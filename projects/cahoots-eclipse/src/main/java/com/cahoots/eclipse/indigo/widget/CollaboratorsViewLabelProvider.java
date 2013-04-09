@@ -4,7 +4,7 @@ import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
 
-import com.cahoots.json.Collaboration;
+import com.cahoots.serialize.json.Collaboration;
 import com.google.common.base.Joiner;
 
 public class CollaboratorsViewLabelProvider extends LabelProvider implements

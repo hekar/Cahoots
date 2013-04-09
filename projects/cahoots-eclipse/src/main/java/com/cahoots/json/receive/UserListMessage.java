@@ -1,7 +1,7 @@
 package com.cahoots.json.receive;
 
-import com.cahoots.json.Collaborator;
-import com.cahoots.json.MessageBase;
+import com.cahoots.serialize.json.Collaborator;
+import com.cahoots.serialize.json.MessageBase;
 
 public class UserListMessage extends MessageBase {
 	private Collaborator[] users;

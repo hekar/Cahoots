@@ -1,6 +1,6 @@
 package com.cahoots.json.send;
 
-import com.cahoots.json.MessageBase;
+import com.cahoots.serialize.json.MessageBase;
 
 public class JoinCollaborationMessage extends MessageBase {
 	public JoinCollaborationMessage() {

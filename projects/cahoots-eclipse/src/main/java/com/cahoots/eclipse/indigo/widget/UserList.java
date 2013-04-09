@@ -13,7 +13,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 
 import com.cahoots.eclipse.Activator;
-import com.cahoots.json.Collaborator;
+import com.cahoots.serialize.json.Collaborator;
 import com.google.inject.Injector;
 
 public class UserList extends Composite {

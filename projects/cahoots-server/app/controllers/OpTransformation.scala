@@ -21,7 +21,7 @@ object OpTransformation extends Controller with Secured {
     }
     catch {
       case e: Exception =>
-        Ok("No operational transformation session with clock open")
+        Ok("No operational transformation session with opId:%s open".format(opId))
     }
   }
 }

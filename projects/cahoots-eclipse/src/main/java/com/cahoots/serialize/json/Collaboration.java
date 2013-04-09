@@ -1,4 +1,4 @@
-package com.cahoots.json;
+package com.cahoots.serialize.json;
 
 import java.util.ArrayList;
 import java.util.List;

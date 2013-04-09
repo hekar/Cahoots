@@ -2,7 +2,7 @@ package com.cahoots.json.receive;
 
 import java.util.List;
 
-import com.cahoots.json.MessageBase;
+import com.cahoots.serialize.json.MessageBase;
 
 public class CollaboratorsListMessage extends MessageBase {
 

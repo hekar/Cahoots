@@ -6,7 +6,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 
-import com.cahoots.json.Collaborator;
+import com.cahoots.serialize.json.Collaborator;
 
 public class UserListViewLabelProvider extends LabelProvider implements
 		ITableLabelProvider {

@@ -31,7 +31,7 @@ import com.cahoots.chat.CollaboratorStatus;
 import com.cahoots.connection.CahootsConnection;
 import com.cahoots.eclipse.Activator;
 import com.cahoots.eclipse.indigo.widget.UserList;
-import com.cahoots.json.Collaborator;
+import com.cahoots.serialize.json.Collaborator;
 import com.google.inject.Injector;
 
 /**

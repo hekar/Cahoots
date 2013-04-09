@@ -46,7 +46,7 @@ public class OpSynchronizedClock {
 					final String response = method.getMethod()
 							.getResponseBodyAsString();
 					final long clock = Long.parseLong(response);
-					return new OpSynchronizedClock(clock + latency);
+					return new OpSynchronizedClock(start - (clock + (latency / 2)));
 				} else {
 					throw new RuntimeException("Invalid status code "
 							+ method.getStatusCode());

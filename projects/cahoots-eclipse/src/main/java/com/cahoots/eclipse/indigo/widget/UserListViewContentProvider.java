@@ -24,8 +24,8 @@ import com.cahoots.eclipse.swt.SwtDisplayUtils;
 import com.cahoots.events.DisconnectEvent;
 import com.cahoots.events.DisconnectEventListener;
 import com.cahoots.events.UserChangeEventListener;
-import com.cahoots.json.Collaborator;
 import com.cahoots.json.receive.UserChangeMessage;
+import com.cahoots.serialize.json.Collaborator;
 
 @SuppressWarnings("restriction")
 public class UserListViewContentProvider extends ViewContentProvider {

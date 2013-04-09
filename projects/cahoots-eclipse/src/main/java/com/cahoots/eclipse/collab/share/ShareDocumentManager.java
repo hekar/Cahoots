@@ -27,12 +27,12 @@ import com.cahoots.eclipse.op.OpMemento;
 import com.cahoots.eclipse.op.OpSession;
 import com.cahoots.eclipse.op.OpSessionRegister;
 import com.cahoots.eclipse.op.OpSynchronizedClock;
-import com.cahoots.json.Collaborator;
 import com.cahoots.json.send.InviteUserMessage;
 import com.cahoots.json.send.SendOpDeleteMessage;
 import com.cahoots.json.send.SendOpInsertMessage;
 import com.cahoots.json.send.SendOpReplaceMessage;
 import com.cahoots.json.send.SendShareDocumentMessage;
+import com.cahoots.serialize.json.Collaborator;
 
 public class ShareDocumentManager {
 

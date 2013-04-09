@@ -1,6 +1,6 @@
 package com.cahoots.json.receive;
 
-import com.cahoots.json.MessageBase;
+import com.cahoots.serialize.json.MessageBase;
 
 public class CollaboratorLeftMessage extends MessageBase {
 

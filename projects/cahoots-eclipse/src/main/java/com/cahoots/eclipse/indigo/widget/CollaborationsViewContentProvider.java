@@ -20,10 +20,10 @@ import com.cahoots.eclipse.swt.SwtDisplayUtils;
 import com.cahoots.events.CollaboratorJoinedEventListener;
 import com.cahoots.events.CollaboratorLeftEventListener;
 import com.cahoots.events.CollaboratorsListEventListener;
-import com.cahoots.json.Collaboration;
 import com.cahoots.json.receive.CollaboratorJoinedMessage;
 import com.cahoots.json.receive.CollaboratorLeftMessage;
 import com.cahoots.json.receive.CollaboratorsListMessage;
+import com.cahoots.serialize.json.Collaboration;
 
 @SuppressWarnings("restriction")
 public class CollaborationsViewContentProvider extends ViewContentProvider {
