@@ -8,22 +8,22 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.cahoots.connection.CahootsConnection;
-import com.cahoots.connection.http.tools.CahootsHttpClient;
+import com.cahoots.connection.http.CahootsHttpClient;
+import com.cahoots.connection.serialize.receive.OpDeleteMessage;
+import com.cahoots.connection.serialize.receive.OpInsertMessage;
+import com.cahoots.connection.serialize.receive.OpReplaceMessage;
+import com.cahoots.connection.serialize.receive.ShareDocumentMessage;
+import com.cahoots.connection.serialize.send.SendOpDeleteMessage;
+import com.cahoots.connection.serialize.send.SendOpInsertMessage;
+import com.cahoots.connection.serialize.send.SendOpReplaceMessage;
+import com.cahoots.connection.serialize.send.SendShareDocumentMessage;
 import com.cahoots.connection.websocket.CahootsSocket;
-import com.cahoots.eclipse.indigo.widget.TextEditorTools;
+import com.cahoots.eclipse.indigo.misc.TextEditorTools;
 import com.cahoots.eclipse.op.OpSynchronizedClock;
-import com.cahoots.events.OpDeleteEventListener;
-import com.cahoots.events.OpInsertEventListener;
-import com.cahoots.events.OpReplaceEventListener;
-import com.cahoots.events.ShareDocumentEventListener;
-import com.cahoots.serialize.json.receive.OpDeleteMessage;
-import com.cahoots.serialize.json.receive.OpInsertMessage;
-import com.cahoots.serialize.json.receive.OpReplaceMessage;
-import com.cahoots.serialize.json.receive.ShareDocumentMessage;
-import com.cahoots.serialize.json.send.SendOpDeleteMessage;
-import com.cahoots.serialize.json.send.SendOpInsertMessage;
-import com.cahoots.serialize.json.send.SendOpReplaceMessage;
-import com.cahoots.serialize.json.send.SendShareDocumentMessage;
+import com.cahoots.event.OpDeleteEventListener;
+import com.cahoots.event.OpInsertEventListener;
+import com.cahoots.event.OpReplaceEventListener;
+import com.cahoots.event.ShareDocumentEventListener;
 
 public class TestOpService {
 

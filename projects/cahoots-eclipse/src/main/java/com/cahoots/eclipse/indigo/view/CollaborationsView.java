@@ -23,16 +23,16 @@ import org.eclipse.ui.part.ViewPart;
 
 import com.cahoots.chat.Chat;
 import com.cahoots.connection.CahootsConnection;
+import com.cahoots.connection.serialize.Collaboration;
+import com.cahoots.connection.serialize.Collaborator;
+import com.cahoots.connection.serialize.send.LeaveCollaborationMessage;
 import com.cahoots.connection.websocket.CahootsSocket;
 import com.cahoots.eclipse.Activator;
 import com.cahoots.eclipse.collab.share.InviteDocumentDialog;
 import com.cahoots.eclipse.collab.share.ShareDocumentManager;
-import com.cahoots.eclipse.indigo.widget.CollaborationsViewContentProvider;
-import com.cahoots.eclipse.indigo.widget.CollaboratorsViewLabelProvider;
-import com.cahoots.eclipse.indigo.widget.SourceContentChangedListener;
-import com.cahoots.serialize.json.Collaboration;
-import com.cahoots.serialize.json.Collaborator;
-import com.cahoots.serialize.json.send.LeaveCollaborationMessage;
+import com.cahoots.eclipse.indigo.misc.CollaborationsViewContentProvider;
+import com.cahoots.eclipse.indigo.misc.CollaboratorsViewLabelProvider;
+import com.cahoots.eclipse.indigo.misc.SourceContentChangedListener;
 import com.google.inject.Injector;
 
 public class CollaborationsView extends ViewPart {

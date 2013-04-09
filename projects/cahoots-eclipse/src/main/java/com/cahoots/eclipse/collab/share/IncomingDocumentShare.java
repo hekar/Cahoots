@@ -20,17 +20,17 @@ import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 import com.cahoots.connection.CahootsConnection;
+import com.cahoots.connection.serialize.receive.ShareDocumentMessage;
+import com.cahoots.connection.serialize.send.JoinCollaborationMessage;
 import com.cahoots.connection.websocket.CahootsSocket;
-import com.cahoots.eclipse.indigo.editor.ResourceFinder;
-import com.cahoots.eclipse.indigo.widget.MessageDialog;
-import com.cahoots.eclipse.indigo.widget.MessageDialogStatus;
-import com.cahoots.eclipse.indigo.widget.SwtDisplayUtils;
-import com.cahoots.eclipse.indigo.widget.TextEditorTools;
-import com.cahoots.eclipse.indigo.widget.UserListViewContentProvider;
+import com.cahoots.eclipse.indigo.misc.MessageDialog;
+import com.cahoots.eclipse.indigo.misc.MessageDialogStatus;
+import com.cahoots.eclipse.indigo.misc.ResourceFinder;
+import com.cahoots.eclipse.indigo.misc.SwtDisplayUtils;
+import com.cahoots.eclipse.indigo.misc.TextEditorTools;
+import com.cahoots.eclipse.indigo.misc.UserListViewContentProvider;
 import com.cahoots.eclipse.op.OpDocument;
-import com.cahoots.events.ShareDocumentEventListener;
-import com.cahoots.serialize.json.receive.ShareDocumentMessage;
-import com.cahoots.serialize.json.send.JoinCollaborationMessage;
+import com.cahoots.event.ShareDocumentEventListener;
 
 public final class IncomingDocumentShare implements ShareDocumentEventListener {
 

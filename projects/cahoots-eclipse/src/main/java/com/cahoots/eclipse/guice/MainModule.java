@@ -4,7 +4,7 @@ import org.eclipse.jetty.websocket.WebSocketClientFactory;
 
 import com.cahoots.chat.Chat;
 import com.cahoots.connection.CahootsConnection;
-import com.cahoots.connection.http.tools.CahootsHttpClient;
+import com.cahoots.connection.http.CahootsHttpClient;
 import com.cahoots.connection.websocket.CahootsSocket;
 import com.cahoots.eclipse.collab.share.ShareDocumentSessionManager;
 import com.cahoots.eclipse.collab.share.ShareDocumentManager;

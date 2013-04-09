@@ -23,7 +23,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 
 import com.cahoots.eclipse.Activator;
-import com.cahoots.eclipse.indigo.widget.MessageDialog;
+import com.cahoots.eclipse.indigo.misc.MessageDialog;
 import com.cahoots.eclipse.op.OpMemento;
 import com.cahoots.eclipse.op.OpSession;
 import com.cahoots.eclipse.op.OpSessionRegister;

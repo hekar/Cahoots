@@ -27,14 +27,14 @@ import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 
 import com.cahoots.connection.CahootsConnection;
+import com.cahoots.connection.serialize.receive.ChatReceiveMessage;
+import com.cahoots.connection.serialize.send.ChatSendMessage;
 import com.cahoots.connection.websocket.CahootsSocket;
 import com.cahoots.eclipse.Activator;
-import com.cahoots.eclipse.indigo.log.Log;
-import com.cahoots.eclipse.indigo.widget.SwtDisplayUtils;
-import com.cahoots.eclipse.indigo.widget.SwtKeyUtils;
+import com.cahoots.eclipse.indigo.misc.SwtDisplayUtils;
+import com.cahoots.eclipse.indigo.misc.SwtKeyUtils;
 import com.cahoots.preferences.PreferenceConstants;
-import com.cahoots.serialize.json.receive.ChatReceiveMessage;
-import com.cahoots.serialize.json.send.ChatSendMessage;
+import com.cahoots.util.Log;
 import com.google.inject.Injector;
 
 public class ChatDialog extends Window {

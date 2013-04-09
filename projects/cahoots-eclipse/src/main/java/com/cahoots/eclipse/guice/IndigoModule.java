@@ -6,9 +6,9 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.osgi.framework.Bundle;
 
 import com.cahoots.eclipse.Activator;
+import com.cahoots.eclipse.indigo.misc.CollaborationsViewContentProvider;
+import com.cahoots.eclipse.indigo.misc.UserListViewContentProvider;
 import com.cahoots.eclipse.indigo.popup.ConnectStuff;
-import com.cahoots.eclipse.indigo.widget.CollaborationsViewContentProvider;
-import com.cahoots.eclipse.indigo.widget.UserListViewContentProvider;
 import com.google.inject.Binder;
 import com.google.inject.Module;
 import com.google.inject.Singleton;

@@ -6,9 +6,9 @@ import org.junit.Test;
 
 import com.cahoots.connection.CahootsConnection;
 import com.cahoots.connection.http.CahootsHttpService;
-import com.cahoots.connection.http.receive.ListUsersResponse;
+import com.cahoots.connection.serialize.receive.ListUsersResponse;
 import com.cahoots.connection.websocket.CahootsSocket;
-import com.cahoots.eclipse.indigo.widget.TextEditorTools;
+import com.cahoots.eclipse.indigo.misc.TextEditorTools;
 
 public class TestHttpUserService {
 

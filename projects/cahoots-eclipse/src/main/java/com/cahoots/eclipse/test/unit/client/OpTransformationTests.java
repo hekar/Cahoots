@@ -2,12 +2,12 @@ package com.cahoots.eclipse.test.unit.client;
 
 import org.junit.Test;
 
+import com.cahoots.connection.serialize.receive.OpDeleteMessage;
+import com.cahoots.connection.serialize.receive.OpInsertMessage;
+import com.cahoots.connection.serialize.receive.OpReplaceMessage;
 import com.cahoots.eclipse.op.OpMemento;
 import com.cahoots.eclipse.op.OpSynchronizedClock;
 import com.cahoots.eclipse.op.OpTransformation;
-import com.cahoots.serialize.json.receive.OpDeleteMessage;
-import com.cahoots.serialize.json.receive.OpInsertMessage;
-import com.cahoots.serialize.json.receive.OpReplaceMessage;
 
 public class OpTransformationTests {
 

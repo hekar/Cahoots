@@ -19,12 +19,12 @@ import org.osgi.framework.Bundle;
 import com.cahoots.connection.CahootsConnection;
 import com.cahoots.connection.websocket.CahootsSocket;
 import com.cahoots.eclipse.Activator;
+import com.cahoots.eclipse.indigo.misc.SwtDisplayUtils;
 import com.cahoots.eclipse.indigo.popup.ConnectStuff;
-import com.cahoots.eclipse.indigo.widget.SwtDisplayUtils;
-import com.cahoots.events.ConnectEvent;
-import com.cahoots.events.ConnectEventListener;
-import com.cahoots.events.DisconnectEvent;
-import com.cahoots.events.DisconnectEventListener;
+import com.cahoots.event.ConnectEvent;
+import com.cahoots.event.ConnectEventListener;
+import com.cahoots.event.DisconnectEvent;
+import com.cahoots.event.DisconnectEventListener;
 import com.google.inject.Injector;
 
 public class FastBar extends WorkbenchWindowControlContribution {

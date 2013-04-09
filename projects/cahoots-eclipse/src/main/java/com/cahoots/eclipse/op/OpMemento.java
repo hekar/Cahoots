@@ -3,9 +3,9 @@ package com.cahoots.eclipse.op;
 import java.util.NoSuchElementException;
 import java.util.TreeSet;
 
-import com.cahoots.serialize.json.receive.OpDeleteMessage;
-import com.cahoots.serialize.json.receive.OpInsertMessage;
-import com.cahoots.serialize.json.receive.OpReplaceMessage;
+import com.cahoots.connection.serialize.receive.OpDeleteMessage;
+import com.cahoots.connection.serialize.receive.OpInsertMessage;
+import com.cahoots.connection.serialize.receive.OpReplaceMessage;
 
 public class OpMemento {
 	private final OpDocument document;

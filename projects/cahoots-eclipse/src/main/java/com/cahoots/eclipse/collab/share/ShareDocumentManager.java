@@ -20,19 +20,19 @@ import org.eclipse.ui.ide.ResourceUtil;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 import com.cahoots.connection.CahootsConnection;
-import com.cahoots.connection.http.tools.CahootsHttpClient;
+import com.cahoots.connection.http.CahootsHttpClient;
+import com.cahoots.connection.serialize.Collaborator;
+import com.cahoots.connection.serialize.send.InviteUserMessage;
+import com.cahoots.connection.serialize.send.SendOpDeleteMessage;
+import com.cahoots.connection.serialize.send.SendOpInsertMessage;
+import com.cahoots.connection.serialize.send.SendOpReplaceMessage;
+import com.cahoots.connection.serialize.send.SendShareDocumentMessage;
 import com.cahoots.connection.websocket.CahootsSocket;
 import com.cahoots.eclipse.op.OpDocument;
 import com.cahoots.eclipse.op.OpMemento;
 import com.cahoots.eclipse.op.OpSession;
 import com.cahoots.eclipse.op.OpSessionRegister;
 import com.cahoots.eclipse.op.OpSynchronizedClock;
-import com.cahoots.serialize.json.Collaborator;
-import com.cahoots.serialize.json.send.InviteUserMessage;
-import com.cahoots.serialize.json.send.SendOpDeleteMessage;
-import com.cahoots.serialize.json.send.SendOpInsertMessage;
-import com.cahoots.serialize.json.send.SendOpReplaceMessage;
-import com.cahoots.serialize.json.send.SendShareDocumentMessage;
 
 public class ShareDocumentManager {
 

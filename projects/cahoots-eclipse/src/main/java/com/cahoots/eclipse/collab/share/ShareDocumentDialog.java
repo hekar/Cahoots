@@ -30,10 +30,10 @@ import org.eclipse.ui.texteditor.ITextEditor;
 
 import com.cahoots.chat.CollaboratorStatus;
 import com.cahoots.connection.CahootsConnection;
+import com.cahoots.connection.serialize.Collaborator;
 import com.cahoots.eclipse.Activator;
-import com.cahoots.eclipse.indigo.widget.TextEditorTools;
-import com.cahoots.eclipse.indigo.widget.UserList;
-import com.cahoots.serialize.json.Collaborator;
+import com.cahoots.eclipse.indigo.misc.TextEditorTools;
+import com.cahoots.eclipse.indigo.misc.UserList;
 import com.google.inject.Injector;
 
 /**

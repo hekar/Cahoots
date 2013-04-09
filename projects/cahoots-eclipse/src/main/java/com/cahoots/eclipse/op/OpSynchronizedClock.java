@@ -10,8 +10,8 @@ import java.util.concurrent.Future;
 import org.apache.commons.httpclient.NameValuePair;
 
 import com.cahoots.connection.CahootsConnection;
-import com.cahoots.connection.http.tools.CahootsHttpClient;
-import com.cahoots.connection.http.tools.CahootsHttpMethodReturn;
+import com.cahoots.connection.http.CahootsHttpClient;
+import com.cahoots.connection.http.CahootsHttpMethodReturn;
 
 public class OpSynchronizedClock {
 

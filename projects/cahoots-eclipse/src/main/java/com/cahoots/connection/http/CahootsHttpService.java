@@ -11,9 +11,7 @@ import org.apache.commons.httpclient.HttpMethodBase;
 import org.apache.commons.httpclient.NameValuePair;
 
 import com.cahoots.connection.CahootsConnection;
-import com.cahoots.connection.http.receive.ListUsersResponse;
-import com.cahoots.connection.http.tools.CahootsHttpClient;
-import com.cahoots.connection.http.tools.CahootsHttpResponseReceivedListener;
+import com.cahoots.connection.serialize.receive.ListUsersResponse;
 import com.google.gson.Gson;
 
 public class CahootsHttpService {

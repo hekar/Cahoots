@@ -3,7 +3,7 @@ package com.cahoots.eclipse.collab.share;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.cahoots.serialize.json.receive.ShareDocumentMessage;
+import com.cahoots.connection.serialize.receive.ShareDocumentMessage;
 
 public class ShareDocumentSessionManager {
 

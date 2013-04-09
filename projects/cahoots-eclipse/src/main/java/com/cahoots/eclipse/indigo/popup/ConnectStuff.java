@@ -13,8 +13,8 @@ import com.cahoots.connection.ConnectionDetails;
 import com.cahoots.connection.websocket.CahootsSocket;
 import com.cahoots.eclipse.collab.ConnectDialog;
 import com.cahoots.eclipse.collab.DisconnectDialog;
-import com.cahoots.eclipse.indigo.widget.MessageDialog;
-import com.cahoots.eclipse.indigo.widget.MessageDialogStatus;
+import com.cahoots.eclipse.indigo.misc.MessageDialog;
+import com.cahoots.eclipse.indigo.misc.MessageDialogStatus;
 import com.google.inject.Inject;
 
 public class ConnectStuff {
