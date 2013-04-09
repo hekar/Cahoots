@@ -8,11 +8,11 @@ import org.eclipse.ui.PlatformUI;
 
 import com.cahoots.connection.websocket.CahootsSocket;
 import com.cahoots.eclipse.collab.ChatDialog;
-import com.cahoots.eclipse.swt.SwtDisplayUtils;
+import com.cahoots.eclipse.indigo.widget.SwtDisplayUtils;
 import com.cahoots.events.ChatReceivedEventListener;
 import com.cahoots.events.DisconnectEvent;
 import com.cahoots.events.DisconnectEventListener;
-import com.cahoots.json.receive.ChatReceiveMessage;
+import com.cahoots.serialize.json.receive.ChatReceiveMessage;
 import com.google.inject.Inject;
 
 public class Chat {

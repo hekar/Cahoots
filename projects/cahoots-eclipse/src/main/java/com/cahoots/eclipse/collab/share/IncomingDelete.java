@@ -9,12 +9,12 @@ import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 import com.cahoots.connection.CahootsConnection;
+import com.cahoots.eclipse.indigo.widget.SwtDisplayUtils;
 import com.cahoots.eclipse.op.OpMemento;
 import com.cahoots.eclipse.op.OpSession;
 import com.cahoots.eclipse.op.OpSessionRegister;
-import com.cahoots.eclipse.swt.SwtDisplayUtils;
 import com.cahoots.events.OpDeleteEventListener;
-import com.cahoots.json.receive.OpDeleteMessage;
+import com.cahoots.serialize.json.receive.OpDeleteMessage;
 
 public class IncomingDelete implements OpDeleteEventListener {
 

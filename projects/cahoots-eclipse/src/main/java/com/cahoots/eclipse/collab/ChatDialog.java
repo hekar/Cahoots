@@ -30,11 +30,11 @@ import com.cahoots.connection.CahootsConnection;
 import com.cahoots.connection.websocket.CahootsSocket;
 import com.cahoots.eclipse.Activator;
 import com.cahoots.eclipse.indigo.log.Log;
-import com.cahoots.eclipse.swt.SwtDisplayUtils;
-import com.cahoots.eclipse.swt.SwtKeyUtils;
-import com.cahoots.json.receive.ChatReceiveMessage;
-import com.cahoots.json.send.ChatSendMessage;
+import com.cahoots.eclipse.indigo.widget.SwtDisplayUtils;
+import com.cahoots.eclipse.indigo.widget.SwtKeyUtils;
 import com.cahoots.preferences.PreferenceConstants;
+import com.cahoots.serialize.json.receive.ChatReceiveMessage;
+import com.cahoots.serialize.json.send.ChatSendMessage;
 import com.google.inject.Injector;
 
 public class ChatDialog extends Window {

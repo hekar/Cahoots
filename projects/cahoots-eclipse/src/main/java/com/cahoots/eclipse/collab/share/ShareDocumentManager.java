@@ -27,12 +27,12 @@ import com.cahoots.eclipse.op.OpMemento;
 import com.cahoots.eclipse.op.OpSession;
 import com.cahoots.eclipse.op.OpSessionRegister;
 import com.cahoots.eclipse.op.OpSynchronizedClock;
-import com.cahoots.json.send.InviteUserMessage;
-import com.cahoots.json.send.SendOpDeleteMessage;
-import com.cahoots.json.send.SendOpInsertMessage;
-import com.cahoots.json.send.SendOpReplaceMessage;
-import com.cahoots.json.send.SendShareDocumentMessage;
 import com.cahoots.serialize.json.Collaborator;
+import com.cahoots.serialize.json.send.InviteUserMessage;
+import com.cahoots.serialize.json.send.SendOpDeleteMessage;
+import com.cahoots.serialize.json.send.SendOpInsertMessage;
+import com.cahoots.serialize.json.send.SendOpReplaceMessage;
+import com.cahoots.serialize.json.send.SendShareDocumentMessage;
 
 public class ShareDocumentManager {
 
@@ -108,13 +108,15 @@ public class ShareDocumentManager {
 			final ITextEditor textEditor) {
 		try {
 
-			final IncomingInsert insert = new IncomingInsert(opSessionRegistrar,
-					this, connection, textEditor, documentId, opId);
+			final IncomingInsert insert = new IncomingInsert(
+					opSessionRegistrar, this, connection, textEditor,
+					documentId, opId);
 			final IncomingReplace replace = new IncomingReplace(
-					opSessionRegistrar, this, connection, textEditor, documentId,
-					opId);
-			final IncomingDelete delete = new IncomingDelete(opSessionRegistrar,
-					this, connection, textEditor, documentId, opId);
+					opSessionRegistrar, this, connection, textEditor,
+					documentId, opId);
+			final IncomingDelete delete = new IncomingDelete(
+					opSessionRegistrar, this, connection, textEditor,
+					documentId, opId);
 
 			cahootsSocket.addOpInsertEventListener(insert);
 			cahootsSocket.addOpReplaceEventListener(replace);

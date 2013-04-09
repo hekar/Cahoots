@@ -24,13 +24,13 @@ import com.cahoots.connection.websocket.CahootsSocket;
 import com.cahoots.eclipse.indigo.editor.ResourceFinder;
 import com.cahoots.eclipse.indigo.widget.MessageDialog;
 import com.cahoots.eclipse.indigo.widget.MessageDialogStatus;
+import com.cahoots.eclipse.indigo.widget.SwtDisplayUtils;
 import com.cahoots.eclipse.indigo.widget.TextEditorTools;
 import com.cahoots.eclipse.indigo.widget.UserListViewContentProvider;
 import com.cahoots.eclipse.op.OpDocument;
-import com.cahoots.eclipse.swt.SwtDisplayUtils;
 import com.cahoots.events.ShareDocumentEventListener;
-import com.cahoots.json.receive.ShareDocumentMessage;
-import com.cahoots.json.send.JoinCollaborationMessage;
+import com.cahoots.serialize.json.receive.ShareDocumentMessage;
+import com.cahoots.serialize.json.send.JoinCollaborationMessage;
 
 public final class IncomingDocumentShare implements ShareDocumentEventListener {
 
@@ -104,7 +104,6 @@ public final class IncomingDocumentShare implements ShareDocumentEventListener {
 			SwtDisplayUtils.sync(runnable);
 		} catch (final Exception e) {
 			e.printStackTrace();
-			ShareDocumentRegistrar.logger.error(e);
 		}
 	}
 

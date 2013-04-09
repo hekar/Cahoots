@@ -16,14 +16,14 @@ import com.cahoots.events.OpDeleteEventListener;
 import com.cahoots.events.OpInsertEventListener;
 import com.cahoots.events.OpReplaceEventListener;
 import com.cahoots.events.ShareDocumentEventListener;
-import com.cahoots.json.receive.OpDeleteMessage;
-import com.cahoots.json.receive.OpInsertMessage;
-import com.cahoots.json.receive.OpReplaceMessage;
-import com.cahoots.json.receive.ShareDocumentMessage;
-import com.cahoots.json.send.SendOpDeleteMessage;
-import com.cahoots.json.send.SendOpInsertMessage;
-import com.cahoots.json.send.SendOpReplaceMessage;
-import com.cahoots.json.send.SendShareDocumentMessage;
+import com.cahoots.serialize.json.receive.OpDeleteMessage;
+import com.cahoots.serialize.json.receive.OpInsertMessage;
+import com.cahoots.serialize.json.receive.OpReplaceMessage;
+import com.cahoots.serialize.json.receive.ShareDocumentMessage;
+import com.cahoots.serialize.json.send.SendOpDeleteMessage;
+import com.cahoots.serialize.json.send.SendOpInsertMessage;
+import com.cahoots.serialize.json.send.SendOpReplaceMessage;
+import com.cahoots.serialize.json.send.SendShareDocumentMessage;
 
 public class TestOpService {
 

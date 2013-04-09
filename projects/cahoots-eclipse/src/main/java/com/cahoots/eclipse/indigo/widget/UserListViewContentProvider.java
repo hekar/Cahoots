@@ -20,12 +20,11 @@ import org.eclipse.ui.internal.dialogs.ViewContentProvider;
 import com.cahoots.connection.CahootsConnection;
 import com.cahoots.connection.websocket.CahootsSocket;
 import com.cahoots.eclipse.Activator;
-import com.cahoots.eclipse.swt.SwtDisplayUtils;
 import com.cahoots.events.DisconnectEvent;
 import com.cahoots.events.DisconnectEventListener;
 import com.cahoots.events.UserChangeEventListener;
-import com.cahoots.json.receive.UserChangeMessage;
 import com.cahoots.serialize.json.Collaborator;
+import com.cahoots.serialize.json.receive.UserChangeMessage;
 
 @SuppressWarnings("restriction")
 public class UserListViewContentProvider extends ViewContentProvider {

@@ -16,14 +16,13 @@ import com.cahoots.connection.CahootsConnection;
 import com.cahoots.connection.websocket.CahootsSocket;
 import com.cahoots.eclipse.Activator;
 import com.cahoots.eclipse.collab.share.ShareDocumentManager;
-import com.cahoots.eclipse.swt.SwtDisplayUtils;
 import com.cahoots.events.CollaboratorJoinedEventListener;
 import com.cahoots.events.CollaboratorLeftEventListener;
 import com.cahoots.events.CollaboratorsListEventListener;
-import com.cahoots.json.receive.CollaboratorJoinedMessage;
-import com.cahoots.json.receive.CollaboratorLeftMessage;
-import com.cahoots.json.receive.CollaboratorsListMessage;
 import com.cahoots.serialize.json.Collaboration;
+import com.cahoots.serialize.json.receive.CollaboratorJoinedMessage;
+import com.cahoots.serialize.json.receive.CollaboratorLeftMessage;
+import com.cahoots.serialize.json.receive.CollaboratorsListMessage;
 
 @SuppressWarnings("restriction")
 public class CollaborationsViewContentProvider extends ViewContentProvider {

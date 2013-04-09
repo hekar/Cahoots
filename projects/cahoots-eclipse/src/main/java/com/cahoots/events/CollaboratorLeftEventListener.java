@@ -1,6 +1,6 @@
 package com.cahoots.events;
 
-import com.cahoots.json.receive.CollaboratorLeftMessage;
+import com.cahoots.serialize.json.receive.CollaboratorLeftMessage;
 
 public interface CollaboratorLeftEventListener extends
 		GenericEventListener<CollaboratorLeftMessage> {

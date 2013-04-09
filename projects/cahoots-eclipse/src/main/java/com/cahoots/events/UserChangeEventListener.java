@@ -1,6 +1,6 @@
 package com.cahoots.events;
 
-import com.cahoots.json.receive.UserChangeMessage;
+import com.cahoots.serialize.json.receive.UserChangeMessage;
 
 public interface UserChangeEventListener extends
 		GenericEventListener<UserChangeMessage> {

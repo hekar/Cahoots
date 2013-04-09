@@ -1,6 +1,6 @@
 package com.cahoots.events;
 
-import com.cahoots.json.receive.UserListMessage;
+import com.cahoots.serialize.json.receive.UserListMessage;
 
 public interface UserListEventListener extends
 		GenericEventListener<UserListMessage> {

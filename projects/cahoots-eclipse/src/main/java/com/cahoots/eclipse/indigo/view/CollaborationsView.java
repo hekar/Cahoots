@@ -30,9 +30,9 @@ import com.cahoots.eclipse.collab.share.ShareDocumentManager;
 import com.cahoots.eclipse.indigo.widget.CollaborationsViewContentProvider;
 import com.cahoots.eclipse.indigo.widget.CollaboratorsViewLabelProvider;
 import com.cahoots.eclipse.indigo.widget.SourceContentChangedListener;
-import com.cahoots.json.send.LeaveCollaborationMessage;
 import com.cahoots.serialize.json.Collaboration;
 import com.cahoots.serialize.json.Collaborator;
+import com.cahoots.serialize.json.send.LeaveCollaborationMessage;
 import com.google.inject.Injector;
 
 public class CollaborationsView extends ViewPart {

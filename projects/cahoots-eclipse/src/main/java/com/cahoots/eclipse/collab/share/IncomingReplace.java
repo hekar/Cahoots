@@ -2,21 +2,19 @@ package com.cahoots.eclipse.collab.share;
 
 import javax.inject.Inject;
 
-import org.eclipse.core.commands.operations.UndoContext;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
+import org.eclipse.text.undo.DocumentUndoManagerRegistry;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.ITextEditor;
-import org.eclipse.text.undo.DocumentUndoManagerRegistry;
-import org.eclipse.text.undo.IDocumentUndoManager;
 
 import com.cahoots.connection.CahootsConnection;
+import com.cahoots.eclipse.indigo.widget.SwtDisplayUtils;
 import com.cahoots.eclipse.op.OpMemento;
 import com.cahoots.eclipse.op.OpSession;
 import com.cahoots.eclipse.op.OpSessionRegister;
-import com.cahoots.eclipse.swt.SwtDisplayUtils;
 import com.cahoots.events.OpReplaceEventListener;
-import com.cahoots.json.receive.OpReplaceMessage;
+import com.cahoots.serialize.json.receive.OpReplaceMessage;
 
 public class IncomingReplace implements OpReplaceEventListener {
 

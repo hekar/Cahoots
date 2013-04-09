@@ -1,6 +1,6 @@
-package com.cahoots.json.send;
+package com.cahoots.serialize.json.send;
 
-import com.cahoots.json.receive.OpInsertMessage;
+import com.cahoots.serialize.json.receive.OpInsertMessage;
 
 /**
  * The two messages are the same

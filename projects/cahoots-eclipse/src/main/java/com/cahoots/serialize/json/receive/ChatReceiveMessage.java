@@ -1,4 +1,4 @@
-package com.cahoots.json.receive;
+package com.cahoots.serialize.json.receive;
 
 import java.util.Date;
 

@@ -28,9 +28,9 @@ import com.cahoots.connection.websocket.CahootsSocket;
 import com.cahoots.eclipse.Activator;
 import com.cahoots.eclipse.indigo.job.BackgroundJob;
 import com.cahoots.eclipse.indigo.job.BackgroundJobScheduler;
-import com.cahoots.eclipse.swt.SwtButtonUtils;
-import com.cahoots.eclipse.swt.SwtDisplayUtils;
-import com.cahoots.eclipse.swt.SwtKeyUtils;
+import com.cahoots.eclipse.indigo.widget.SwtButtonUtils;
+import com.cahoots.eclipse.indigo.widget.SwtDisplayUtils;
+import com.cahoots.eclipse.indigo.widget.SwtKeyUtils;
 import com.cahoots.preferences.PreferenceConstants;
 import com.google.inject.Injector;
 

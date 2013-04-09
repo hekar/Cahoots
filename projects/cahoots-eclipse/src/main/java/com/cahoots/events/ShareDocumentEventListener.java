@@ -1,6 +1,6 @@
 package com.cahoots.events;
 
-import com.cahoots.json.receive.ShareDocumentMessage;
+import com.cahoots.serialize.json.receive.ShareDocumentMessage;
 
 public interface ShareDocumentEventListener extends
 		GenericEventListener<ShareDocumentMessage> {

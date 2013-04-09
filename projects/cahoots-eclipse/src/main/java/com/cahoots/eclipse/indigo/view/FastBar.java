@@ -20,7 +20,7 @@ import com.cahoots.connection.CahootsConnection;
 import com.cahoots.connection.websocket.CahootsSocket;
 import com.cahoots.eclipse.Activator;
 import com.cahoots.eclipse.indigo.popup.ConnectStuff;
-import com.cahoots.eclipse.swt.SwtDisplayUtils;
+import com.cahoots.eclipse.indigo.widget.SwtDisplayUtils;
 import com.cahoots.events.ConnectEvent;
 import com.cahoots.events.ConnectEventListener;
 import com.cahoots.events.DisconnectEvent;
