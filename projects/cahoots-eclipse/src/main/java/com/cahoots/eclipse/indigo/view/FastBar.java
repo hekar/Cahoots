@@ -120,15 +120,18 @@ public class FastBar extends WorkbenchWindowControlContribution {
 				SwtDisplayUtils.async(new Runnable() {
 					@Override
 					public void run() {
-						barImg.setToolTipText(String.format(
-								"Connected as %s@%s", details.getUsername(),
-								details.getServer()));
-						try {
-							barImg.setImage(ImageDescriptor.createFromURL(
-									new URL(bundle.getEntry("/"), "icons/"
-											+ "green_logo.gif")).createImage());
-						} catch (final Exception e) {
-							e.printStackTrace();
+						if (!barImg.isDisposed()) {
+							barImg.setToolTipText(String.format(
+									"Connected as %s@%s",
+									details.getUsername(), details.getServer()));
+							try {
+								barImg.setImage(ImageDescriptor.createFromURL(
+										new URL(bundle.getEntry("/"), "icons/"
+												+ "green_logo.gif"))
+										.createImage());
+							} catch (final Exception e) {
+								e.printStackTrace();
+							}
 						}
 					}
 				});
@@ -136,19 +139,21 @@ public class FastBar extends WorkbenchWindowControlContribution {
 		});
 
 		socket.addDisconnectEventListener(new DisconnectEventListener() {
-
 			@Override
 			public void onEvent(final DisconnectEvent msg) {
 				SwtDisplayUtils.async(new Runnable() {
 					@Override
 					public void run() {
-						barImg.setToolTipText("");
-						try {
-							barImg.setImage(ImageDescriptor.createFromURL(
-									new URL(bundle.getEntry("/"), "icons/"
-											+ "black_logo.gif")).createImage());
-						} catch (final Exception e) {
-							e.printStackTrace();
+						if (!barImg.isDisposed()) {
+							barImg.setToolTipText("");
+							try {
+								barImg.setImage(ImageDescriptor.createFromURL(
+										new URL(bundle.getEntry("/"), "icons/"
+												+ "black_logo.gif"))
+										.createImage());
+							} catch (final Exception e) {
+								e.printStackTrace();
+							}
 						}
 					}
 				});

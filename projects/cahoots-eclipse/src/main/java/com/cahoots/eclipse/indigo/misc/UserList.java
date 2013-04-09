@@ -14,6 +14,7 @@ import org.eclipse.swt.widgets.Composite;
 
 import com.cahoots.connection.serialize.Collaborator;
 import com.cahoots.eclipse.Activator;
+import com.cahoots.util.Log;
 import com.google.inject.Injector;
 
 public class UserList extends Composite {
@@ -23,7 +24,10 @@ public class UserList extends Composite {
 	private final SourceContentChangedListener changedListener = new SourceContentChangedListener() {
 		@Override
 		public void onEvent(final Object msg) {
-			viewer.refresh();
+			final UserList userlist = UserList.this;
+			if (!userlist.isDisposed()) {
+				viewer.refresh();
+			}
 		}
 	};
 
