@@ -16,8 +16,8 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.menus.WorkbenchWindowControlContribution;
 import org.osgi.framework.Bundle;
 
-import com.cahoots.connection.CahootsConnection;
-import com.cahoots.connection.websocket.CahootsSocket;
+import com.cahoots.connection.ConnectionDetails;
+import com.cahoots.connection.websocket.CahootsRealtimeClient;
 import com.cahoots.eclipse.Activator;
 import com.cahoots.eclipse.indigo.misc.SwtDisplayUtils;
 import com.cahoots.eclipse.indigo.popup.ConnectStuff;
@@ -34,7 +34,7 @@ public class FastBar extends WorkbenchWindowControlContribution {
 	private Label usrImg;
 	private Bundle bundle;
 	private Injector injector;
-	private CahootsConnection details;
+	private ConnectionDetails details;
 	private ConnectStuff stuff;
 
 	@Override
@@ -44,7 +44,7 @@ public class FastBar extends WorkbenchWindowControlContribution {
 		bundle = injector.getInstance(Bundle.class);
 		stuff = Activator.getInjector().getInstance(ConnectStuff.class);
 
-		details = injector.getInstance(CahootsConnection.class);
+		details = injector.getInstance(ConnectionDetails.class);
 		bar = createLoginTrim(parent);
 
 		barImg = new Label(bar, SWT.NONE);
@@ -113,10 +113,10 @@ public class FastBar extends WorkbenchWindowControlContribution {
 			}
 		});
 
-		final CahootsSocket socket = injector.getInstance(CahootsSocket.class);
+		final CahootsRealtimeClient socket = injector.getInstance(CahootsRealtimeClient.class);
 		socket.addConnectEventListener(new ConnectEventListener() {
 			@Override
-			public void connected(final ConnectEvent event) {
+			public void onEvent(final ConnectEvent event) {
 				SwtDisplayUtils.async(new Runnable() {
 					@Override
 					public void run() {

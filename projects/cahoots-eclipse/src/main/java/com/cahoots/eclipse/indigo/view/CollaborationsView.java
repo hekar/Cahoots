@@ -22,11 +22,11 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 
 import com.cahoots.chat.Chat;
-import com.cahoots.connection.CahootsConnection;
+import com.cahoots.connection.ConnectionDetails;
 import com.cahoots.connection.serialize.Collaboration;
 import com.cahoots.connection.serialize.Collaborator;
 import com.cahoots.connection.serialize.send.LeaveCollaborationMessage;
-import com.cahoots.connection.websocket.CahootsSocket;
+import com.cahoots.connection.websocket.CahootsRealtimeClient;
 import com.cahoots.eclipse.Activator;
 import com.cahoots.eclipse.collab.share.InviteDocumentDialog;
 import com.cahoots.eclipse.collab.share.ShareDocumentManager;
@@ -39,9 +39,9 @@ public class CollaborationsView extends ViewPart {
 
 	public static final String ID = "com.cahoots.eclipse.indigo.view.CollaborationsView";
 
-	private CahootsSocket socket;
+	private CahootsRealtimeClient socket;
 
-	private CahootsConnection connection;
+	private ConnectionDetails connection;
 
 	private TableViewer viewer;
 	private CollaborationsViewContentProvider source;
@@ -63,8 +63,8 @@ public class CollaborationsView extends ViewPart {
 	public CollaborationsView() {
 		final Injector injector = Activator.getInjector();
 		source = injector.getInstance(CollaborationsViewContentProvider.class);
-		socket = injector.getInstance(CahootsSocket.class);
-		connection = injector.getInstance(CahootsConnection.class);
+		socket = injector.getInstance(CahootsRealtimeClient.class);
+		connection = injector.getInstance(ConnectionDetails.class);
 		sharedDocumentManager = injector
 				.getInstance(ShareDocumentManager.class);
 	}

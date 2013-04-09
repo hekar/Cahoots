@@ -10,7 +10,7 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
 
-import com.cahoots.connection.websocket.CahootsSocket;
+import com.cahoots.connection.websocket.CahootsRealtimeClient;
 import com.cahoots.eclipse.Activator;
 import com.cahoots.eclipse.collab.ConnectDialog;
 import com.cahoots.eclipse.collab.share.ShareDocumentDialog;
@@ -20,7 +20,7 @@ public class ShareDocument implements IObjectActionDelegate,
 		IEditorActionDelegate {
 
 	private Shell shell;
-	private CahootsSocket cahootsSocket;
+	private CahootsRealtimeClient cahootsSocket;
 
 	@SuppressWarnings("unused")
 	private IWorkbenchPart targetPart;
@@ -30,7 +30,7 @@ public class ShareDocument implements IObjectActionDelegate,
 
 	public ShareDocument() {
 		final Injector injector = Activator.getInjector();
-		cahootsSocket = injector.getInstance(CahootsSocket.class);
+		cahootsSocket = injector.getInstance(CahootsRealtimeClient.class);
 	}
 
 	@Override

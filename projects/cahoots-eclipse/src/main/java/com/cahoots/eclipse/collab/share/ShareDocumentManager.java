@@ -19,7 +19,7 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.ide.ResourceUtil;
 import org.eclipse.ui.texteditor.ITextEditor;
 
-import com.cahoots.connection.CahootsConnection;
+import com.cahoots.connection.ConnectionDetails;
 import com.cahoots.connection.http.CahootsHttpClient;
 import com.cahoots.connection.serialize.Collaborator;
 import com.cahoots.connection.serialize.send.InviteUserMessage;
@@ -27,7 +27,7 @@ import com.cahoots.connection.serialize.send.SendOpDeleteMessage;
 import com.cahoots.connection.serialize.send.SendOpInsertMessage;
 import com.cahoots.connection.serialize.send.SendOpReplaceMessage;
 import com.cahoots.connection.serialize.send.SendShareDocumentMessage;
-import com.cahoots.connection.websocket.CahootsSocket;
+import com.cahoots.connection.websocket.CahootsRealtimeClient;
 import com.cahoots.eclipse.optransformation.OpDocument;
 import com.cahoots.eclipse.optransformation.OpMemento;
 import com.cahoots.eclipse.optransformation.OpSession;
@@ -38,17 +38,17 @@ public class ShareDocumentManager {
 
 	private boolean enabled = true;
 
-	private final CahootsSocket cahootsSocket;
+	private final CahootsRealtimeClient cahootsSocket;
 	private final OpSessionRegister opSessionRegistrar;
-	private final CahootsConnection connection;
+	private final ConnectionDetails connection;
 	private final CahootsHttpClient cahootsHttpClient;
 	private final Map<String, ShareDocumentManager.Share> shares = new HashMap<String, ShareDocumentManager.Share>();
 	private final Map<String, String> documentIds = new HashMap<String, String>();
 
 	@Inject
-	public ShareDocumentManager(final CahootsConnection connection,
+	public ShareDocumentManager(final ConnectionDetails connection,
 			final CahootsHttpClient cahootsHttpClient,
-			final CahootsSocket cahootsSocket,
+			final CahootsRealtimeClient cahootsSocket,
 			final OpSessionRegister opSessionManager) {
 		this.connection = connection;
 		this.cahootsHttpClient = cahootsHttpClient;

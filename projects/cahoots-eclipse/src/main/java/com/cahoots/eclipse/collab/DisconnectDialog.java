@@ -18,16 +18,15 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 
-import com.cahoots.connection.CahootsConnection;
 import com.cahoots.connection.ConnectionDetails;
-import com.cahoots.connection.websocket.CahootsSocket;
+import com.cahoots.connection.websocket.CahootsRealtimeClient;
 import com.cahoots.eclipse.Activator;
 import com.google.inject.Injector;
 
 public class DisconnectDialog extends Window {
 
-	private CahootsConnection cahootsConnection;
-	private CahootsSocket cahootsSocket;
+	private ConnectionDetails ConnectionDetails;
+	private CahootsRealtimeClient cahootsSocket;
 
 	/**
 	 * Create the dialog.
@@ -41,8 +40,8 @@ public class DisconnectDialog extends Window {
 		setShellStyle((getShellStyle() | SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL)
 				& ~(SWT.RESIZE | SWT.MAX));
 		final Injector injector = Activator.getInjector();
-		cahootsConnection = injector.getInstance(CahootsConnection.class);
-		cahootsSocket = injector.getInstance(CahootsSocket.class);
+		ConnectionDetails = injector.getInstance(ConnectionDetails.class);
+		cahootsSocket = injector.getInstance(CahootsRealtimeClient.class);
 	}
 
 	/**
@@ -70,9 +69,9 @@ public class DisconnectDialog extends Window {
 			public void widgetSelected(final SelectionEvent e) {
 				final HttpClient client = new HttpClient();
 				final PostMethod method = new PostMethod("http://"
-						+ cahootsConnection.getServer() + "/app/logout");
+						+ ConnectionDetails.getServer() + "/app/logout");
 				final List<NameValuePair> data = new LinkedList<NameValuePair>();
-				data.add(new NameValuePair("auth_token", cahootsConnection
+				data.add(new NameValuePair("auth_token", ConnectionDetails
 						.getAuthToken()));
 
 				method.setRequestBody(data.toArray(new NameValuePair[data
@@ -96,9 +95,7 @@ public class DisconnectDialog extends Window {
 			}
 
 			private void performDisconnect() {
-				final ConnectionDetails details = new ConnectionDetails("", "", "",
-						"");
-				cahootsConnection.updateConnectionDetails(details);
+				ConnectionDetails.disconnect();
 				cahootsSocket.disconnect();
 				close();
 			}

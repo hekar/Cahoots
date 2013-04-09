@@ -26,10 +26,10 @@ import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 
-import com.cahoots.connection.CahootsConnection;
+import com.cahoots.connection.ConnectionDetails;
 import com.cahoots.connection.serialize.receive.ChatReceiveMessage;
 import com.cahoots.connection.serialize.send.ChatSendMessage;
-import com.cahoots.connection.websocket.CahootsSocket;
+import com.cahoots.connection.websocket.CahootsRealtimeClient;
 import com.cahoots.eclipse.Activator;
 import com.cahoots.eclipse.indigo.misc.SwtDisplayUtils;
 import com.cahoots.eclipse.indigo.misc.SwtKeyUtils;
@@ -41,8 +41,8 @@ public class ChatDialog extends Window {
 
 	private static final Log logger = Log.getLogger(ChatDialog.class);
 
-	private final CahootsSocket socket;
-	private final CahootsConnection connection;
+	private final CahootsRealtimeClient socket;
+	private final ConnectionDetails connection;
 
 	private String collaborator;
 
@@ -68,8 +68,8 @@ public class ChatDialog extends Window {
 		}
 
 		final Injector injector = Activator.getInjector();
-		socket = injector.getInstance(CahootsSocket.class);
-		connection = injector.getInstance(CahootsConnection.class);
+		socket = injector.getInstance(CahootsRealtimeClient.class);
+		connection = injector.getInstance(ConnectionDetails.class);
 
 		this.collaborator = collaborators.get(0);
 	}

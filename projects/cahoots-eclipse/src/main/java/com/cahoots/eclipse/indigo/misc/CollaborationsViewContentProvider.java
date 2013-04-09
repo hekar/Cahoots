@@ -12,12 +12,12 @@ import javax.inject.Inject;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.ui.internal.dialogs.ViewContentProvider;
 
-import com.cahoots.connection.CahootsConnection;
+import com.cahoots.connection.ConnectionDetails;
 import com.cahoots.connection.serialize.Collaboration;
 import com.cahoots.connection.serialize.receive.CollaboratorJoinedMessage;
 import com.cahoots.connection.serialize.receive.CollaboratorLeftMessage;
 import com.cahoots.connection.serialize.receive.CollaboratorsListMessage;
-import com.cahoots.connection.websocket.CahootsSocket;
+import com.cahoots.connection.websocket.CahootsRealtimeClient;
 import com.cahoots.eclipse.Activator;
 import com.cahoots.eclipse.collab.share.ShareDocumentManager;
 import com.cahoots.event.CollaboratorJoinedEventListener;
@@ -32,9 +32,9 @@ public class CollaborationsViewContentProvider extends ViewContentProvider {
 
 	@Inject
 	public CollaborationsViewContentProvider(final Activator activator,
-			final CahootsSocket cahootsServer,
+			final CahootsRealtimeClient cahootsServer,
 			final ShareDocumentManager shareManager,
-			final CahootsConnection connection) {
+			final ConnectionDetails connection) {
 
 		cahootsServer
 				.addCollaboratorsListEventListener(new CollaboratorsListEventListener() {

@@ -7,7 +7,7 @@ import org.eclipse.jetty.websocket.WebSocketClientFactory;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.cahoots.connection.CahootsConnection;
+import com.cahoots.connection.ConnectionDetails;
 import com.cahoots.connection.http.CahootsHttpClient;
 import com.cahoots.connection.serialize.receive.OpDeleteMessage;
 import com.cahoots.connection.serialize.receive.OpInsertMessage;
@@ -17,7 +17,7 @@ import com.cahoots.connection.serialize.send.SendOpDeleteMessage;
 import com.cahoots.connection.serialize.send.SendOpInsertMessage;
 import com.cahoots.connection.serialize.send.SendOpReplaceMessage;
 import com.cahoots.connection.serialize.send.SendShareDocumentMessage;
-import com.cahoots.connection.websocket.CahootsSocket;
+import com.cahoots.connection.websocket.CahootsRealtimeClient;
 import com.cahoots.eclipse.indigo.misc.TextEditorTools;
 import com.cahoots.eclipse.optransformation.OpSynchronizedClock;
 import com.cahoots.event.OpDeleteEventListener;
@@ -27,13 +27,13 @@ import com.cahoots.event.ShareDocumentEventListener;
 
 public class TestOpService {
 
-	private static CahootsSocket socket;
-	private static CahootsConnection cahootsConnection;
+	private static CahootsRealtimeClient socket;
+	private static ConnectionDetails ConnectionDetails;
 
 	@BeforeClass
 	public static void classSetUp() throws Exception {
-		cahootsConnection = new CahootsConnection();
-		socket = new CahootsSocket(cahootsConnection,
+		ConnectionDetails = new ConnectionDetails();
+		socket = new CahootsRealtimeClient(ConnectionDetails,
 				new WebSocketClientFactory(), new TextEditorTools());
 		socket.connect("admin", "admin", "127.0.0.1:9000");
 	}
@@ -106,7 +106,7 @@ public class TestOpService {
 		final ShareDocumentMessage document = shareDocument();
 
 		final Future<OpSynchronizedClock> clockFuture = OpSynchronizedClock
-				.fromConnection(new CahootsHttpClient(), cahootsConnection,
+				.fromConnection(new CahootsHttpClient(), ConnectionDetails,
 						document.getOpId());
 		final OpSynchronizedClock clock = clockFuture.get();
 

@@ -8,7 +8,7 @@ import org.eclipse.text.undo.DocumentUndoManagerRegistry;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.ITextEditor;
 
-import com.cahoots.connection.CahootsConnection;
+import com.cahoots.connection.ConnectionDetails;
 import com.cahoots.connection.serialize.receive.OpDeleteMessage;
 import com.cahoots.eclipse.indigo.misc.SwtDisplayUtils;
 import com.cahoots.eclipse.optransformation.OpMemento;
@@ -20,7 +20,7 @@ public class IncomingDelete implements OpDeleteEventListener {
 
 	private final OpSessionRegister opSessionRegister;
 	private final ShareDocumentManager shareDocumentManager;
-	private final CahootsConnection cahootsConnection;
+	private final ConnectionDetails ConnectionDetails;
 	private final ITextEditor textEditor;
 	private String documentId;
 	private String opId;
@@ -28,11 +28,11 @@ public class IncomingDelete implements OpDeleteEventListener {
 	@Inject
 	public IncomingDelete(final OpSessionRegister opSessionRegister,
 			final ShareDocumentManager shareDocumentManager,
-			final CahootsConnection cahootsConnection,
+			final ConnectionDetails ConnectionDetails,
 			final ITextEditor textEditor, final String documentId,
 			final String opId) {
 		this.opSessionRegister = opSessionRegister;
-		this.cahootsConnection = cahootsConnection;
+		this.ConnectionDetails = ConnectionDetails;
 		this.shareDocumentManager = shareDocumentManager;
 		this.textEditor = textEditor;
 		this.documentId = documentId;
@@ -50,7 +50,7 @@ public class IncomingDelete implements OpDeleteEventListener {
 							return;
 						}
 						if (msg.getUser().equals(
-								cahootsConnection.getUsername())) {
+								ConnectionDetails.getUsername())) {
 							return;
 						}
 

@@ -19,10 +19,10 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.texteditor.ITextEditor;
 
-import com.cahoots.connection.CahootsConnection;
+import com.cahoots.connection.ConnectionDetails;
 import com.cahoots.connection.serialize.receive.ShareDocumentMessage;
 import com.cahoots.connection.serialize.send.JoinCollaborationMessage;
-import com.cahoots.connection.websocket.CahootsSocket;
+import com.cahoots.connection.websocket.CahootsRealtimeClient;
 import com.cahoots.eclipse.indigo.misc.MessageDialog;
 import com.cahoots.eclipse.indigo.misc.MessageDialogStatus;
 import com.cahoots.eclipse.indigo.misc.ResourceFinder;
@@ -35,28 +35,28 @@ import com.cahoots.event.ShareDocumentEventListener;
 public final class IncomingDocumentShare implements ShareDocumentEventListener {
 
 	private final ShareDocumentManager shareDocumentManager;
-	private final CahootsSocket cahootsSocket;
+	private final CahootsRealtimeClient cahootsSocket;
 	private final TextEditorTools editorTools;
 	private final ResourceFinder resourceFinder;
 	private final IWorkbenchWindow workbenchWindow;
 	private final IEditorRegistry editorRegistry;
-	private final CahootsConnection cahootsConnection;
+	private final ConnectionDetails ConnectionDetails;
 	private final MessageDialog messageDialog;
 	private final UserListViewContentProvider userList;
 
 	@Inject
 	public IncomingDocumentShare(
 			final MessageDialog messageDialog,
-			final CahootsConnection cahootsConnection,
+			final ConnectionDetails ConnectionDetails,
 			final IWorkbenchWindow workbenchWindow,
 			final IEditorRegistry editorRegistry,
 			final ResourceFinder resourceFinder,
 			final ShareDocumentManager shareDocumentManager,
-			final CahootsSocket cahootsSocket,
+			final CahootsRealtimeClient cahootsSocket,
 			final TextEditorTools editorTools,
 			final UserListViewContentProvider userList) {
 		this.messageDialog = messageDialog;
-		this.cahootsConnection = cahootsConnection;
+		this.ConnectionDetails = ConnectionDetails;
 		this.workbenchWindow = workbenchWindow;
 		this.editorRegistry = editorRegistry;
 		this.resourceFinder = resourceFinder;
@@ -79,7 +79,7 @@ public final class IncomingDocumentShare implements ShareDocumentEventListener {
 				public void run() {
 					final OpDocument document = new OpDocument(opId, documentId);
 
-					if (!cahootsConnection.isLoggedInUser(sharer)) {
+					if (!ConnectionDetails.isLoggedInUser(sharer)) {
 						final String inviteMessage = String
 								.format("%s is requesting to share document %s. File contents will be overwritten.",
 										name, document.getFilename());
@@ -91,7 +91,7 @@ public final class IncomingDocumentShare implements ShareDocumentEventListener {
 						}
 					}
 					cahootsSocket.send(new JoinCollaborationMessage(
-							cahootsConnection.getUsername(), opId));
+							ConnectionDetails.getUsername(), opId));
 					final ITextEditor textEditor = getSharedDocumentTextEditor(documentId);
 
 					final IDocument doc = textEditor.getDocumentProvider()

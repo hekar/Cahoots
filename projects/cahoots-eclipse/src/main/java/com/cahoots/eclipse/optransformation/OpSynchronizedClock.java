@@ -9,7 +9,7 @@ import java.util.concurrent.Future;
 
 import org.apache.commons.httpclient.NameValuePair;
 
-import com.cahoots.connection.CahootsConnection;
+import com.cahoots.connection.ConnectionDetails;
 import com.cahoots.connection.http.CahootsHttpClient;
 import com.cahoots.connection.http.CahootsHttpMethodReturn;
 
@@ -20,7 +20,7 @@ public class OpSynchronizedClock {
 
 	@SuppressWarnings("deprecation")
 	public static Future<OpSynchronizedClock> fromConnection(
-			final CahootsHttpClient client, final CahootsConnection connection,
+			final CahootsHttpClient client, final ConnectionDetails connection,
 			final String opId) {
 
 		if (!connection.isAuthenticated()) {

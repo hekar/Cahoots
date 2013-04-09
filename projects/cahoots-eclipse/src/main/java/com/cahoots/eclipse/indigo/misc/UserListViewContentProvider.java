@@ -17,10 +17,10 @@ import javax.inject.Inject;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.ui.internal.dialogs.ViewContentProvider;
 
-import com.cahoots.connection.CahootsConnection;
+import com.cahoots.connection.ConnectionDetails;
 import com.cahoots.connection.serialize.Collaborator;
 import com.cahoots.connection.serialize.receive.UserChangeMessage;
-import com.cahoots.connection.websocket.CahootsSocket;
+import com.cahoots.connection.websocket.CahootsRealtimeClient;
 import com.cahoots.eclipse.Activator;
 import com.cahoots.event.DisconnectEvent;
 import com.cahoots.event.DisconnectEventListener;
@@ -31,13 +31,13 @@ public class UserListViewContentProvider extends ViewContentProvider {
 
 	private final Map<String, Collaborator> elements = new ConcurrentHashMap<String, Collaborator>();
 	private final List<SourceContentChangedListener> listeners = new ArrayList<SourceContentChangedListener>();
-	private final CahootsConnection cahootsConnection;
+	private final ConnectionDetails ConnectionDetails;
 
 	@Inject
 	public UserListViewContentProvider(final Activator activator,
-			final CahootsSocket cahootsServer,
-			final CahootsConnection cahootsConnection) {
-		this.cahootsConnection = cahootsConnection;
+			final CahootsRealtimeClient cahootsServer,
+			final ConnectionDetails ConnectionDetails) {
+		this.ConnectionDetails = ConnectionDetails;
 
 		cahootsServer.addUserLoginEventListener(new UserChangeEventListener() {
 			@Override
@@ -82,7 +82,7 @@ public class UserListViewContentProvider extends ViewContentProvider {
 		// Do not return the currently logged in username
 		return filter(
 				having(on(Collaborator.class).getUsername(),
-						not(equalTo(cahootsConnection.getUsername()))),
+						not(equalTo(ConnectionDetails.getUsername()))),
 				elements).toArray();
 	}
 
