@@ -174,101 +174,89 @@ namespace Cahoots.Services
         {
             var op = JsonHelper.Deserialize<BaseOpMessage>(json);
 
-            if (this.Documents.ContainsKey(op.DocumentId))
+            if (this.Documents.ContainsKey(op.DocumentId) && op.User != this.UserName)
             {
                 var doc = this.Documents[op.DocumentId];
-                doc.Lock();
-
-                /*
-                var future = doc.Changes.Where(c => c.TickStamp > op.TickStamp);
-
-                foreach (var change in future)
+                lock (doc.OpLocker)
                 {
+                    var future = doc.Changes.Where(c => c.TickStamp > op.TickStamp);
                     var len = 0;
 
-                    switch(change.MessageType)
+                    // undo 'newer' changes
+                    foreach (var change in future)
+                    {
+
+                        switch (change.MessageType)
+                        {
+                            case "insert":
+                                var insert = (OpInsertMessage)change;
+                                this.UndoInsert(doc, insert);
+                                break;
+
+                            case "delete":
+                                var delete = (OpDeleteMessage)change;
+                                this.UndoDelete(doc, delete);
+                                break;
+
+                            case "replace":
+                                var replace = (OpReplaceMessage)change;
+                                this.UndoReplace(doc, replace);
+                                break;
+                        }
+                    }
+
+                    // apply new change
+                    switch (type)
                     {
                         case "insert":
-                            var insert = (OpInsertMessage)change;
-                            this.UndoInsert(doc, insert);
+                            var insert = JsonHelper.Deserialize<OpInsertMessage>(json);
                             len = insert.Content.Length;
-                            break;
-
-                        case "delete":
-                            var delete = (OpDeleteMessage)change;
-                            this.UndoDelete(doc, delete);
-                            len = delete.Start - delete.End;
-                            break;
-
-                        case "replace":
-                            var replace = (OpReplaceMessage)change;
-                            this.UndoReplace(doc, replace);
-                            len = replace.OldContent.Length - replace.Content.Length;
-                            break;
-                    }
-
-                    if (change.Start >= op.Start)
-                    {
-                        change.Start += len;
-                    }
-                }
-                */
-
-                switch (type)
-                {
-                    case "insert":
-                        var insert = JsonHelper.Deserialize<OpInsertMessage>(json);
-                        if (insert.User != this.UserName)
-                        {
                             doc.Changes.Add(insert);
                             this.Insert(doc, insert);
-                        }
-                        break;
-
-                    case "delete":
-                        var delete = JsonHelper.Deserialize<OpDeleteMessage>(json);
-                        if (delete.User != this.UserName)
-                        {
-                            doc.Changes.Add(delete);
-                            this.Delete(doc, delete);
-                        }
-                        break;
-
-                    case "replace":
-                        var replace =
-                                JsonHelper.Deserialize<OpReplaceMessage>(json);
-                        if (replace.User != this.UserName)
-                        {
-                            doc.Changes.Add(replace);
-                            this.Replace(doc, replace);
-                        }
-                        break;
-                }
-
-                /*
-                foreach (var change in future)
-                {
-                    switch (change.MessageType)
-                    {
-                        case "insert":
-                            var insert = (OpInsertMessage)change;
-                            this.UndoInsert(doc, insert);
                             break;
 
                         case "delete":
-                            var delete = (OpDeleteMessage)change;
-                            this.UndoDelete(doc, delete);
+                            var delete = JsonHelper.Deserialize<OpDeleteMessage>(json);                                
+                            len = delete.Start - delete.End;
+                            doc.Changes.Add(delete);
+                            this.Delete(doc, delete);
                             break;
 
                         case "replace":
-                            var replace = (OpReplaceMessage)change;
-                            this.UndoReplace(doc, replace);
+                            var replace = JsonHelper.Deserialize<OpReplaceMessage>(json);
+                            len = replace.OldContent.Length - replace.Content.Length;
+                            doc.Changes.Add(replace);
+                            this.Replace(doc, replace);
                             break;
                     }
-                }
-                */
 
-                doc.Unlock();
+                    // re-apply newer changes
+                    foreach (var change in future)
+                    {
+                        if (change.Start >= op.Start)
+                        {
+                            change.Start += len;
+                        }
+
+                        switch (change.MessageType)
+                        {
+                            case "insert":
+                                var insert = (OpInsertMessage)change;
+                                this.Insert(doc, insert);
+                                break;
+
+                            case "delete":
+                                var delete = (OpDeleteMessage)change;
+                                this.Delete(doc, delete);
+                                break;
+
+                            case "replace":
+                                var replace = (OpReplaceMessage)change;
+                                this.Replace(doc, replace);
+                                break;
+                        }
+                    }
+                }
             }
         }
 
@@ -508,63 +496,68 @@ namespace Cahoots.Services
                     continue;
                 }
 
-                if (change.OldText.IsNullOrEmpty() && !change.NewText.IsNullOrEmpty())
+                lock (doc.OpLocker)
                 {
-                    var model = new OpInsertMessage()
-                    {
-                        Service = "op",
-                        MessageType = "insert",
-                        User = this.UserName,
-                        Start = change.NewPosition,
-                        Content = change.NewText,
-                        DocumentId = docId,
-                        OpId = doc.OpId,
-                        TickStamp = (long)doc.TickStamp,
-                        IsApplied = true
-                    };
 
-                    doc.Changes.Add(model);
-                    this.SendMessage(model);
-                }
-                else if (!change.OldText.IsNullOrEmpty() && change.NewText.IsNullOrEmpty())
-                {
-                    var model = new OpDeleteMessage()
+                    if (change.OldText.IsNullOrEmpty() && !change.NewText.IsNullOrEmpty())
                     {
-                        Service = "op",
-                        MessageType = "delete",
-                        User = this.UserName,
-                        Start = change.OldPosition,
-                        End = change.OldPosition + change.OldLength,
-                        OldContent = change.OldText,
-                        DocumentId = docId,
-                        OpId = doc.OpId,
-                        TickStamp = (long)doc.TickStamp,
-                        IsApplied = true
-                    };
+                        var model = new OpInsertMessage()
+                        {
+                            Service = "op",
+                            MessageType = "insert",
+                            User = this.UserName,
+                            Start = change.NewPosition,
+                            Content = change.NewText,
+                            DocumentId = docId,
+                            OpId = doc.OpId,
+                            TickStamp = (long)doc.TickStamp,
+                            IsApplied = true
+                        };
 
-                    doc.Changes.Add(model);
-                    this.SendMessage(model);
-                }
-                else
-                {
-                    var model = new OpReplaceMessage()
+                        doc.Changes.Add(model);
+                        this.SendMessage(model);
+                    }
+                    else if (!change.OldText.IsNullOrEmpty() && change.NewText.IsNullOrEmpty())
                     {
-                        Service = "op",
-                        MessageType = "replace",
-                        User = this.UserName,
-                        Start = change.OldPosition,
-                        End = change.OldPosition + change.OldLength,
-                        Content = change.NewText,
-                        OldContent = change.OldText,
-                        DocumentId = docId,
-                        OpId = doc.OpId,
-                        TickStamp = (long)doc.TickStamp,
-                        IsApplied = true
-                    };
+                        var model = new OpDeleteMessage()
+                        {
+                            Service = "op",
+                            MessageType = "delete",
+                            User = this.UserName,
+                            Start = change.OldPosition,
+                            End = change.OldPosition + change.OldLength,
+                            OldContent = change.OldText,
+                            DocumentId = docId,
+                            OpId = doc.OpId,
+                            TickStamp = (long)doc.TickStamp,
+                            IsApplied = true
+                        };
 
-                    doc.Changes.Add(model);
-                    this.SendMessage(model);
+                        doc.Changes.Add(model);
+                        this.SendMessage(model);
+                    }
+                    else
+                    {
+                        var model = new OpReplaceMessage()
+                        {
+                            Service = "op",
+                            MessageType = "replace",
+                            User = this.UserName,
+                            Start = change.OldPosition,
+                            End = change.OldPosition + change.OldLength,
+                            Content = change.NewText,
+                            OldContent = change.OldText,
+                            DocumentId = docId,
+                            OpId = doc.OpId,
+                            TickStamp = (long)doc.TickStamp,
+                            IsApplied = true
+                        };
+
+                        doc.Changes.Add(model);
+                        this.SendMessage(model);
+                    }
                 }
+
             }
         }
 

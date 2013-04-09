@@ -98,23 +98,7 @@ namespace Cahoots.Services.Models
         /// <summary>
         /// The op lock object.
         /// </summary>
-        private object opLocker = new object();
-
-        /// <summary>
-        /// Locks this instance.
-        /// </summary>
-        public void Lock()
-        {
-            Monitor.Enter(this.opLocker);
-        }
-
-        /// <summary>
-        /// Unlocks this instance.
-        /// </summary>
-        public void Unlock()
-        {
-            Monitor.Exit(this.opLocker);
-        }
+        public object OpLocker = new object();
 
         /// <summary>
         /// The event lock object.
