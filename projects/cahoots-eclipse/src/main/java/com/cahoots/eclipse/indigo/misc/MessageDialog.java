@@ -1,11 +1,8 @@
 package com.cahoots.eclipse.indigo.misc;
 
-import org.eclipse.core.internal.runtime.Activator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.activities.WorkbenchActivityHelper;
-import org.eclipse.ui.internal.Workbench;
 
 public class MessageDialog {
 	public void error(final Shell parent, final String title,
@@ -29,7 +26,8 @@ public class MessageDialog {
 	private void message(final Shell parent, final String title,
 			
 			final String message, final int style) {
-		final Shell p = (parent == null) ? Workbench.getInstance().getDisplay().getActiveShell() : parent;
+		final Shell p = (parent == null) ? null : parent;
+		
 		final MessageBox messageBox = new MessageBox(p, style);
 		messageBox.setText(title);
 		messageBox.setMessage(message);

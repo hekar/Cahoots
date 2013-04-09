@@ -78,7 +78,7 @@ public class DisconnectDialog extends Window {
 				method.setRequestBody(data.toArray(new NameValuePair[data
 						.size()]));
 				try {
-					final int statusCode = client.executeMethod(method);
+					client.executeMethod(method);
 					performDisconnect();
 				} catch (final HttpException ex) {
 					MessageDialog.openInformation(

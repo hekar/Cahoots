@@ -156,6 +156,10 @@ public class RevisionView extends ViewPart {
 				final ISelection selection = viewer.getSelection();
 				final Object obj = ((IStructuredSelection) selection)
 						.getFirstElement();
+				// TODO: Implement the revision history on per element
+				if (obj instanceof Object) {
+					
+				}
 			}
 		};
 
