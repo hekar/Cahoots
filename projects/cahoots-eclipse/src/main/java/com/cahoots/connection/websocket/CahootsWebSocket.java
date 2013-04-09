@@ -18,6 +18,7 @@ import com.ning.http.client.AsyncHttpClientConfig;
 import com.ning.http.client.ListenableFuture;
 import com.ning.http.client.websocket.WebSocket;
 import com.ning.http.client.websocket.WebSocketUpgradeHandler;
+import com.ning.http.client.websocket.WebSocketUpgradeHandler.Builder;
 
 public class CahootsWebSocket {
 
@@ -69,8 +70,7 @@ public class CahootsWebSocket {
 	public void disconnect() {
 		if (connection != null) {
 			connection.cancel(true);
-
-
+			onSuccessfulDisconnect();
 		}
 		connection = null;
 	}
@@ -86,9 +86,10 @@ public class CahootsWebSocket {
 					"ws://%s/app/message?auth_token=%s", server, authToken);
 			final CahootsSocketListener cahootsSocketClient = new CahootsSocketListener(
 					this);
+			final Builder builder = new WebSocketUpgradeHandler.Builder().addWebSocketListener(
+					cahootsSocketClient);
 			connection = c.prepareGet(uriString).execute(
-					new WebSocketUpgradeHandler.Builder().addWebSocketListener(
-							cahootsSocketClient).build());
+					builder.build());
 
 			onSuccessfulConnect();
 		} catch (final Exception e) {

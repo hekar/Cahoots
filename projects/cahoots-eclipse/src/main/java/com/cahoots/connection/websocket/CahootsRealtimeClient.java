@@ -125,7 +125,8 @@ public class CahootsRealtimeClient extends CahootsWebSocket {
 		}
 	}
 
-	protected void onSuccesfulConnect() {
+	@Override
+	public void onSuccessfulConnect() {
 		super.onSuccessfulConnect();
 
 		final List<ConnectEventListener> listeners = this.listeners
