@@ -309,7 +309,7 @@ class OpService(
     } else {
       notifyOne(user, JsObject(Seq(
         "service" -> JsString("op"),
-        "type" -> JsString("nonExistentShared"),
+        "type" -> JsString("nonExistentShare"),
         "message" -> JsString("Shared %s does not exist".format(opId))
       )))
     }

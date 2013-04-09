@@ -3,11 +3,10 @@ package com.cahoots.eclipse.collab.share;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.cahoots.json.receive.ShareDocumentMessage;
+import com.cahoots.connection.serialize.receive.ShareDocumentMessage;
 
 public class ShareDocumentSessionManager {
 
-	private final List<ShareDocumentSessionRegisterListener> registerListeners = new ArrayList<ShareDocumentSessionRegisterListener>();
 	private final List<ShareDocumentMessage> sharedDocuments = new ArrayList<ShareDocumentMessage>();
 
 	public ShareDocumentSessionManager() {
@@ -19,10 +18,5 @@ public class ShareDocumentSessionManager {
 
 	public void unregister(final ShareDocumentMessage message) {
 		sharedDocuments.remove(message);
-	}
-
-	public void addOnRegisterListener(
-			final ShareDocumentSessionRegisterListener listener) {
-		registerListeners.add(listener);
 	}
 }

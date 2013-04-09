@@ -28,10 +28,10 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 
 import com.cahoots.chat.CollaboratorStatus;
-import com.cahoots.connection.CahootsConnection;
+import com.cahoots.connection.ConnectionDetails;
+import com.cahoots.connection.serialize.Collaborator;
 import com.cahoots.eclipse.Activator;
-import com.cahoots.eclipse.indigo.widget.UserList;
-import com.cahoots.json.Collaborator;
+import com.cahoots.eclipse.indigo.misc.UserList;
 import com.google.inject.Injector;
 
 /**
@@ -40,7 +40,7 @@ import com.google.inject.Injector;
 public class InviteDocumentDialog extends Window {
 
 	private final ShareDocumentManager shareDocumentManager;
-	private final CahootsConnection connectionDetails;
+	private final ConnectionDetails connectionDetails;
 	private final String opId;
 
 	public InviteDocumentDialog(final Shell parentShell, final String opId) {
@@ -48,7 +48,7 @@ public class InviteDocumentDialog extends Window {
 
 		final Injector injector = Activator.getInjector();
 		shareDocumentManager = injector.getInstance(ShareDocumentManager.class);
-		connectionDetails = injector.getInstance(CahootsConnection.class);
+		connectionDetails = injector.getInstance(ConnectionDetails.class);
 		this.opId = opId;
 	}
 

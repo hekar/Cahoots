@@ -2,27 +2,25 @@ package com.cahoots.eclipse.collab.share;
 
 import javax.inject.Inject;
 
-import org.eclipse.core.commands.operations.UndoContext;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
+import org.eclipse.text.undo.DocumentUndoManagerRegistry;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.ITextEditor;
-import org.eclipse.text.undo.DocumentUndoManagerRegistry;
-import org.eclipse.text.undo.IDocumentUndoManager;
 
-import com.cahoots.connection.CahootsConnection;
-import com.cahoots.eclipse.op.OpMemento;
-import com.cahoots.eclipse.op.OpSession;
-import com.cahoots.eclipse.op.OpSessionRegister;
-import com.cahoots.eclipse.swt.SwtDisplayUtils;
-import com.cahoots.events.OpReplaceEventListener;
-import com.cahoots.json.receive.OpReplaceMessage;
+import com.cahoots.connection.ConnectionDetails;
+import com.cahoots.connection.serialize.receive.OpReplaceMessage;
+import com.cahoots.eclipse.indigo.misc.SwtDisplayUtils;
+import com.cahoots.eclipse.optransformation.OpMemento;
+import com.cahoots.eclipse.optransformation.OpSession;
+import com.cahoots.eclipse.optransformation.OpSessionRegister;
+import com.cahoots.event.OpReplaceEventListener;
 
 public class IncomingReplace implements OpReplaceEventListener {
 
 	private final OpSessionRegister opSessionRegister;
 	private final ShareDocumentManager shareDocumentManager;
-	private final CahootsConnection cahootsConnection;
+	private final ConnectionDetails ConnectionDetails;
 	private final ITextEditor textEditor;
 	private String documentId;
 	private String opId;
@@ -30,11 +28,11 @@ public class IncomingReplace implements OpReplaceEventListener {
 	@Inject
 	public IncomingReplace(final OpSessionRegister opSessionRegister,
 			final ShareDocumentManager shareDocumentManager,
-			final CahootsConnection cahootsConnection,
+			final ConnectionDetails ConnectionDetails,
 			final ITextEditor textEditor, final String documentId,
 			final String opId) {
 		this.opSessionRegister = opSessionRegister;
-		this.cahootsConnection = cahootsConnection;
+		this.ConnectionDetails = ConnectionDetails;
 		this.shareDocumentManager = shareDocumentManager;
 		this.textEditor = textEditor;
 		this.documentId = documentId;
@@ -52,7 +50,7 @@ public class IncomingReplace implements OpReplaceEventListener {
 						return;
 					}
 
-					if (msg.getUser().equals(cahootsConnection.getUsername())) {
+					if (msg.getUser().equals(ConnectionDetails.getUsername())) {
 						return;
 					}
 

@@ -23,11 +23,11 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 
 import com.cahoots.chat.Chat;
+import com.cahoots.connection.serialize.Collaborator;
 import com.cahoots.eclipse.Activator;
-import com.cahoots.eclipse.indigo.widget.SourceContentChangedListener;
-import com.cahoots.eclipse.indigo.widget.UserListViewContentProvider;
-import com.cahoots.eclipse.indigo.widget.UserListViewLabelProvider;
-import com.cahoots.json.Collaborator;
+import com.cahoots.eclipse.indigo.misc.SourceContentChangedListener;
+import com.cahoots.eclipse.indigo.misc.UserListViewContentProvider;
+import com.cahoots.eclipse.indigo.misc.UserListViewLabelProvider;
 import com.google.inject.Injector;
 
 public class UsersView extends ViewPart {

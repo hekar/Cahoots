@@ -24,19 +24,19 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.PreferencesUtil;
 
-import com.cahoots.connection.websocket.CahootsSocket;
+import com.cahoots.connection.websocket.CahootsRealtimeClient;
 import com.cahoots.eclipse.Activator;
 import com.cahoots.eclipse.indigo.job.BackgroundJob;
 import com.cahoots.eclipse.indigo.job.BackgroundJobScheduler;
-import com.cahoots.eclipse.swt.SwtButtonUtils;
-import com.cahoots.eclipse.swt.SwtDisplayUtils;
-import com.cahoots.eclipse.swt.SwtKeyUtils;
+import com.cahoots.eclipse.indigo.misc.SwtButtonUtils;
+import com.cahoots.eclipse.indigo.misc.SwtDisplayUtils;
+import com.cahoots.eclipse.indigo.misc.SwtKeyUtils;
 import com.cahoots.preferences.PreferenceConstants;
 import com.google.inject.Injector;
 
 public class ConnectDialog extends Window {
 
-	private final CahootsSocket socket;
+	private final CahootsRealtimeClient socket;
 	private final BackgroundJobScheduler backgroundJobScheduler;
 	private Combo servers;
 
@@ -50,7 +50,7 @@ public class ConnectDialog extends Window {
 		super(parent);
 
 		final Injector injector = Activator.getInjector();
-		socket = injector.getInstance(CahootsSocket.class);
+		socket = injector.getInstance(CahootsRealtimeClient.class);
 		backgroundJobScheduler = injector
 				.getInstance(BackgroundJobScheduler.class);
 		Activator.getActivator().getPreferenceStore()

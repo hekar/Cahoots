@@ -6,13 +6,13 @@ import java.util.Map;
 
 import org.eclipse.ui.PlatformUI;
 
-import com.cahoots.connection.websocket.CahootsSocket;
+import com.cahoots.connection.serialize.receive.ChatReceiveMessage;
+import com.cahoots.connection.websocket.CahootsRealtimeClient;
 import com.cahoots.eclipse.collab.ChatDialog;
-import com.cahoots.eclipse.swt.SwtDisplayUtils;
-import com.cahoots.events.ChatReceivedEventListener;
-import com.cahoots.events.DisconnectEvent;
-import com.cahoots.events.DisconnectEventListener;
-import com.cahoots.json.receive.ChatReceiveMessage;
+import com.cahoots.eclipse.indigo.misc.SwtDisplayUtils;
+import com.cahoots.event.ChatReceivedEventListener;
+import com.cahoots.event.DisconnectEvent;
+import com.cahoots.event.DisconnectEventListener;
 import com.google.inject.Inject;
 
 public class Chat {
@@ -20,7 +20,7 @@ public class Chat {
 	private Map<String, ChatDialog> chats = new HashMap<String, ChatDialog>();
 
 	@Inject
-	public Chat(CahootsSocket socket) {
+	public Chat(CahootsRealtimeClient socket) {
 		socket.addChatReceivedEventListener(new ChatReceivedEventListener() {
 
 			@Override

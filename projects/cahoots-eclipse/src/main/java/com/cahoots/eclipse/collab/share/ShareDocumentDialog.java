@@ -29,11 +29,11 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 import com.cahoots.chat.CollaboratorStatus;
-import com.cahoots.connection.CahootsConnection;
+import com.cahoots.connection.ConnectionDetails;
+import com.cahoots.connection.serialize.Collaborator;
 import com.cahoots.eclipse.Activator;
-import com.cahoots.eclipse.indigo.widget.TextEditorTools;
-import com.cahoots.eclipse.indigo.widget.UserList;
-import com.cahoots.json.Collaborator;
+import com.cahoots.eclipse.indigo.misc.TextEditorTools;
+import com.cahoots.eclipse.indigo.misc.UserList;
 import com.google.inject.Injector;
 
 /**
@@ -43,7 +43,7 @@ public class ShareDocumentDialog extends Window {
 
 	private final ShareDocumentManager shareDocumentManager;
 	private final TextEditorTools textEditorTools;
-	private final CahootsConnection connectionDetails;
+	private final ConnectionDetails connectionDetails;
 
 	public ShareDocumentDialog(final Shell parentShell) {
 		super(parentShell);
@@ -51,7 +51,7 @@ public class ShareDocumentDialog extends Window {
 		final Injector injector = Activator.getInjector();
 		shareDocumentManager = injector.getInstance(ShareDocumentManager.class);
 		textEditorTools = injector.getInstance(TextEditorTools.class);
-		connectionDetails = injector.getInstance(CahootsConnection.class);
+		connectionDetails = injector.getInstance(ConnectionDetails.class);
 	}
 
 	@Override

@@ -23,10 +23,10 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 
 import com.cahoots.eclipse.Activator;
-import com.cahoots.eclipse.indigo.widget.MessageDialog;
-import com.cahoots.eclipse.op.OpMemento;
-import com.cahoots.eclipse.op.OpSession;
-import com.cahoots.eclipse.op.OpSessionRegister;
+import com.cahoots.eclipse.indigo.misc.MessageDialog;
+import com.cahoots.eclipse.optransformation.OpMemento;
+import com.cahoots.eclipse.optransformation.OpSession;
+import com.cahoots.eclipse.optransformation.OpSessionRegister;
 import com.google.inject.Injector;
 
 public class RevisionView extends ViewPart {
@@ -156,6 +156,10 @@ public class RevisionView extends ViewPart {
 				final ISelection selection = viewer.getSelection();
 				final Object obj = ((IStructuredSelection) selection)
 						.getFirstElement();
+				// TODO: Implement the revision history on per element
+				if (obj instanceof Object) {
+					
+				}
 			}
 		};
 

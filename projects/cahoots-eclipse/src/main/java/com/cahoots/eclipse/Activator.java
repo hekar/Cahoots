@@ -3,10 +3,9 @@ package com.cahoots.eclipse;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
-import com.cahoots.eclipse.event.EventRegistrarManager;
-import com.cahoots.eclipse.guice.IndigoModule;
-import com.cahoots.eclipse.guice.MainModule;
-import com.cahoots.eclipse.indigo.log.Log;
+import com.cahoots.connection.websocket.CahootsRealtimeClient;
+import com.cahoots.eclipse.collab.share.IncomingDocumentShare;
+import com.cahoots.util.Log;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 
@@ -38,9 +37,9 @@ public class Activator extends AbstractUIPlugin {
 	}
 
 	private void configureRegistrar() {
-		final EventRegistrarManager eventRegistrarManager = injector
-				.getInstance(EventRegistrarManager.class);
-		eventRegistrarManager.registerAllEvents();
+		final CahootsRealtimeClient cahootsSocket = injector.getInstance(CahootsRealtimeClient.class);
+		final IncomingDocumentShare incomingDocumentShare = injector.getInstance(IncomingDocumentShare.class);
+		cahootsSocket.addShareDocumentEventListener(incomingDocumentShare);
 	}
 
 	public static Activator getActivator() {

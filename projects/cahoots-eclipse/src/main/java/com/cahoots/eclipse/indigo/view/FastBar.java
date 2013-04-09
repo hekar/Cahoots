@@ -16,15 +16,15 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.menus.WorkbenchWindowControlContribution;
 import org.osgi.framework.Bundle;
 
-import com.cahoots.connection.CahootsConnection;
-import com.cahoots.connection.websocket.CahootsSocket;
+import com.cahoots.connection.ConnectionDetails;
+import com.cahoots.connection.websocket.CahootsRealtimeClient;
 import com.cahoots.eclipse.Activator;
+import com.cahoots.eclipse.indigo.misc.SwtDisplayUtils;
 import com.cahoots.eclipse.indigo.popup.ConnectStuff;
-import com.cahoots.eclipse.swt.SwtDisplayUtils;
-import com.cahoots.events.ConnectEvent;
-import com.cahoots.events.ConnectEventListener;
-import com.cahoots.events.DisconnectEvent;
-import com.cahoots.events.DisconnectEventListener;
+import com.cahoots.event.ConnectEvent;
+import com.cahoots.event.ConnectEventListener;
+import com.cahoots.event.DisconnectEvent;
+import com.cahoots.event.DisconnectEventListener;
 import com.google.inject.Injector;
 
 public class FastBar extends WorkbenchWindowControlContribution {
@@ -34,7 +34,7 @@ public class FastBar extends WorkbenchWindowControlContribution {
 	private Label usrImg;
 	private Bundle bundle;
 	private Injector injector;
-	private CahootsConnection details;
+	private ConnectionDetails details;
 	private ConnectStuff stuff;
 
 	@Override
@@ -44,7 +44,7 @@ public class FastBar extends WorkbenchWindowControlContribution {
 		bundle = injector.getInstance(Bundle.class);
 		stuff = Activator.getInjector().getInstance(ConnectStuff.class);
 
-		details = injector.getInstance(CahootsConnection.class);
+		details = injector.getInstance(ConnectionDetails.class);
 		bar = createLoginTrim(parent);
 
 		barImg = new Label(bar, SWT.NONE);
@@ -113,22 +113,25 @@ public class FastBar extends WorkbenchWindowControlContribution {
 			}
 		});
 
-		final CahootsSocket socket = injector.getInstance(CahootsSocket.class);
+		final CahootsRealtimeClient socket = injector.getInstance(CahootsRealtimeClient.class);
 		socket.addConnectEventListener(new ConnectEventListener() {
 			@Override
-			public void connected(final ConnectEvent event) {
+			public void onEvent(final ConnectEvent event) {
 				SwtDisplayUtils.async(new Runnable() {
 					@Override
 					public void run() {
-						barImg.setToolTipText(String.format(
-								"Connected as %s@%s", details.getUsername(),
-								details.getServer()));
-						try {
-							barImg.setImage(ImageDescriptor.createFromURL(
-									new URL(bundle.getEntry("/"), "icons/"
-											+ "green_logo.gif")).createImage());
-						} catch (final Exception e) {
-							e.printStackTrace();
+						if (!barImg.isDisposed()) {
+							barImg.setToolTipText(String.format(
+									"Connected as %s@%s",
+									details.getUsername(), details.getServer()));
+							try {
+								barImg.setImage(ImageDescriptor.createFromURL(
+										new URL(bundle.getEntry("/"), "icons/"
+												+ "green_logo.gif"))
+										.createImage());
+							} catch (final Exception e) {
+								e.printStackTrace();
+							}
 						}
 					}
 				});
@@ -136,19 +139,21 @@ public class FastBar extends WorkbenchWindowControlContribution {
 		});
 
 		socket.addDisconnectEventListener(new DisconnectEventListener() {
-
 			@Override
 			public void onEvent(final DisconnectEvent msg) {
 				SwtDisplayUtils.async(new Runnable() {
 					@Override
 					public void run() {
-						barImg.setToolTipText("");
-						try {
-							barImg.setImage(ImageDescriptor.createFromURL(
-									new URL(bundle.getEntry("/"), "icons/"
-											+ "black_logo.gif")).createImage());
-						} catch (final Exception e) {
-							e.printStackTrace();
+						if (!barImg.isDisposed()) {
+							barImg.setToolTipText("");
+							try {
+								barImg.setImage(ImageDescriptor.createFromURL(
+										new URL(bundle.getEntry("/"), "icons/"
+												+ "black_logo.gif"))
+										.createImage());
+							} catch (final Exception e) {
+								e.printStackTrace();
+							}
 						}
 					}
 				});

@@ -10,10 +10,8 @@ import javax.inject.Inject;
 import org.apache.commons.httpclient.HttpMethodBase;
 import org.apache.commons.httpclient.NameValuePair;
 
-import com.cahoots.connection.CahootsConnection;
-import com.cahoots.connection.http.receive.ListUsersResponse;
-import com.cahoots.connection.http.tools.CahootsHttpClient;
-import com.cahoots.connection.http.tools.CahootsHttpResponseReceivedListener;
+import com.cahoots.connection.ConnectionDetails;
+import com.cahoots.connection.serialize.receive.ListUsersResponse;
 import com.google.gson.Gson;
 
 public class CahootsHttpService {
@@ -22,9 +20,9 @@ public class CahootsHttpService {
 	private String domain;
 
 	@Inject
-	public CahootsHttpService(CahootsConnection connection) {
-		this.authToken = connection.getAuthToken();
-		this.domain = connection.getServer();
+	public CahootsHttpService(final ConnectionDetails connectionDetails) {
+		this.authToken = connectionDetails.getAuthToken();
+		this.domain = connectionDetails.getServer();
 	}
 
 	public ListUsersResponse listUsers() {
