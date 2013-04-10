@@ -54,8 +54,6 @@ public class IncomingReplace implements OpReplaceEventListener {
 						return;
 					}
 
-					final int start = msg.getStart();
-					final String contents = msg.getContent();
 					int length = msg.getEnd() - msg.getStart();
 
 					if (length == 0) {
@@ -77,7 +75,7 @@ public class IncomingReplace implements OpReplaceEventListener {
 
 					msg.setStart(Math.min(msg.getStart(), document.getLength()));
 					msg.setEnd(Math.min(msg.getEnd(), document.getLength()));
-					
+
 					final OpSession session = opSessionRegister.getSession(msg
 							.getOpId());
 					final OpMemento memento = session.getMemento();

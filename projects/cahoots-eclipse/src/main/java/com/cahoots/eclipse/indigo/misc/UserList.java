@@ -14,7 +14,6 @@ import org.eclipse.swt.widgets.Composite;
 
 import com.cahoots.connection.serialize.Collaborator;
 import com.cahoots.eclipse.Activator;
-import com.cahoots.util.Log;
 import com.google.inject.Injector;
 
 public class UserList extends Composite {
