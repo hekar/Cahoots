@@ -116,12 +116,12 @@ class MessageRelay extends Actor {
   }
 
   def notifyAll(msg: JsValue) {
-    members.foreach {
-      case (_, channel) => {
-        Logger.debug(msg.toString())
-        channel.push(msg)
-      }
-    }
+    members.foreach(p => {
+      Logger.debug(p._1)
+      Logger.debug(msg.toString())
+      p._2.push(msg)
+
+    })
   }
 
   def notifyOne(username: String, msg: JsValue) {

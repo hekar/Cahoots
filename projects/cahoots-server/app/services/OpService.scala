@@ -301,7 +301,6 @@ class OpService(
 
         (opSession.collaborators.toList).foreach {
           collaborator => {
-            Logger.info(collaborator)
             notifyOne(collaborator, handle(opSession))
           }
         }
