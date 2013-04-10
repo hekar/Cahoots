@@ -116,11 +116,9 @@ class MessageRelay extends Actor {
   }
 
   def notifyAll(msg: JsValue) {
+    Logger.debug("Global Message")
     members.foreach(p => {
-      Logger.debug(p._1)
-      Logger.debug(msg.toString())
-      p._2.push(msg)
-
+      notifyOne(p._1, msg)
     })
   }
 
@@ -136,9 +134,7 @@ class MessageRelay extends Actor {
     {
       Logger.error("Cannot Send Message " + username + " Does Not Exist")
     }
-
   }
-
 }
 
 case class Join(username: String)
