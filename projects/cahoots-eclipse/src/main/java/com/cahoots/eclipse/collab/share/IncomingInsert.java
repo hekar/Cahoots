@@ -40,7 +40,7 @@ public class IncomingInsert implements OpInsertEventListener {
 	}
 
 	@Override
-	public void onEvent(final OpInsertMessage msg) {
+	public synchronized void onEvent(final OpInsertMessage msg) {
 		final Runnable runnable = new Runnable() {
 			@Override
 			public void run() {
@@ -61,6 +61,8 @@ public class IncomingInsert implements OpInsertEventListener {
 					final IDocument document = documentProvider
 							.getDocument(textEditor.getEditorInput());
 
+					msg.setStart(Math.min(msg.getStart(), document.getLength()));
+					
 					final OpSession session = opSessionRegister.getSession(msg
 							.getOpId());
 					final OpMemento memento = session.getMemento();
@@ -70,13 +72,9 @@ public class IncomingInsert implements OpInsertEventListener {
 					} catch (final Exception e) {
 					}
 					shareDocumentManager.disableEvents();
-					if (memento.getLatestTimestamp() < msg.getTickStamp()) {
-						document.replace(start, 0, contents);
-					} else {
-						memento.addTransformation(msg);
-						final String content = memento.getContent();
-						document.replace(0, document.getLength(), content);
-					}
+					memento.addTransformation(msg);
+					final String content = memento.getContent();
+					document.replace(0, document.getLength(), content);
 					shareDocumentManager.enableEvents();
 
 					DocumentUndoManagerRegistry.connect(document);

@@ -40,50 +40,48 @@ public class IncomingDelete implements OpDeleteEventListener {
 	}
 
 	@Override
-	public void onEvent(final OpDeleteMessage msg) {
+	public synchronized void onEvent(final OpDeleteMessage msg) {
 		final Runnable runnable = new Runnable() {
 			@Override
 			public void run() {
-					try {
-						if (!msg.getOpId().equals(opId)
-								|| !msg.getDocumentId().equals(documentId)) {
-							return;
-						}
-						if (msg.getUser().equals(
-								ConnectionDetails.getUsername())) {
-							return;
-						}
-
-						final int start = msg.getStart();
-						final int length = msg.getEnd() - msg.getStart();
-
-						final IDocumentProvider documentProvider = textEditor
-								.getDocumentProvider();
-						final IDocument document = documentProvider
-								.getDocument(textEditor.getEditorInput());
-
-						final OpSession session = opSessionRegister
-								.getSession(msg.getOpId());
-						final OpMemento memento = session.getMemento();
-
-						try {
-							DocumentUndoManagerRegistry.disconnect(document);
-						} catch (final Exception e) {
-						}
-
-						shareDocumentManager.disableEvents();
-						if (memento.getLatestTimestamp() < msg.getTickStamp()) {
-							document.replace(start, length, "");
-						} else {
-							memento.addTransformation(msg);
-							final String content = memento.getContent();
-							document.replace(0, document.getLength(), content);
-						}
-						shareDocumentManager.enableEvents();
-						DocumentUndoManagerRegistry.connect(document);
-					} catch (final BadLocationException e) {
-						e.printStackTrace();
+				try {
+					if (!msg.getOpId().equals(opId)
+							|| !msg.getDocumentId().equals(documentId)) {
+						return;
 					}
+					if (msg.getUser().equals(ConnectionDetails.getUsername())) {
+						return;
+					}
+
+					final int start = msg.getStart();
+					final int length = msg.getEnd() - msg.getStart();
+
+					final IDocumentProvider documentProvider = textEditor
+							.getDocumentProvider();
+					final IDocument document = documentProvider
+							.getDocument(textEditor.getEditorInput());
+
+					msg.setStart(Math.min(msg.getStart(), document.getLength()));
+					msg.setEnd(Math.min(msg.getEnd(), document.getLength()));
+					
+					final OpSession session = opSessionRegister.getSession(msg
+							.getOpId());
+					final OpMemento memento = session.getMemento();
+					
+					try {
+						DocumentUndoManagerRegistry.disconnect(document);
+					} catch (final Exception e) {
+					}
+					
+					shareDocumentManager.disableEvents();
+					memento.addTransformation(msg);
+					final String content = memento.getContent();
+					document.replace(0, document.getLength(), content);
+					shareDocumentManager.enableEvents();
+					DocumentUndoManagerRegistry.connect(document);
+				} catch (final BadLocationException e) {
+					e.printStackTrace();
+				}
 			}
 		};
 

@@ -40,7 +40,7 @@ public class IncomingReplace implements OpReplaceEventListener {
 	}
 
 	@Override
-	public void onEvent(final OpReplaceMessage msg) {
+	public synchronized void onEvent(final OpReplaceMessage msg) {
 		final Runnable runnable = new Runnable() {
 			@Override
 			public void run() {
@@ -75,6 +75,9 @@ public class IncomingReplace implements OpReplaceEventListener {
 						length = document.getLength();
 					}
 
+					msg.setStart(Math.min(msg.getStart(), document.getLength()));
+					msg.setEnd(Math.min(msg.getEnd(), document.getLength()));
+					
 					final OpSession session = opSessionRegister.getSession(msg
 							.getOpId());
 					final OpMemento memento = session.getMemento();
@@ -85,13 +88,9 @@ public class IncomingReplace implements OpReplaceEventListener {
 					}
 
 					shareDocumentManager.disableEvents();
-					if (memento.getLatestTimestamp() < msg.getTickStamp()) {
-						document.replace(start, length, contents);
-					} else {
-						memento.addTransformation(msg);
-						final String content = memento.getContent();
-						document.replace(0, document.getLength(), content);
-					}
+					memento.addTransformation(msg);
+					final String content = memento.getContent();
+					document.replace(0, document.getLength(), content);
 					shareDocumentManager.enableEvents();
 
 					DocumentUndoManagerRegistry.connect(document);

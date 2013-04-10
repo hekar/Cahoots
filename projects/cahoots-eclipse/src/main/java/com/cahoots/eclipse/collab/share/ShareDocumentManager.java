@@ -22,6 +22,9 @@ import org.eclipse.ui.texteditor.ITextEditor;
 import com.cahoots.connection.ConnectionDetails;
 import com.cahoots.connection.http.CahootsHttpClient;
 import com.cahoots.connection.serialize.Collaborator;
+import com.cahoots.connection.serialize.receive.OpDeleteMessage;
+import com.cahoots.connection.serialize.receive.OpInsertMessage;
+import com.cahoots.connection.serialize.receive.OpReplaceMessage;
 import com.cahoots.connection.serialize.send.InviteUserMessage;
 import com.cahoots.connection.serialize.send.SendOpDeleteMessage;
 import com.cahoots.connection.serialize.send.SendOpInsertMessage;
@@ -172,31 +175,44 @@ public class ShareDocumentManager {
 		return documentIds.get(opId);
 	}
 
-	private void insert(final String opId, final String documentId,
+	private synchronized void insert(final String opId, final String documentId,
 			final int start, final String content) {
 		final String username = connection.getUsername();
 		final OpSession session = opSessionRegistrar.getSession(opId);
 		final OpSynchronizedClock clock = session.getClock();
 		final long nextTickStamp = clock.currentStamp();
 
-		final SendOpInsertMessage message = new SendOpInsertMessage();
+		final OpInsertMessage message = new SendOpInsertMessage();
 		message.setOpId(opId);
 		message.setUser(username);
 		message.setContent(content);
 		message.setStart(start);
 		message.setDocumentId(documentId);
 		message.setTickStamp(nextTickStamp);
+		session.getMemento().addTransformation(message);
+		
+		delaySend();
 		cahootsSocket.send(message);
 	}
 
-	private void replace(final String opId, final String documentId,
+	private void delaySend() {
+		if (connection.getUsername().equals("test_3")) {
+			try {
+				Thread.sleep(2000);
+			} catch (final InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	private synchronized void replace(final String opId, final String documentId,
 			final int start, final int end, final String content) {
 		final String username = connection.getUsername();
 		final OpSession session = opSessionRegistrar.getSession(opId);
 		final OpSynchronizedClock clock = session.getClock();
 		final long nextTickStamp = clock.currentStamp();
 
-		final SendOpReplaceMessage message = new SendOpReplaceMessage();
+		final OpReplaceMessage message = new SendOpReplaceMessage();
 		message.setOpId(opId);
 		message.setDocumentId(documentId);
 		message.setStart(start);
@@ -206,17 +222,19 @@ public class ShareDocumentManager {
 		message.setContent(content);
 		// TODO: Get old content
 		message.setOldContent("");
+		session.getMemento().addTransformation(message);
+		delaySend();
 		cahootsSocket.send(message);
 	}
 
-	private void delete(final String opId, final String documentId,
+	private synchronized void delete(final String opId, final String documentId,
 			final int start, final int end) {
 		final String username = connection.getUsername();
 		final OpSession session = opSessionRegistrar.getSession(opId);
 		final OpSynchronizedClock clock = session.getClock();
 		final long nextTickStamp = clock.currentStamp();
 
-		final SendOpDeleteMessage message = new SendOpDeleteMessage();
+		final OpDeleteMessage message = new SendOpDeleteMessage();
 		message.setOpId(opId);
 		message.setDocumentId(documentId);
 		message.setStart(start);
@@ -225,6 +243,8 @@ public class ShareDocumentManager {
 		message.setTickStamp(nextTickStamp);
 		// TODO: Get old content
 		message.setOldContent("");
+		session.getMemento().addTransformation(message);
+		delaySend();
 		cahootsSocket.send(message);
 	}
 
