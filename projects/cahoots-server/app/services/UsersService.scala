@@ -2,7 +2,7 @@ package services
 
 
 import play.api.libs.json._
-import models.ActiveUser
+import models.{MessageRelay, ActiveUser}
 import collection.mutable.ListBuffer
 
 object UsersService {
@@ -47,6 +47,9 @@ class UsersService(
   }
 
   def leave(username: String) {
+
+    MessageRelay.services("op").asInstanceOf[OpService].leaveAll(username)
+
     val user = users.filter(t => t.username == username)(0)
     user.status = "offline"
 
