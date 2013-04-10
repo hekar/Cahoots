@@ -20,7 +20,7 @@ namespace Cahoots.Services.Models
         /// <param name="tick">The tick.</param>
         public DocumentModel(double tick)
         {
-            this.tickStart = tick;
+            this.tickStart = DateTime.Now.Subtract(new TimeSpan((long)tick));
             this.Changes = new Collection<BaseOpMessage>();
         }
 
@@ -86,36 +86,19 @@ namespace Cahoots.Services.Models
         /// <value>
         /// The tick stamp.
         /// </value>
-        private double tickStart { get; set; }
+        private DateTime tickStart { get; set; }
         public double TickStamp
         {
             get
             {
-                var now = DateTime.Now.TimeOfDay.TotalMilliseconds;
-                return now - tickStart;
+                return DateTime.Now.Subtract(this.tickStart).TotalMilliseconds;
             }
         }
 
         /// <summary>
         /// The op lock object.
         /// </summary>
-        private object opLocker = new object();
-
-        /// <summary>
-        /// Locks this instance.
-        /// </summary>
-        public void Lock()
-        {
-            Monitor.Enter(this.opLocker);
-        }
-
-        /// <summary>
-        /// Unlocks this instance.
-        /// </summary>
-        public void Unlock()
-        {
-            Monitor.Exit(this.opLocker);
-        }
+        public object OpLocker = new object();
 
         /// <summary>
         /// The event lock object.

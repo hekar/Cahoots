@@ -576,7 +576,7 @@ namespace Cahoots
         /// <returns>The current tick stamp.</returns>
         public double GetCurrentTick(string opId)
         {
-            var start = DateTime.Now.TimeOfDay.TotalMilliseconds;
+            var start = DateTime.Now;
             var request =
                 HttpWebRequest.Create(
                     new Uri (
@@ -586,8 +586,7 @@ namespace Cahoots
                                 this.AuthenticationService.Token,
                                 opId)));
             var response = request.GetResponse() as HttpWebResponse;
-            var latency =
-                    DateTime.Now.TimeOfDay.TotalMilliseconds - start;
+            var latency = DateTime.Now.Subtract(start).TotalMilliseconds;
 
             if (response.StatusCode == HttpStatusCode.OK)
             {
@@ -595,7 +594,7 @@ namespace Cahoots
                 using (var reader = new StreamReader(stream))
                 {
                     var str = reader.ReadToEnd();
-                    return long.Parse(str) + (latency / 2);
+                    return long.Parse(str) - (latency / 2);
                 }
             }
 
