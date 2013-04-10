@@ -18,7 +18,6 @@ import com.cahoots.connection.serialize.receive.CollaboratorJoinedMessage;
 import com.cahoots.connection.serialize.receive.CollaboratorLeftMessage;
 import com.cahoots.connection.serialize.receive.CollaboratorsListMessage;
 import com.cahoots.connection.websocket.CahootsRealtimeClient;
-import com.cahoots.eclipse.Activator;
 import com.cahoots.eclipse.collab.share.ShareDocumentManager;
 import com.cahoots.event.CollaboratorJoinedEventListener;
 import com.cahoots.event.CollaboratorLeftEventListener;
@@ -30,11 +29,15 @@ public class CollaborationsViewContentProvider extends ViewContentProvider {
 	private final Map<String, Collaboration> elements = new ConcurrentHashMap<String, Collaboration>();
 	private final List<SourceContentChangedListener> listeners = new ArrayList<SourceContentChangedListener>();
 
+	private final ShareDocumentManager shareManager;
+
 	@Inject
-	public CollaborationsViewContentProvider(final Activator activator,
+	public CollaborationsViewContentProvider(
 			final CahootsRealtimeClient cahootsServer,
 			final ShareDocumentManager shareManager,
 			final ConnectionDetails connection) {
+
+		this.shareManager = shareManager;
 
 		cahootsServer
 				.addCollaboratorsListEventListener(new CollaboratorsListEventListener() {
@@ -128,7 +131,17 @@ public class CollaborationsViewContentProvider extends ViewContentProvider {
 	}
 
 	public void clear() {
+		for (final String opId : elements.keySet()) {
+			shareManager.removeDocumentListner(opId);
+		}
 		elements.clear();
+
+		SwtDisplayUtils.sync(new Runnable() {
+			@Override
+			public void run() {
+				fireContentChangedListeners();
+			}
+		});
 	}
 
 	public void addContentChangedListener(

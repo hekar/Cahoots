@@ -22,6 +22,8 @@ import com.cahoots.connection.serialize.receive.OpReplaceMessage;
 import com.cahoots.connection.serialize.receive.ShareDocumentMessage;
 import com.cahoots.connection.serialize.receive.UserChangeMessage;
 import com.cahoots.connection.serialize.receive.UserListMessage;
+import com.cahoots.eclipse.Activator;
+import com.cahoots.eclipse.indigo.misc.CollaborationsViewContentProvider;
 import com.cahoots.eclipse.indigo.misc.TextEditorTools;
 import com.cahoots.event.ChatReceivedEventListener;
 import com.cahoots.event.CollaboratorJoinedEventListener;
@@ -82,7 +84,6 @@ public class CahootsRealtimeClient extends CahootsWebSocket {
 			final WebSocketClientFactory factory,
 			final TextEditorTools editorTools) {
 		super(connectionDetails);
-
 		try {
 			factory.setBufferSize(4096);
 			factory.start();
@@ -139,6 +140,9 @@ public class CahootsRealtimeClient extends CahootsWebSocket {
 	@Override
 	public void onSuccessfulDisconnect() {
 		super.onSuccessfulDisconnect();
+
+		Activator.getInjector()
+				.getInstance(CollaborationsViewContentProvider.class).clear();
 
 		for (final Object listener : listeners
 				.get(DisconnectEventListener.class)) {

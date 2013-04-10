@@ -17,8 +17,8 @@ public class TestHttpUserService {
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 		connection = new ConnectionDetails();
-		CahootsRealtimeClient socket = new CahootsRealtimeClient(connection,
-				new WebSocketClientFactory(), new TextEditorTools());
+		final CahootsRealtimeClient socket = new CahootsRealtimeClient(
+				connection, new WebSocketClientFactory(), new TextEditorTools());
 		socket.connect("admin", "admin", "127.0.0.1:9000");
 	}
 
