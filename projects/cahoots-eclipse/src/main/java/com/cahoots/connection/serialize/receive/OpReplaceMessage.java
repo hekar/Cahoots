@@ -10,7 +10,6 @@ public class OpReplaceMessage extends OpTransformation {
 	private String opId;
 	private String documentId;
 	private String content;
-	private Integer start;
 	private Integer end;
 	private String oldContent;
 
@@ -47,14 +46,6 @@ public class OpReplaceMessage extends OpTransformation {
 
 	public void setContent(final String content) {
 		this.content = content;
-	}
-
-	public Integer getStart() {
-		return start;
-	}
-
-	public void setStart(final Integer start) {
-		this.start = start;
 	}
 
 	public Integer getEnd() {

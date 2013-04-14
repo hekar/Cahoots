@@ -4,6 +4,7 @@ import javax.inject.Inject;
 
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.text.undo.DocumentUndoManagerRegistry;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.ITextEditor;
@@ -50,7 +51,8 @@ public class IncomingReplace implements OpReplaceEventListener {
 						return;
 					}
 
-					if (msg.getUser().equals(ConnectionDetails.getUsername())) {
+					if (msg.getUser().equals(ConnectionDetails.getUsername()) &&
+							!(msg.getStart().equals(0))) {
 						return;
 					}
 
@@ -86,11 +88,13 @@ public class IncomingReplace implements OpReplaceEventListener {
 					}
 
 					shareDocumentManager.disableEvents();
-					memento.addTransformation(msg);
+					final ITextSelection selection = memento.addTransformation(msg);
 					final String content = memento.getContent();
 					document.replace(0, document.getLength(), content);
 					shareDocumentManager.enableEvents();
 
+					memento.fixCursor(selection);
+					
 					DocumentUndoManagerRegistry.connect(document);
 
 				} catch (final BadLocationException e) {

@@ -4,6 +4,7 @@ import java.util.Objects;
 
 public class OpTransformation implements Comparable<OpTransformation> {
 	private Long tickStamp;
+	private Integer start;
 	private Boolean applied = false;
 
 	public Long getTickStamp() {
@@ -20,6 +21,14 @@ public class OpTransformation implements Comparable<OpTransformation> {
 
 	public void setApplied(final Boolean applied) {
 		this.applied = applied;
+	}
+	
+	public Integer getStart() {
+		return start;
+	}
+
+	public void setStart(final Integer start) {
+		this.start = start;
 	}
 
 	@Override

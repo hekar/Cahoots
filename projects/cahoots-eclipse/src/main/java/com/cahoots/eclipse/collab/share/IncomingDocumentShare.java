@@ -77,7 +77,7 @@ public final class IncomingDocumentShare implements ShareDocumentEventListener {
 			final Runnable runnable = new Runnable() {
 				@Override
 				public void run() {
-					final OpDocument document = new OpDocument(opId, documentId);
+					final OpDocument document = new OpDocument(opId, documentId, null);
 
 					if (!ConnectionDetails.isLoggedInUser(sharer)) {
 						final String inviteMessage = String
@@ -92,7 +92,9 @@ public final class IncomingDocumentShare implements ShareDocumentEventListener {
 					}
 					cahootsSocket.send(new JoinCollaborationMessage(
 							ConnectionDetails.getUsername(), opId));
+					
 					final ITextEditor textEditor = getSharedDocumentTextEditor(documentId);
+					document.setTextEditor(textEditor);
 
 					final IDocument doc = textEditor.getDocumentProvider()
 							.getDocument(textEditor.getEditorInput());

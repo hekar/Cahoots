@@ -3,6 +3,10 @@ package com.cahoots.eclipse.optransformation;
 import java.util.NoSuchElementException;
 import java.util.TreeSet;
 
+import org.eclipse.jface.text.ITextSelection;
+import org.eclipse.jface.text.TextSelection;
+import org.eclipse.jface.viewers.ISelectionProvider;
+
 import com.cahoots.connection.serialize.receive.OpDeleteMessage;
 import com.cahoots.connection.serialize.receive.OpInsertMessage;
 import com.cahoots.connection.serialize.receive.OpReplaceMessage;
@@ -21,9 +25,15 @@ public class OpMemento {
 		return document;
 	}
 
-	public synchronized void addTransformation(
+	public synchronized ITextSelection addTransformation(
 			final OpTransformation transformation) {
 
+		final ISelectionProvider selectionProvider = document.getTextEditor()
+						.getSelectionProvider();
+		final ITextSelection selection = (ITextSelection)selectionProvider.getSelection();
+		int curPosition = selection.getOffset();
+		final int curLength = selection.getLength();
+		
 		transformations.add(transformation);
 
 		boolean found = false;
@@ -35,22 +45,30 @@ public class OpMemento {
 
 			if (found) {
 				int length = 0;
+				if (transformation.getStart() > other.getStart()) {
+					continue;
+				}
+					
 				if (transformation instanceof OpInsertMessage) {
 					final OpInsertMessage opInsertMessage = (OpInsertMessage) transformation;
-					length = opInsertMessage.getContent().length()
-							- opInsertMessage.getStart();
+					length = opInsertMessage.getContent().length();
 
 				} else if (transformation instanceof OpReplaceMessage) {
 					final OpReplaceMessage opReplaceMessage = (OpReplaceMessage) transformation;
-					length = opReplaceMessage.getContent().length()
-							- (opReplaceMessage.getEnd() - opReplaceMessage
-									.getStart());
-
+					if (opReplaceMessage.getEnd() == Integer.MAX_VALUE) {
+						length = opReplaceMessage.getContent().length();
+					} else {
+						length = opReplaceMessage.getContent().length()
+								- (opReplaceMessage.getEnd() - opReplaceMessage.getStart());
+					}
+					
 				} else if (transformation instanceof OpDeleteMessage) {
 					final OpDeleteMessage opDeleteMessage = (OpDeleteMessage) transformation;
-					length = opDeleteMessage.getEnd()
-							- opDeleteMessage.getStart();
+					length = -(opDeleteMessage.getEnd()
+							- opDeleteMessage.getStart());
 				}
+				
+				curPosition += length;
 
 				if (other instanceof OpInsertMessage) {
 					final OpInsertMessage opInsertMessage = (OpInsertMessage) other;
@@ -60,7 +78,10 @@ public class OpMemento {
 					final OpReplaceMessage opReplaceMessage = (OpReplaceMessage) other;
 					opReplaceMessage.setStart(opReplaceMessage.getStart()
 							+ length);
-					opReplaceMessage.setEnd(opReplaceMessage.getEnd() + length);
+					
+					final int end = (opReplaceMessage.getEnd() == Integer.MAX_VALUE) ? 
+							opReplaceMessage.getContent().length() : opReplaceMessage.getEnd();
+					opReplaceMessage.setEnd(end + length);
 				} else if (other instanceof OpDeleteMessage) {
 					final OpDeleteMessage opDeleteMessage = (OpDeleteMessage) other;
 					opDeleteMessage.setStart(opDeleteMessage.getStart()
@@ -69,8 +90,10 @@ public class OpMemento {
 				}
 			}
 		}
-
+		
 		transformation.setApplied(true);
+
+		return new TextSelection(curPosition, curLength);
 	}
 
 	public TreeSet<OpTransformation> getTransformations() {
@@ -120,6 +143,12 @@ public class OpMemento {
 		}
 
 		return sb.toString();
+	}
+	
+	public void fixCursor(final ITextSelection selection) {
+		final ISelectionProvider selectionProvider = document.getTextEditor()
+				.getSelectionProvider();
+		selectionProvider.setSelection(selection);
 	}
 
 }
