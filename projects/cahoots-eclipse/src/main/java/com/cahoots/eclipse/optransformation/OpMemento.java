@@ -31,7 +31,7 @@ public class OpMemento {
 		final ISelectionProvider selectionProvider = document.getTextEditor()
 						.getSelectionProvider();
 		final ITextSelection selection = (ITextSelection)selectionProvider.getSelection();
-		int curPosition = selection.getOffset();
+		final int curPosition = selection.getOffset();
 		final int curLength = selection.getLength();
 		
 		transformations.add(transformation);
@@ -44,32 +44,12 @@ public class OpMemento {
 			}
 
 			if (found) {
-				int length = 0;
 				if (transformation.getStart() > other.getStart()) {
 					continue;
 				}
 					
-				if (transformation instanceof OpInsertMessage) {
-					final OpInsertMessage opInsertMessage = (OpInsertMessage) transformation;
-					length = opInsertMessage.getContent().length();
-
-				} else if (transformation instanceof OpReplaceMessage) {
-					final OpReplaceMessage opReplaceMessage = (OpReplaceMessage) transformation;
-					if (opReplaceMessage.getEnd() == Integer.MAX_VALUE) {
-						length = opReplaceMessage.getContent().length();
-					} else {
-						length = opReplaceMessage.getContent().length()
-								- (opReplaceMessage.getEnd() - opReplaceMessage.getStart());
-					}
-					
-				} else if (transformation instanceof OpDeleteMessage) {
-					final OpDeleteMessage opDeleteMessage = (OpDeleteMessage) transformation;
-					length = -(opDeleteMessage.getEnd()
-							- opDeleteMessage.getStart());
-				}
+				final int length = getLength(transformation);
 				
-				curPosition += length;
-
 				if (other instanceof OpInsertMessage) {
 					final OpInsertMessage opInsertMessage = (OpInsertMessage) other;
 					opInsertMessage.setStart(opInsertMessage.getStart()
@@ -93,7 +73,29 @@ public class OpMemento {
 		
 		transformation.setApplied(true);
 
-		return new TextSelection(curPosition, curLength);
+		return new TextSelection(curPosition + getLength(transformation), curLength);
+	}
+
+	private int getLength(final OpTransformation transformation) {
+		if (transformation instanceof OpInsertMessage) {
+			final OpInsertMessage opInsertMessage = (OpInsertMessage) transformation;
+			return opInsertMessage.getContent().length();
+			
+		} else if (transformation instanceof OpReplaceMessage) {
+			final OpReplaceMessage opReplaceMessage = (OpReplaceMessage) transformation;
+			if (opReplaceMessage.getEnd() == Integer.MAX_VALUE) {
+				return opReplaceMessage.getContent().length();
+			} else {
+				return opReplaceMessage.getContent().length()
+						- (opReplaceMessage.getEnd() - opReplaceMessage.getStart());
+			}
+			
+		} else if (transformation instanceof OpDeleteMessage) {
+			final OpDeleteMessage opDeleteMessage = (OpDeleteMessage) transformation;
+			return -(opDeleteMessage.getEnd() - opDeleteMessage.getStart());
+		} else {
+			return 0;
+		}
 	}
 
 	public TreeSet<OpTransformation> getTransformations() {
