@@ -26,6 +26,8 @@ object MessageRelay {
    */
   implicit val timeout = Timeout(1800 second)
 
+  var services :Map[String, AsyncService] = Map.empty[String, AsyncService]
+
   lazy val default = {
     val messageActor = Akka.system.actorOf(Props[MessageRelay])
     messageActor
@@ -62,10 +64,10 @@ class MessageRelay extends Actor {
 
   var members = Map.empty[String, PushEnumerator[JsValue]]
 
-  var services = Map[String, AsyncService](
-            "users" -> new UsersService(this.notifyOne, this.notifyAll),
-            "op" -> new OpService(this.notifyOne, this.notifyAll),
-            "chat" -> new ChatService(this.notifyOne, this.notifyAll))
+  MessageRelay.services = Map[String, AsyncService](
+    "users" -> new UsersService(this.notifyOne, this.notifyAll),
+    "op" -> new OpService(this.notifyOne, this.notifyAll),
+    "chat" -> new ChatService(this.notifyOne, this.notifyAll))
 
   def receive = {
 
@@ -84,7 +86,7 @@ class MessageRelay extends Actor {
     }
 
     case NotifyJoin(username) => {
-      this.services("users").asInstanceOf[UsersService].join(username)
+      MessageRelay.services("users").asInstanceOf[UsersService].join(username)
     }
 
     case Relay(username, json) => {
@@ -94,7 +96,7 @@ class MessageRelay extends Actor {
            * classes which will handle things (operational transactions, chat, collabs, etc...)
            */
 
-          val service = this.services((json \ "service").as[String])
+          val service = MessageRelay.services((json \ "service").as[String])
 
           if (service != null) {
             service.processMessage(json)
@@ -108,27 +110,31 @@ class MessageRelay extends Actor {
     case Quit(username) => {
       // this should call UsersService.leave somehow...
       members = members - username
-      this.services("users").asInstanceOf[UsersService].leave(username)
+      MessageRelay.services("users").asInstanceOf[UsersService].leave(username)
     }
 
   }
 
   def notifyAll(msg: JsValue) {
-    members.foreach {
-      case (_, channel) => {
-        Logger.debug(msg.toString())
-        channel.push(msg)
-      }
-    }
+    Logger.debug("Global Message")
+    members.foreach(p => {
+      notifyOne(p._1, msg)
+    })
   }
 
   def notifyOne(username: String, msg: JsValue) {
     Logger.debug(username)
     Logger.debug(msg.toString())
-    val channel = members(username)
-    channel.push(msg)
+    if(members.contains(username))
+    {
+      val channel = members(username)
+      channel.push(msg)
+    }
+    else
+    {
+      Logger.error("Cannot Send Message " + username + " Does Not Exist")
+    }
   }
-
 }
 
 case class Join(username: String)

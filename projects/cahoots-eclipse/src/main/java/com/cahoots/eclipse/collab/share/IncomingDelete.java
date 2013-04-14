@@ -53,9 +53,6 @@ public class IncomingDelete implements OpDeleteEventListener {
 						return;
 					}
 
-					final int start = msg.getStart();
-					final int length = msg.getEnd() - msg.getStart();
-
 					final IDocumentProvider documentProvider = textEditor
 							.getDocumentProvider();
 					final IDocument document = documentProvider
@@ -63,16 +60,16 @@ public class IncomingDelete implements OpDeleteEventListener {
 
 					msg.setStart(Math.min(msg.getStart(), document.getLength()));
 					msg.setEnd(Math.min(msg.getEnd(), document.getLength()));
-					
+
 					final OpSession session = opSessionRegister.getSession(msg
 							.getOpId());
 					final OpMemento memento = session.getMemento();
-					
+
 					try {
 						DocumentUndoManagerRegistry.disconnect(document);
 					} catch (final Exception e) {
 					}
-					
+
 					shareDocumentManager.disableEvents();
 					memento.addTransformation(msg);
 					final String content = memento.getContent();

@@ -24,7 +24,7 @@ public class CahootsWebSocket {
 
 	protected ListenableFuture<WebSocket> connection;
 	protected ConnectionDetails connectionDetails;
-	
+
 	private final AtomicLong sent = new AtomicLong(0);
 
 	public CahootsWebSocket(final ConnectionDetails connectionDetails) {
@@ -85,11 +85,10 @@ public class CahootsWebSocket {
 			final String uriString = String.format(
 					"ws://%s/app/message?auth_token=%s", server, authToken);
 			final CahootsSocketListener cahootsSocketClient = new CahootsSocketListener(
-					this);
-			final Builder builder = new WebSocketUpgradeHandler.Builder().addWebSocketListener(
-					cahootsSocketClient);
-			connection = c.prepareGet(uriString).execute(
-					builder.build());
+					this, connectionDetails);
+			final Builder builder = new WebSocketUpgradeHandler.Builder()
+					.addWebSocketListener(cahootsSocketClient);
+			connection = c.prepareGet(uriString).execute(builder.build());
 
 			onSuccessfulConnect();
 		} catch (final Exception e) {
@@ -122,10 +121,10 @@ public class CahootsWebSocket {
 
 	public void onSuccessfulConnect() {
 	}
-	
+
 	public void onSuccessfulDisconnect() {
 	}
-	
+
 	public void onMessage(final String message) {
 	}
 }

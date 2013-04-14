@@ -76,7 +76,7 @@ public class IncomingReplace implements OpReplaceEventListener {
 
 					msg.setStart(Math.min(msg.getStart(), document.getLength()));
 					msg.setEnd(Math.min(msg.getEnd(), document.getLength()));
-					
+
 					final OpSession session = opSessionRegister.getSession(msg
 							.getOpId());
 					final OpMemento memento = session.getMemento();

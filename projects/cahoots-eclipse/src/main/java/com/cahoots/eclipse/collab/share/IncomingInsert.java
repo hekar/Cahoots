@@ -53,16 +53,13 @@ public class IncomingInsert implements OpInsertEventListener {
 						return;
 					}
 
-					final int start = msg.getStart();
-					final String contents = msg.getContent();
-
 					final IDocumentProvider documentProvider = textEditor
 							.getDocumentProvider();
 					final IDocument document = documentProvider
 							.getDocument(textEditor.getEditorInput());
 
 					msg.setStart(Math.min(msg.getStart(), document.getLength()));
-					
+
 					final OpSession session = opSessionRegister.getSession(msg
 							.getOpId());
 					final OpMemento memento = session.getMemento();

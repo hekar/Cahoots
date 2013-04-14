@@ -33,13 +33,16 @@ public class RevisionView extends ViewPart {
 	class ViewContentProvider implements IStructuredContentProvider {
 		private OpMemento memento;
 
+		@Override
 		public void inputChanged(final Viewer v, final Object oldInput,
 				final Object newInput) {
 		}
 
+		@Override
 		public void dispose() {
 		}
 
+		@Override
 		public Object[] getElements(final Object parent) {
 			if (memento != null) {
 				return memento.getTransformations().toArray();
@@ -47,7 +50,7 @@ public class RevisionView extends ViewPart {
 				return new String[] {};
 			}
 		}
-		
+
 		public void setMemento(final OpMemento memento) {
 			this.memento = memento;
 		}
@@ -55,14 +58,17 @@ public class RevisionView extends ViewPart {
 
 	class ViewLabelProvider extends LabelProvider implements
 			ITableLabelProvider {
+		@Override
 		public String getColumnText(final Object obj, final int index) {
 			return getText(obj);
 		}
 
+		@Override
 		public Image getColumnImage(final Object obj, final int index) {
 			return getImage(obj);
 		}
 
+		@Override
 		public Image getImage(final Object obj) {
 			return PlatformUI.getWorkbench().getSharedImages()
 					.getImage(ISharedImages.IMG_OBJ_ELEMENT);
@@ -79,6 +85,7 @@ public class RevisionView extends ViewPart {
 			this.view = view;
 		}
 
+		@Override
 		public void partActivated(final IWorkbenchPartReference ref) {
 			if (ref.getPart(true) instanceof IEditorPart) {
 				view.editorActivated(view.getViewSite().getPage()
@@ -86,6 +93,7 @@ public class RevisionView extends ViewPart {
 			}
 		}
 
+		@Override
 		public void partBroughtToTop(final IWorkbenchPartReference ref) {
 			if (ref.getPart(true) == view) {
 				view.editorActivated(view.getViewSite().getPage()
@@ -93,6 +101,7 @@ public class RevisionView extends ViewPart {
 			}
 		}
 
+		@Override
 		public void partOpened(final IWorkbenchPartReference ref) {
 			if (ref.getPart(true) == view) {
 				view.editorActivated(view.getViewSite().getPage()
@@ -100,6 +109,7 @@ public class RevisionView extends ViewPart {
 			}
 		}
 
+		@Override
 		public void partVisible(final IWorkbenchPartReference ref) {
 			if (ref.getPart(true) == view) {
 				final IEditorPart editor = view.getViewSite().getPage()
@@ -110,15 +120,19 @@ public class RevisionView extends ViewPart {
 			}
 		}
 
+		@Override
 		public void partClosed(final IWorkbenchPartReference ref) {
 		}
 
+		@Override
 		public void partDeactivated(final IWorkbenchPartReference ref) {
 		}
 
+		@Override
 		public void partHidden(final IWorkbenchPartReference ref) {
 		}
 
+		@Override
 		public void partInputChanged(final IWorkbenchPartReference ref) {
 		}
 	}
@@ -138,6 +152,7 @@ public class RevisionView extends ViewPart {
 		messageDialog = injector.getInstance(MessageDialog.class);
 	}
 
+	@Override
 	public void createPartControl(final Composite parent) {
 		viewer = new TableViewer(parent, SWT.MULTI | SWT.H_SCROLL
 				| SWT.V_SCROLL);
@@ -152,18 +167,20 @@ public class RevisionView extends ViewPart {
 				.setHelp(viewer.getControl(), "cahoots-eclipse.viewer");
 
 		doubleClickAction = new Action() {
+			@Override
 			public void run() {
 				final ISelection selection = viewer.getSelection();
 				final Object obj = ((IStructuredSelection) selection)
 						.getFirstElement();
 				// TODO: Implement the revision history on per element
 				if (obj instanceof Object) {
-					
+
 				}
 			}
 		};
 
 		viewer.addDoubleClickListener(new IDoubleClickListener() {
+			@Override
 			public void doubleClick(final DoubleClickEvent event) {
 				doubleClickAction.run();
 			}
@@ -171,16 +188,19 @@ public class RevisionView extends ViewPart {
 
 		linkWithEditorAction = new Action("Link with Editor",
 				IAction.AS_CHECK_BOX) {
+			@Override
 			public void run() {
 				toggleLinking(isChecked());
 			}
 		};
-		//linkWithEditorAction.setImageDescriptor( ISharedImages.IMG_OBJ_ELEMENT);
+		// linkWithEditorAction.setImageDescriptor(
+		// ISharedImages.IMG_OBJ_ELEMENT);
 		getViewSite().getActionBars().getToolBarManager()
 				.add(linkWithEditorAction);
 		getSite().getPage().addPartListener(linkWithEditorPartListener);
 	}
 
+	@Override
 	public void setFocus() {
 		viewer.getControl().setFocus();
 	}
@@ -197,7 +217,7 @@ public class RevisionView extends ViewPart {
 		if (!linkingActive || !getViewSite().getPage().isPartVisible(this)) {
 			return;
 		}
-		
+
 		// do something with content of the editor
 		final OpSession session = opSessionRegister.getSession(currentOpId);
 		if (session == null) {

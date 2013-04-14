@@ -528,7 +528,7 @@ namespace Cahoots
         /// <param name="action">The action.</param>
         public void InvokeOnUI(Action action)
         {
-            UIContext.Send(_ => action(), null);
+            this.UIContext.Send(_ => action(), null);
         }
 
         /// <summary>

@@ -92,6 +92,14 @@ class OpService(
     }
   }
 
+  def leaveAll(user: String)
+  {
+    ops.foreach(p =>{
+      if(p._2.collaborators.contains(user)){
+        leave(user, p._1)
+      }
+    })
+  }
   def leave(user: String, opId: String) {
     if (ops.contains(opId)) {
 
@@ -293,7 +301,6 @@ class OpService(
 
         (opSession.collaborators.toList).foreach {
           collaborator => {
-            Logger.info(collaborator)
             notifyOne(collaborator, handle(opSession))
           }
         }
