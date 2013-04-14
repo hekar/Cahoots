@@ -51,8 +51,7 @@ public class OpMemento {
 					
 				if (transformation instanceof OpInsertMessage) {
 					final OpInsertMessage opInsertMessage = (OpInsertMessage) transformation;
-					length = opInsertMessage.getContent().length()
-							- opInsertMessage.getStart();
+					length = opInsertMessage.getContent().length();
 
 				} else if (transformation instanceof OpReplaceMessage) {
 					final OpReplaceMessage opReplaceMessage = (OpReplaceMessage) transformation;
