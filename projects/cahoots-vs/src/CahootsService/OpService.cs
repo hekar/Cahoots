@@ -181,11 +181,11 @@ namespace Cahoots.Services
                 {
                     lock (doc.OpLocker)
                     {
-                        var future = doc.Changes.Where(c => c.TickStamp > op.TickStamp);
+                        var future = doc.Changes.Where(c => c.TickStamp > op.TickStamp).OrderBy(c => c.TickStamp);
                         var len = 0;
 
                         // undo 'newer' changes
-                        foreach (var change in future)
+                        foreach (var change in future.Reverse())
                         {
 
                             switch (change.MessageType)
