@@ -3,6 +3,7 @@ package com.cahoots.eclipse;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
+import com.cahoots.chat.Chat;
 import com.cahoots.connection.websocket.CahootsRealtimeClient;
 import com.cahoots.eclipse.collab.share.IncomingDocumentShare;
 import com.cahoots.util.Log;
@@ -41,7 +42,8 @@ public class Activator extends AbstractUIPlugin {
 	private void configureRegistrar() {
 		final CahootsRealtimeClient cahootsSocket = injector.getInstance(CahootsRealtimeClient.class);
 		final IncomingDocumentShare incomingDocumentShare = injector.getInstance(IncomingDocumentShare.class);
-		cahootsSocket.addShareDocumentEventListener(incomingDocumentShare);
+		cahootsSocket.addShareDocumentEventListener(incomingDocumentShare)
+		final Chat chat = injector.getInstance(Chat.class);
 	}
 
 	public static Activator getActivator() {
