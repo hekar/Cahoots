@@ -3,6 +3,10 @@ package com.cahoots.eclipse.optransformation;
 import java.util.NoSuchElementException;
 import java.util.TreeSet;
 
+import org.eclipse.jface.text.ITextSelection;
+import org.eclipse.jface.text.TextSelection;
+import org.eclipse.jface.viewers.ISelectionProvider;
+
 import com.cahoots.connection.serialize.receive.OpDeleteMessage;
 import com.cahoots.connection.serialize.receive.OpInsertMessage;
 import com.cahoots.connection.serialize.receive.OpReplaceMessage;
@@ -21,9 +25,15 @@ public class OpMemento {
 		return document;
 	}
 
-	public synchronized void addTransformation(
+	public synchronized ITextSelection addTransformation(
 			final OpTransformation transformation) {
 
+		final ISelectionProvider selectionProvider = document.getTextEditor()
+						.getSelectionProvider();
+		final ITextSelection selection = (ITextSelection)selectionProvider.getSelection();
+		int curPosition = selection.getOffset();
+		final int curLength = selection.getLength();
+		
 		transformations.add(transformation);
 
 		boolean found = false;
@@ -58,6 +68,8 @@ public class OpMemento {
 					length = -(opDeleteMessage.getEnd()
 							- opDeleteMessage.getStart());
 				}
+				
+				curPosition += length;
 
 				if (other instanceof OpInsertMessage) {
 					final OpInsertMessage opInsertMessage = (OpInsertMessage) other;
@@ -79,8 +91,10 @@ public class OpMemento {
 				}
 			}
 		}
-
+		
 		transformation.setApplied(true);
+
+		return new TextSelection(curPosition, curLength);
 	}
 
 	public TreeSet<OpTransformation> getTransformations() {
@@ -130,6 +144,12 @@ public class OpMemento {
 		}
 
 		return sb.toString();
+	}
+	
+	public void fixCursor(final ITextSelection selection) {
+		final ISelectionProvider selectionProvider = document.getTextEditor()
+				.getSelectionProvider();
+		selectionProvider.setSelection(selection);
 	}
 
 }

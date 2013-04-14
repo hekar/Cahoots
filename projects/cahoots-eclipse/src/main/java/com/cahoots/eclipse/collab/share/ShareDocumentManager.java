@@ -128,7 +128,7 @@ public class ShareDocumentManager {
 			documentIds.put(opId, documentId);
 			final OpSynchronizedClock clock = OpSynchronizedClock
 					.fromConnection(cahootsHttpClient, connection, opId).get();
-			final OpDocument opDocument = new OpDocument(opId, documentId);
+			final OpDocument opDocument = new OpDocument(opId, documentId, textEditor);
 			final OpMemento opMemento = new OpMemento(opDocument);
 			final OpSession opSession = new OpSession(opMemento, clock);
 			opSessionRegistrar.addSession(opId, opSession);
