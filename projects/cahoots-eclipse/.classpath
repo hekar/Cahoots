@@ -12,6 +12,8 @@
 	<classpathentry exported="true" kind="lib" path="lib_managed/jars/com.miglayout/miglayout-swt/miglayout-swt-4.2.jar"/>
 	<classpathentry kind="lib" path="lib_managed/jars/com.ning/async-http-client/async-http-client-1.7.9.jar"/>
 	<classpathentry kind="lib" path="lib_managed/srcs/com.ning/async-http-client/async-http-client-1.7.9-sources.jar"/>
+	<classpathentry kind="lib" path="lib_managed/jars/commons-collections/commons-collections/commons-collections-3.2.1.jar"/>
+	<classpathentry kind="lib" path="lib_managed/jars/org.mockito/mockito-all/mockito-all-1.9.5.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="lib" path="lib_managed/jars/asm/asm/asm-3.1.jar"/>

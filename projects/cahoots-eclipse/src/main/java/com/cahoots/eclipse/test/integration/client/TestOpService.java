@@ -78,7 +78,7 @@ public class TestOpService {
 		final SendOpReplaceMessage op = new SendOpReplaceMessage();
 		op.setOpId(document.getOpId());
 		op.setStart(0);
-		op.setEnd(content.length());
+		op.setReplacementLength(content.length());
 		op.setTickStamp(0L);
 		op.setContent(content);
 
@@ -94,7 +94,7 @@ public class TestOpService {
 		final SendOpDeleteMessage op = new SendOpDeleteMessage();
 		op.setOpId(document.getOpId());
 		op.setStart(0);
-		op.setEnd(1);
+		op.setReplacementLength(1);
 		op.setTickStamp(0L);
 
 		socket.sendAndWaitForResponse(op, OpDeleteMessage.class,

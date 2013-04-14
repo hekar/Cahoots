@@ -33,27 +33,33 @@ class OpService(
         val content = (json \ "content").as[String]
         val start = (json \ "start").as[Int]
         val tickStamp = (json \ "tickStamp").as[Long]
+        val localCount = (json \ "localCount").as[Long]
+        val remoteCount = (json \ "remoteCount").as[Long]
 
-        insert(user, opId, content, start, tickStamp)
+        insert(user, opId, content, start, tickStamp, localCount, remoteCount)
       case "replace" =>
         val user = (json \ "user").as[String]
         val opId = (json \ "opId").as[String]
         val content = (json \ "content").as[String]
         val oldContent = (json \ "oldContent").as[String]
         val start = (json \ "start").as[Int]
-        val end = (json \ "end").as[Int]
+        val replacementLength = (json \ "replacementLength").as[Int]
         val tickStamp = (json \ "tickStamp").as[Long]
+        val localCount = (json \ "localCount").as[Long]
+        val remoteCount = (json \ "remoteCount").as[Long]
 
-        replace(user, opId, content, start, end, oldContent, tickStamp)
+        replace(user, opId, content, start, replacementLength, oldContent, tickStamp, localCount, remoteCount)
       case "delete" =>
         val user = (json \ "user").as[String]
         val opId = (json \ "opId").as[String]
         val start = (json \ "start").as[Int]
-        val end = (json \ "end").as[Int]
+        val replacementLength = (json \ "replacementLength").as[Int]
         val oldContent = (json \ "oldContent").as[String]
         val tickStamp = (json \ "tickStamp").as[Long]
+        val localCount = (json \ "localCount").as[Long]
+        val remoteCount = (json \ "remoteCount").as[Long]
 
-        delete(user, opId, start, end, oldContent, tickStamp)
+        delete(user, opId, start, replacementLength, oldContent, tickStamp, localCount, remoteCount)
       case "leave" =>
         val user = (json \ "user").as[String]
         val opId = (json \ "opId").as[String]
@@ -189,6 +195,7 @@ class OpService(
 
     val session = new OpSession(nextOpSessionId.toInt, documentId)
     session.invited ++= user :: collaborators
+    // Give the initial replace
     session.operations += JsObject(Seq(
       "service" -> JsString("op"),
       "type" -> JsString("replace"),
@@ -198,8 +205,10 @@ class OpService(
       "content" -> JsString(fileContents),
       "oldContent" -> JsString(""),
       "start" -> JsNumber(0),
-      "end" -> JsNumber(Integer.MAX_VALUE),
-      "tickStamp" -> JsNumber(0)
+      "replacementLength" -> JsNumber(Integer.MAX_VALUE),
+      "tickStamp" -> JsNumber(0),
+      "localCount" -> JsNumber(0),
+      "remoteCount" -> JsNumber(0)
     ))
     ops += ((nextOpSessionId, session))
   }
@@ -218,7 +227,8 @@ class OpService(
    * @param tickStamp
    * The tickstamp that the message was created at
    */
-  def insert(user: String, opId: String, content: String, start: Int, tickStamp: Long) {
+  def insert(user: String, opId: String, content: String, start: Int, tickStamp: Long,
+    localCount: Long, remoteCount: Long) {
     def handle(opSession: OpSession) : JsValue = {
       JsObject(Seq(
           "service" -> JsString("op"),
@@ -228,14 +238,17 @@ class OpService(
           "documentId" -> JsString(opSession.documentId),
           "content" -> JsString(content),
           "start" -> JsNumber(start),
-          "tickStamp" -> JsNumber(tickStamp)
+          "tickStamp" -> JsNumber(tickStamp),
+          "localCount" -> JsNumber(localCount),
+          "remoteCount" -> JsNumber(remoteCount)
         ))
     }
 
     replicateOp(user, opId, handle)
   }
 
-  def replace(user: String, opId: String, content: String, start: Int, end: Int, oldContent: String, tickStamp: Long) {
+  def replace(user: String, opId: String, content: String, start: Int, replacementLength: Int,
+    oldContent: String, tickStamp: Long, localCount: Long, remoteCount: Long) {
     def handle(opSession: OpSession) : JsValue = {
       JsObject(Seq(
           "service" -> JsString("op"),
@@ -246,15 +259,18 @@ class OpService(
           "content" -> JsString(content),
           "oldContent" -> JsString(oldContent),
           "start" -> JsNumber(start),
-          "end" -> JsNumber(end),
-          "tickStamp" -> JsNumber(tickStamp)
+          "replacementLength" -> JsNumber(replacementLength),
+          "tickStamp" -> JsNumber(tickStamp),
+          "localCount" -> JsNumber(localCount),
+          "remoteCount" -> JsNumber(remoteCount)
         ))
     }
 
     replicateOp(user, opId, handle)
   }
 
-  def delete(user: String, opId: String, start: Int, end: Int, oldContent: String, tickStamp: Long) {
+  def delete(user: String, opId: String, start: Int, replacementLength: Int,
+    oldContent: String, tickStamp: Long, localCount: Long, remoteCount: Long) {
     def handle(opSession: OpSession) : JsValue = {
         JsObject(Seq(
           "service" -> JsString("op"),
@@ -264,8 +280,10 @@ class OpService(
           "documentId" -> JsString(opSession.documentId),
           "oldContent" -> JsString(oldContent),
           "start" -> JsNumber(start),
-          "end" -> JsNumber(end),
-          "tickStamp" -> JsNumber(tickStamp)
+          "replacementLength" -> JsNumber(replacementLength),
+          "tickStamp" -> JsNumber(tickStamp),
+          "localCount" -> JsNumber(localCount),
+          "remoteCount" -> JsNumber(remoteCount)
         ))
   }
 

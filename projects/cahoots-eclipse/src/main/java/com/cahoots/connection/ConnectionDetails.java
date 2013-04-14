@@ -1,5 +1,8 @@
 package com.cahoots.connection;
 
+/**
+ * Connection authentication and remote address details
+ */
 public class ConnectionDetails {
 
 	private String username;

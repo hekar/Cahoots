@@ -40,7 +40,7 @@ public final class IncomingDocumentShare implements ShareDocumentEventListener {
 	private final ResourceFinder resourceFinder;
 	private final IWorkbenchWindow workbenchWindow;
 	private final IEditorRegistry editorRegistry;
-	private final ConnectionDetails ConnectionDetails;
+	private final ConnectionDetails connectionDetails;
 	private final MessageDialog messageDialog;
 	private final UserListViewContentProvider userList;
 
@@ -56,7 +56,7 @@ public final class IncomingDocumentShare implements ShareDocumentEventListener {
 			final TextEditorTools editorTools,
 			final UserListViewContentProvider userList) {
 		this.messageDialog = messageDialog;
-		this.ConnectionDetails = ConnectionDetails;
+		this.connectionDetails = ConnectionDetails;
 		this.workbenchWindow = workbenchWindow;
 		this.editorRegistry = editorRegistry;
 		this.resourceFinder = resourceFinder;
@@ -77,12 +77,11 @@ public final class IncomingDocumentShare implements ShareDocumentEventListener {
 			final Runnable runnable = new Runnable() {
 				@Override
 				public void run() {
-					final OpDocument document = new OpDocument(opId, documentId, null);
 
-					if (!ConnectionDetails.isLoggedInUser(sharer)) {
+					if (!connectionDetails.isLoggedInUser(sharer)) {
 						final String inviteMessage = String
 								.format("%s is requesting to share document %s. File contents will be overwritten.",
-										name, document.getFilename());
+										name, OpDocument.documentIdToFilename(documentId));
 						final MessageDialogStatus prompt = messageDialog
 								.prompt(workbenchWindow.getShell(),
 										"Accept Invite", inviteMessage);
@@ -91,15 +90,14 @@ public final class IncomingDocumentShare implements ShareDocumentEventListener {
 						}
 					}
 					cahootsSocket.send(new JoinCollaborationMessage(
-							ConnectionDetails.getUsername(), opId));
+							connectionDetails.getUsername(), opId));
 					
 					final ITextEditor textEditor = getSharedDocumentTextEditor(documentId);
-					document.setTextEditor(textEditor);
 
-					final IDocument doc = textEditor.getDocumentProvider()
-							.getDocument(textEditor.getEditorInput());
-					shareDocumentManager.addDocumentListener(doc, opId,
-							documentId, textEditor);
+					final IDocument doc = textEditor.getDocumentProvider().getDocument(textEditor.getEditorInput());
+					
+					final OpDocument document = new OpDocument(opId, documentId, doc, textEditor);
+					shareDocumentManager.addDocumentListener(document);
 				}
 			};
 

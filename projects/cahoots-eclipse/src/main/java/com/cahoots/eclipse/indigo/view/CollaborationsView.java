@@ -174,9 +174,9 @@ public class CollaborationsView extends ViewPart {
 				final ISelection selection = viewer.getSelection();
 				final Object obj = ((IStructuredSelection) selection)
 						.getFirstElement();
-				final Collaborator collab = (Collaborator) obj;
+				final Collaboration collab = (Collaboration) obj;
 				Activator.getInjector().getInstance(Chat.class)
-						.startChat(collab.getUsername());
+						.startChat(collab.getCollaborators().get(0));
 			}
 		};
 	}

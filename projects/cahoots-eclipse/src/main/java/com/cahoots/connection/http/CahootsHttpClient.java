@@ -7,6 +7,9 @@ import org.apache.commons.httpclient.NameValuePair;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 
+/**
+ * Client for HTTP protocol
+ */
 public class CahootsHttpClient {
 
 	public CahootsHttpMethodReturn get(final String server, final String path,

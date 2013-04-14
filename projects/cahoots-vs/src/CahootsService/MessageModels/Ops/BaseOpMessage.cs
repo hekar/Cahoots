@@ -52,7 +52,7 @@ namespace Cahoots.Services.MessageModels.Ops
         /// The start.
         /// </value>
         [DataMember(Name = "start", IsRequired = true)]
-        public int Start { get; set; }
+        public int Index { get; set; }
 
         /// <summary>
         /// Gets or sets the user.
@@ -62,5 +62,23 @@ namespace Cahoots.Services.MessageModels.Ops
         /// </value>
         [DataMember(Name = "user", IsRequired = true)]
         public string User { get; set; }
+
+        /// <summary>
+        /// Gets or sets the local transformation count.
+        /// </summary>
+        /// <value>
+        /// The local transformation count.
+        /// </value>
+        [DataMember(Name = "localCount", IsRequired = true)]
+        public int LocalCount { get; set; }
+
+        /// <summary>
+        /// Gets or sets the remote transformation count.
+        /// </summary>
+        /// <value>
+        /// The remote transformation count.
+        /// </value>
+        [DataMember(Name = "remoteCount", IsRequired = true)]
+        public int RemoteCount { get; set; }
     }
 }

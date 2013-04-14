@@ -89,6 +89,7 @@
     <Compile Include="Models\ModelBase.cs" />
     <Compile Include="Models\Preferences\Preferences.cs" />
     <Compile Include="Models\Preferences\Server.cs" />
+    <Compile Include="OpResolver.cs" />
     <Compile Include="OpService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UsersService.cs" />

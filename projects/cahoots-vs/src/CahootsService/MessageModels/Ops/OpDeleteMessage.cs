@@ -15,8 +15,8 @@ namespace Cahoots.Services.MessageModels.Ops
         /// <value>
         /// The end.
         /// </value>
-        [DataMember(Name = "end", IsRequired = true)]
-        public int End { get; set; }
+        [DataMember(Name = "length", IsRequired = true)]
+        public int Length { get; set; }
 
         /// <summary>
         /// Gets or sets the old content.
@@ -26,5 +26,23 @@ namespace Cahoots.Services.MessageModels.Ops
         /// </value>
         [DataMember(Name = "oldContent", IsRequired = true)]
         public string OldContent { get; set; }
+
+        /// <summary>
+        /// Gets the length of the replacement.
+        /// </summary>
+        /// <value>
+        /// The length of the replacement.
+        /// </value>
+        public int ReplacementLength
+        {
+            get
+            {
+                return 0;
+            }
+            set
+            {
+                // TODO: do this...
+            }
+        }
     }
 }

@@ -20,6 +20,8 @@ libraryDependencies += "junit" % "junit" % "4.10" withSources ()
 
 libraryDependencies += "commons-httpclient" % "commons-httpclient" % "3.1" withSources ()
 
+libraryDependencies += "commons-collections" % "commons-collections" % "3.2.1" withSources ()
+
 libraryDependencies += "org.slf4j" % "slf4j-api" % "1.6.2" withSources ()
 
 libraryDependencies += "com.googlecode.lambdaj" % "lambdaj" % "2.3.3" withSources ()
@@ -38,7 +40,9 @@ libraryDependencies += "io.netty" % "netty" % "3.6.1.Final" withSources ()
 
 libraryDependencies += "joda-time" % "joda-time" % "2.1" withSources ()
 
-libraryDependencies += "org.hamcrest" % "hamcrest-library" % "1.3"
+libraryDependencies += "org.hamcrest" % "hamcrest-library" % "1.3" withSources ()
+
+libraryDependencies += "org.mockito" % "mockito-all" % "1.9.5" withSources ()
 
 unmanagedJars in Compile <++= baseDirectory map { base =>
   val baseDirectories = (base / "lib") +++

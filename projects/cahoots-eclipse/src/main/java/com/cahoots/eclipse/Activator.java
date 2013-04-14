@@ -15,6 +15,8 @@ public class Activator extends AbstractUIPlugin {
 
 	private static Activator activator;
 	private static Injector injector;
+	
+	public static Object globalLock = new Object();
 
 	@Override
 	public void start(final BundleContext context) throws Exception {

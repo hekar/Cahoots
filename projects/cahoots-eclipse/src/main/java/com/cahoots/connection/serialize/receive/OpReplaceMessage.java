@@ -2,16 +2,16 @@ package com.cahoots.connection.serialize.receive;
 
 import com.cahoots.eclipse.optransformation.OpTransformation;
 
+/**
+ * @author Hekar
+ *
+ */
 public class OpReplaceMessage extends OpTransformation {
 	private final String service = "op";
 	private final String type = "replace";
 
-	private String user;
 	private String opId;
 	private String documentId;
-	private String content;
-	private Integer end;
-	private String oldContent;
 
 	public OpReplaceMessage() {
 	}
@@ -24,36 +24,12 @@ public class OpReplaceMessage extends OpTransformation {
 		return type;
 	}
 
-	public String getUser() {
-		return user;
-	}
-
-	public void setUser(final String user) {
-		this.user = user;
-	}
-
 	public String getOpId() {
 		return opId;
 	}
 
 	public void setOpId(final String opId) {
 		this.opId = opId;
-	}
-
-	public String getContent() {
-		return content;
-	}
-
-	public void setContent(final String content) {
-		this.content = content;
-	}
-
-	public Integer getEnd() {
-		return end;
-	}
-
-	public void setEnd(final Integer end) {
-		this.end = end;
 	}
 
 	public String getDocumentId() {
@@ -64,12 +40,20 @@ public class OpReplaceMessage extends OpTransformation {
 		this.documentId = documentId;
 	}
 
-	public String getOldContent() {
-		return oldContent;
+	@Override
+	public int getLength() {
+		if (getReplacementLength() == Integer.MAX_VALUE) {
+			return getContent().length();
+		} else {
+			return getContent().length() - getReplacementLength();
+		}
 	}
 
-	public void setOldContent(final String oldContent) {
-		this.oldContent = oldContent;
+	public String toString() {
+		return String.format(
+				"Rep:\tuser:%s, t:'%s', ts:%d, start: %d, end:%d, moved:%d, ind:%d, tc:%d",
+				getUser().substring(getUser().length() - 1), getContent(), getTickStamp(), 
+				getStart(), getReplacementLength(), getMoved(), getIndex());
 	}
 
 }

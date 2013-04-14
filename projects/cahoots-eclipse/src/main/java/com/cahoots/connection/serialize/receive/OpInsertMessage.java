@@ -7,13 +7,6 @@ public class OpInsertMessage extends OpTransformation {
 	private final String service = "op";
 	private final String type = "insert";
 
-	private String user;
-
-	/**
-	 * The contents of the message
-	 */
-	private String content;
-
 	/**
 	 * Document id
 	 */
@@ -25,14 +18,6 @@ public class OpInsertMessage extends OpTransformation {
 	private String opId;
 
 	public OpInsertMessage() {
-	}
-
-	public String getContent() {
-		return content;
-	}
-
-	public void setContent(final String contents) {
-		this.content = contents;
 	}
 
 	public String getDocumentId() {
@@ -59,12 +44,19 @@ public class OpInsertMessage extends OpTransformation {
 		return type;
 	}
 
-	public String getUser() {
-		return user;
+	@Override
+	public Integer getReplacementLength() {
+		return 0;
 	}
 
-	public void setUser(final String user) {
-		this.user = user;
+	public int getLength() {
+		return getContent().length();
+	}
+
+	public String toString() {
+		return String.format("Ins:\tuser:%s, t:'%s', ts:%d, start:%d, moved:%d, ind:%d, lc:%d, rc:%d", getUser()
+				.substring(getUser().length() - 1), getContent(), getTickStamp(), getStart(), getMoved(), getIndex(),
+				getLocalCount(), getRemoteCount());
 	}
 
 }

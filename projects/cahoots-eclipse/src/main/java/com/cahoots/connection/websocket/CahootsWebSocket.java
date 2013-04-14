@@ -12,6 +12,7 @@ import org.apache.commons.httpclient.NameValuePair;
 import com.cahoots.connection.ConnectionDetails;
 import com.cahoots.connection.http.CahootsHttpClient;
 import com.cahoots.connection.http.CahootsHttpResponseReceivedListener;
+import com.cahoots.util.Tracer;
 import com.google.gson.Gson;
 import com.ning.http.client.AsyncHttpClient;
 import com.ning.http.client.AsyncHttpClientConfig;
@@ -20,16 +21,19 @@ import com.ning.http.client.websocket.WebSocket;
 import com.ning.http.client.websocket.WebSocketUpgradeHandler;
 import com.ning.http.client.websocket.WebSocketUpgradeHandler.Builder;
 
-public class CahootsWebSocket {
+public abstract class CahootsWebSocket {
 
 	protected ListenableFuture<WebSocket> connection;
 	protected ConnectionDetails connectionDetails;
 
 	private final AtomicLong sent = new AtomicLong(0);
 
+	protected final Tracer tracer;
+	
 	public CahootsWebSocket(final ConnectionDetails connectionDetails) {
 		super();
 		this.connectionDetails = connectionDetails;
+		tracer = new Tracer("websocket");
 	}
 
 	public void connect(final String username, final String password,
@@ -53,6 +57,7 @@ public class CahootsWebSocket {
 						connectionDetails.setAuthToken(authToken);
 						connectionDetails.setServer(server);
 
+						tracer.writeln("Attempting connection user: %s, password: %s, server: %s", username, password, server);
 						connect(server, authToken);
 					} else {
 						throw new RuntimeException(String.format(
@@ -68,6 +73,8 @@ public class CahootsWebSocket {
 	}
 
 	public void disconnect() {
+		tracer.writeln("Attempting disconnection");
+		tracer.writeStacktrace();
 		if (connection != null) {
 			connection.cancel(true);
 			onSuccessfulDisconnect();
@@ -77,7 +84,10 @@ public class CahootsWebSocket {
 
 	public void connect(final String server, final String authToken) {
 		try {
-			disconnect();
+			if (isConnected()) {
+				disconnect();
+			}
+			
 			final AsyncHttpClientConfig cf = new AsyncHttpClientConfig.Builder()
 					.build();
 			final AsyncHttpClient c = new AsyncHttpClient(cf);
@@ -111,6 +121,7 @@ public class CahootsWebSocket {
 			try {
 				connection.get().sendTextMessage(message);
 				sent.incrementAndGet();
+				tracer.writeln("================ Send: ================\n" + message);
 			} catch (final InterruptedException e) {
 				e.printStackTrace();
 			} catch (final ExecutionException e) {
@@ -118,13 +129,19 @@ public class CahootsWebSocket {
 			}
 		}
 	}
-
-	public void onSuccessfulConnect() {
+	
+	public boolean isConnected() {
+		try {
+			return connection.get().isOpen();
+		} catch (final Exception e) {
+			e.printStackTrace();
+			return false;
+		}
 	}
 
-	public void onSuccessfulDisconnect() {
-	}
+	public abstract void onSuccessfulConnect();
 
-	public void onMessage(final String message) {
-	}
+	public abstract void onSuccessfulDisconnect();
+
+	public abstract void onMessage(final String message);
 }

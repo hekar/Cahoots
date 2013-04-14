@@ -40,6 +40,7 @@ import com.cahoots.event.OpReplaceEventListener;
 import com.cahoots.event.ShareDocumentEventListener;
 import com.cahoots.event.UserChangeEventListener;
 import com.cahoots.util.Log;
+import com.cahoots.util.Tracer;
 import com.google.gson.Gson;
 
 @SuppressWarnings("unchecked")
@@ -128,19 +129,17 @@ public class CahootsRealtimeClient extends CahootsWebSocket {
 
 	@Override
 	public void onSuccessfulConnect() {
-		super.onSuccessfulConnect();
-
 		final List<ConnectEventListener> listeners = this.listeners
 				.get(ConnectEventListener.class);
 		for (final ConnectEventListener listener : listeners) {
 			listener.onEvent(new ConnectEvent());
 		}
+		
+		tracer.writeln("Successful Connection");
 	}
 
 	@Override
 	public void onSuccessfulDisconnect() {
-		super.onSuccessfulDisconnect();
-
 		Activator.getInjector()
 				.getInstance(CollaborationsViewContentProvider.class).clear();
 
@@ -158,6 +157,8 @@ public class CahootsRealtimeClient extends CahootsWebSocket {
 						"Non DisconnectEventListener in listeners");
 			}
 		}
+		
+		tracer.writeln("Successful Disconnection");
 	}
 
 	/**
@@ -208,8 +209,6 @@ public class CahootsRealtimeClient extends CahootsWebSocket {
 
 	@Override
 	public void onMessage(final String message) {
-		super.onMessage(message);
-
 		final Gson gson = new Gson();
 		final MessageBase base = gson.fromJson(message, MessageBase.class);
 
@@ -248,6 +247,8 @@ public class CahootsRealtimeClient extends CahootsWebSocket {
 			fireEvents("receive", ChatReceivedEventListener.class,
 					ChatReceiveMessage.class, base, message, gson);
 		}
+		
+		tracer.writeln("OnMessage:\n" + message);
 	}
 
 	// Event Listeners

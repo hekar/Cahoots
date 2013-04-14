@@ -20,7 +20,7 @@ public class Chat {
 	private Map<String, ChatDialog> chats = new HashMap<String, ChatDialog>();
 
 	@Inject
-	public Chat(CahootsRealtimeClient socket) {
+	public Chat(final CahootsRealtimeClient socket) {
 		socket.addChatReceivedEventListener(new ChatReceivedEventListener() {
 
 			@Override
@@ -49,8 +49,8 @@ public class Chat {
 
 		socket.addDisconnectEventListener(new DisconnectEventListener() {
 			@Override
-			public void onEvent(DisconnectEvent msg) {
-				for (ChatDialog window : chats.values()) {
+			public void onEvent(final DisconnectEvent msg) {
+				for (final ChatDialog window : chats.values()) {
 					window.close();
 				}
 				chats.clear();
@@ -58,7 +58,7 @@ public class Chat {
 		});
 	}
 
-	public void startChat(String to) {
+	public void startChat(final String to) {
 		final ChatDialog dia;
 		if (!chats.containsKey(to)) {
 			dia = new ChatDialog(PlatformUI.getWorkbench()

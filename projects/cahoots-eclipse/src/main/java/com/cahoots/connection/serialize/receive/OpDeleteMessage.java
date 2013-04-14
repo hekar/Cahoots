@@ -6,11 +6,8 @@ public class OpDeleteMessage extends OpTransformation {
 	private final String service = "op";
 	private final String type = "delete";
 
-	private String user;
 	private String opId;
 	private String documentId;
-	private Integer end;
-	private String oldContent;
 
 	public String getService() {
 		return service;
@@ -18,14 +15,6 @@ public class OpDeleteMessage extends OpTransformation {
 
 	public String getType() {
 		return type;
-	}
-
-	public String getUser() {
-		return user;
-	}
-
-	public void setUser(final String user) {
-		this.user = user;
 	}
 
 	public String getOpId() {
@@ -44,20 +33,16 @@ public class OpDeleteMessage extends OpTransformation {
 		this.documentId = documentId;
 	}
 
-	public Integer getEnd() {
-		return end;
+	@Override
+	public int getLength() {
+		return getReplacementLength() - getStart();
 	}
 
-	public void setEnd(final Integer end) {
-		this.end = end;
+	public String toString() {
+		return String.format(
+				"Del:\tuser:%s, ts:%d, start:%d, end:%d, moved:%d, ind:%d, lc:%d, rc:%d",
+				getUser().substring(getUser().length() - 1), getTickStamp(), getStart(), 
+				getReplacementLength(), getMoved(), getIndex(), getLocalCount(), getRemoteCount());
 	}
-
-	public String getOldContent() {
-		return oldContent;
-	}
-
-	public void setOldContent(final String oldContent) {
-		this.oldContent = oldContent;
-	}
-
+	
 }

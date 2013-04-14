@@ -2,6 +2,9 @@ package com.cahoots.connection.http;
 
 import org.apache.commons.httpclient.methods.GetMethod;
 
+/**
+ * 
+ */
 public class CahootsHttpMethodReturn {
 
 	private final int statusCode;

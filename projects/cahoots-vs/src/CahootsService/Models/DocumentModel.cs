@@ -6,6 +6,7 @@ namespace Cahoots.Services.Models
 {
     using System;
     using System.Collections.ObjectModel;
+    using System.Linq;
     using Cahoots.Services.MessageModels.Ops;
     using Microsoft.VisualStudio.Text;
     using Microsoft.VisualStudio.Text.Editor;
@@ -79,6 +80,22 @@ namespace Cahoots.Services.Models
         /// The changes.
         /// </value>
         public Collection<BaseOpMessage> Changes { get; set; }
+
+        /// <summary>
+        /// Gets or sets the local count.
+        /// </summary>
+        /// <value>
+        /// The local count.
+        /// </value>
+        public int LocalCount { get; set; }
+
+        /// <summary>
+        /// Gets or sets the remote count.
+        /// </summary>
+        /// <value>
+        /// The remote count.
+        /// </value>
+        public int RemoteCount { get; set; }
 
         /// <summary>
         /// Gets the tick stamp.

@@ -1,7 +1,9 @@
 package com.cahoots.chat;
 
+/**
+ * Status of an collaborator 
+ */
 public enum CollaboratorStatus {
-	// I give up; following the standard Java uppercase constant naming scheme
 	ONLINE, OFFLINE;
 
 	public static CollaboratorStatus fromString(final String status) {
