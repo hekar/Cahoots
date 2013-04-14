@@ -19,19 +19,33 @@ public class OpTransformationTests {
 
 		final OpInsertMessage i = insertMessage();
 		i.setTickStamp(5L);
+		i.setContent("insert 1");
 		memento.addTransformation(i);
+		
+		final OpInsertMessage i2 = insertMessage();
+		i2.setTickStamp(2L);
+		i2.setContent("insert 2");
+		memento.addTransformation(i2);
 
-		final OpReplaceMessage r = replaceMessage();
-		r.setTickStamp(9L);
+		OpReplaceMessage r = replaceMessage();
+		r.setTickStamp(1L);
+		r.setContent("replace ment2");
+		memento.addTransformation(r);
+		
+		r = replaceMessage();
+		r.setTickStamp(0L);
+		r.setContent("This is the replacement message\n\nfrom bob");
+		r.setStart(0);
+		r.setEnd(Integer.MAX_VALUE);
 		memento.addTransformation(r);
 
-		final OpDeleteMessage d = deleteMessage();
-		d.setTickStamp(7L);
-		memento.addTransformation(d);
-		
-		final OpInsertMessage i1 = insertMessage();
-		i1.setTickStamp(1L);
-		memento.addTransformation(i1);
+		//final OpDeleteMessage d = deleteMessage();
+		//d.setTickStamp(7L);
+		//memento.addTransformation(d);
+		//
+		//final OpInsertMessage i1 = insertMessage();
+		//i1.setTickStamp(1L);
+		//memento.addTransformation(i1);
 
 		final String content = memento.getContent();
 		System.out.println(content);

@@ -50,12 +50,11 @@ public class IncomingReplace implements OpReplaceEventListener {
 						return;
 					}
 
-					if (msg.getUser().equals(ConnectionDetails.getUsername())) {
+					if (msg.getUser().equals(ConnectionDetails.getUsername()) &&
+							!(msg.getStart().equals(0))) {
 						return;
 					}
 
-					final int start = msg.getStart();
-					final String contents = msg.getContent();
 					int length = msg.getEnd() - msg.getStart();
 
 					if (length == 0) {

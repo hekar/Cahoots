@@ -10,11 +10,6 @@ public class OpInsertMessage extends OpTransformation {
 	private String user;
 
 	/**
-	 * The cursor index that the message was inserted at
-	 */
-	private int start;
-
-	/**
 	 * The contents of the message
 	 */
 	private String content;
@@ -30,14 +25,6 @@ public class OpInsertMessage extends OpTransformation {
 	private String opId;
 
 	public OpInsertMessage() {
-	}
-
-	public int getStart() {
-		return start;
-	}
-
-	public void setStart(final int start) {
-		this.start = start;
 	}
 
 	public String getContent() {
@@ -76,7 +63,7 @@ public class OpInsertMessage extends OpTransformation {
 		return user;
 	}
 
-	public void setUser(String user) {
+	public void setUser(final String user) {
 		this.user = user;
 	}
 

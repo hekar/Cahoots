@@ -35,6 +35,10 @@ public class OpMemento {
 
 			if (found) {
 				int length = 0;
+				if (transformation.getStart() > other.getStart()) {
+					continue;
+				}
+					
 				if (transformation instanceof OpInsertMessage) {
 					final OpInsertMessage opInsertMessage = (OpInsertMessage) transformation;
 					length = opInsertMessage.getContent().length()
@@ -42,14 +46,17 @@ public class OpMemento {
 
 				} else if (transformation instanceof OpReplaceMessage) {
 					final OpReplaceMessage opReplaceMessage = (OpReplaceMessage) transformation;
-					length = opReplaceMessage.getContent().length()
-							- (opReplaceMessage.getEnd() - opReplaceMessage
-									.getStart());
-
+					if (opReplaceMessage.getEnd() == Integer.MAX_VALUE) {
+						length = opReplaceMessage.getContent().length();
+					} else {
+						length = opReplaceMessage.getContent().length()
+								- (opReplaceMessage.getEnd() - opReplaceMessage.getStart());
+					}
+					
 				} else if (transformation instanceof OpDeleteMessage) {
 					final OpDeleteMessage opDeleteMessage = (OpDeleteMessage) transformation;
-					length = opDeleteMessage.getEnd()
-							- opDeleteMessage.getStart();
+					length = -(opDeleteMessage.getEnd()
+							- opDeleteMessage.getStart());
 				}
 
 				if (other instanceof OpInsertMessage) {
@@ -60,7 +67,10 @@ public class OpMemento {
 					final OpReplaceMessage opReplaceMessage = (OpReplaceMessage) other;
 					opReplaceMessage.setStart(opReplaceMessage.getStart()
 							+ length);
-					opReplaceMessage.setEnd(opReplaceMessage.getEnd() + length);
+					
+					final int end = (opReplaceMessage.getEnd() == Integer.MAX_VALUE) ? 
+							opReplaceMessage.getContent().length() : opReplaceMessage.getEnd();
+					opReplaceMessage.setEnd(end + length);
 				} else if (other instanceof OpDeleteMessage) {
 					final OpDeleteMessage opDeleteMessage = (OpDeleteMessage) other;
 					opDeleteMessage.setStart(opDeleteMessage.getStart()
